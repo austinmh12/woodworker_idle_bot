@@ -36,5 +36,9 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 			.required(true)
 			.add_string_choice("Pine", "pine")
 			.add_string_choice("Oak", "oak")
+			.add_string_choice("Maple", "maple")
+			.add_string_choice("Walnut", "walnut")
+			.add_string_choice("Cherry", "cherry")
+			.add_string_choice("Purpleheart", "purpleheart")
 	})
 }
