@@ -87,7 +87,7 @@ pub enum Axe {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Upgrades {
-	sharper_axes: u64,
+	sharper_axes: i64,
 }
 
 impl Default for Upgrades {
@@ -100,7 +100,7 @@ impl Default for Upgrades {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SawdustUpgrades {
-	sharper_axes: u64,
+	sharper_axes: i64,
 }
 
 impl Default for SawdustUpgrades {
@@ -113,13 +113,37 @@ impl Default for SawdustUpgrades {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Stats {
-	times_prestiged: u64,
+	times_prestiged: i64,
+	pine_trees_chopped: i64,
+	pine_logs_earned: i64,
+	oak_trees_chopped: i64,
+	oak_logs_earned: i64,
+	maple_trees_chopped: i64,
+	maple_logs_earned: i64,
+	walnut_trees_chopped: i64,
+	walnut_logs_earned: i64,
+	cherry_trees_chopped: i64,
+	cherry_logs_earned: i64,
+	purpleheart_trees_chopped: i64,
+	purpleheart_logs_earned: i64,
 }
 
 impl Default for Stats {
 	fn default() -> Self {
 		Self {
 			times_prestiged: 0,
+			pine_trees_chopped: 0,
+			pine_logs_earned: 0,
+			oak_trees_chopped: 0,
+			oak_logs_earned: 0,
+			maple_trees_chopped: 0,
+			maple_logs_earned: 0,
+			walnut_trees_chopped: 0,
+			walnut_logs_earned: 0,
+			cherry_trees_chopped: 0,
+			cherry_logs_earned: 0,
+			purpleheart_trees_chopped: 0,
+			purpleheart_logs_earned: 0,
 		}
 	}
 }
