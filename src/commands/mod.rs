@@ -6,7 +6,6 @@ use mongodb::{
 };
 use std::error::Error;
 
-pub mod ping;
 pub mod chop;
 
 async fn get_client() -> Result<Client, Box<dyn Error>> {
