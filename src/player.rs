@@ -73,6 +73,18 @@ impl Player {
 			stats: Stats::default(),
 		}
 	}
+
+	pub async fn update(&self) {
+		let player_collection = get_player_collection().await;
+		let update = self.to_doc();
+		player_collection
+			.update_one(
+				doc! {"_id": &self.id.unwrap() }, 
+				update, 
+				None)
+			.await
+			.unwrap();
+	}
 }
 
 impl ToDoc for Player {
@@ -211,23 +223,23 @@ impl ToDoc for Lumber {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Blueprints {
-	pub pine: Vec<String>,
-	pub oak: Vec<String>,
-	pub maple: Vec<String>,
-	pub walnut: Vec<String>,
-	pub cherry: Vec<String>,
-	pub purpleheart: Vec<String>,
+	pub pine: FurnitureUnlocks,
+	pub oak: FurnitureUnlocks,
+	pub maple: FurnitureUnlocks,
+	pub walnut: FurnitureUnlocks,
+	pub cherry: FurnitureUnlocks,
+	pub purpleheart: FurnitureUnlocks,
 }
 
 impl Default for Blueprints {
 	fn default() -> Self {
 		Self {
-			pine: vec!["birdhouse".to_string()],
-			oak: vec![],
-			maple: vec![],
-			walnut: vec![],
-			cherry: vec![],
-			purpleheart: vec![],
+			pine: FurnitureUnlocks { birdhouse: true },
+			oak: FurnitureUnlocks::default(),
+			maple: FurnitureUnlocks::default(),
+			walnut: FurnitureUnlocks::default(),
+			cherry: FurnitureUnlocks::default(),
+			purpleheart: FurnitureUnlocks::default(),
 		}
 	}
 }
@@ -235,12 +247,12 @@ impl Default for Blueprints {
 impl ToDoc for Blueprints {
 	fn to_doc(&self) -> Document {
 		doc! {
-			"pine": &self.pine,
-			"oak": &self.oak,
-			"maple": &self.maple,
-			"walnut": &self.walnut,
-			"cherry": &self.cherry,
-			"purpleheart": &self.purpleheart,
+			"pine": &self.pine.to_doc(),
+			"oak": &self.oak.to_doc(),
+			"maple": &self.maple.to_doc(),
+			"walnut": &self.walnut.to_doc(),
+			"cherry": &self.cherry.to_doc(),
+			"purpleheart": &self.purpleheart.to_doc(),
 		}
 	}
 }
@@ -295,6 +307,27 @@ impl Default for FurnitureItems {
 }
 
 impl ToDoc for FurnitureItems {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"birdhouse": &self.birdhouse,
+		}
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct FurnitureUnlocks {
+	pub birdhouse: bool
+}
+
+impl Default for FurnitureUnlocks {
+	fn default() -> Self {
+		Self {
+			birdhouse: false
+		}
+	}
+}
+
+impl ToDoc for FurnitureUnlocks {
 	fn to_doc(&self) -> Document {
 		doc! {
 			"birdhouse": &self.birdhouse,
@@ -445,7 +478,7 @@ async fn get_player_collection() -> Collection<Player> {
 }
 
 // Database functions
-pub async fn get_players() -> Vec<Player> { // Will change to Player
+pub async fn get_players() -> Vec<Player> {
 	let player_collection = get_player_collection().await;
 	let players = player_collection
 		.find(None, None)
@@ -458,7 +491,7 @@ pub async fn get_players() -> Vec<Player> { // Will change to Player
 	players
 }
 
-pub async fn get_player(discord_id: u64) -> Player { // Will change to Player
+pub async fn get_player(discord_id: u64) -> Player {
 	let player_collection = get_player_collection().await;
 	let player = player_collection
 		.find_one(doc! { "discord_id": discord_id as i64 }, None)
@@ -479,15 +512,4 @@ async fn add_player(discord_id: u64) -> Player {
 		.unwrap();
 	
 	ret
-}
-
-pub async fn update_player(player: &Player, update: Document) {
-	let player_collection = get_player_collection().await;
-	player_collection
-		.update_one(
-			doc! {"_id": &player.id.unwrap() }, 
-			update, 
-			None)
-		.await
-		.unwrap();
 }

@@ -7,8 +7,7 @@ use serenity::model::prelude::interaction::application_command::{
 	CommandDataOptionValue
 };
 
-use crate::player::{Player, get_player, update_player, Axe};
-use crate::utils::ToDoc;
+use crate::player::{get_player, Axe};
 
 pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 	let option = options
@@ -27,7 +26,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 				player.logs.pine += amt;
 				player.stats.pine_trees_chopped += amt;
 				player.stats.pine_logs_earned += amt;
-				update_player(&player, player.to_doc()).await;
+				player.update().await;
 				let s = if amt >= 1 {
 					"s"
 				} else {
@@ -40,7 +39,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.logs.oak += 1;
 					player.stats.oak_trees_chopped += 1;
 					player.stats.oak_logs_earned += 1;
-					update_player(&player, player.to_doc()).await;
+					player.update().await;
 					format!("You chopped {} oak log!", 1)
 				} else {
 					"You need an **Iron** axe to chop oak logs!".to_string()
