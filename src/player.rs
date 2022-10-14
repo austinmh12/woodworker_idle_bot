@@ -28,7 +28,7 @@ pub struct Player {
 	#[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
 	id: Option<ObjectId>,
 	pub discord_id: i64,
-	pub cash: i64,
+	pub cash: f64,
 	pub axe: Axe,
 	#[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
 	pub last_checked: DateTime<Utc>,
@@ -55,7 +55,7 @@ impl Player {
 		Self {
 			id: None,
 			discord_id: discord_id as i64,
-			cash: 0,
+			cash: 0.0,
 			axe: Axe::Stone,
 			last_checked: Utc::now(),
 			logs: Logs::default(),
@@ -247,23 +247,23 @@ impl ToDoc for Blueprints {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Furniture {
-	pub pine: Vec<String>,
-	pub oak: Vec<String>,
-	pub maple: Vec<String>,
-	pub walnut: Vec<String>,
-	pub cherry: Vec<String>,
-	pub purpleheart: Vec<String>,
+	pub pine: FurnitureItems,
+	pub oak: FurnitureItems,
+	pub maple: FurnitureItems,
+	pub walnut: FurnitureItems,
+	pub cherry: FurnitureItems,
+	pub purpleheart: FurnitureItems,
 }
 
 impl Default for Furniture {
 	fn default() -> Self {
 		Self {
-			pine: vec![],
-			oak: vec![],
-			maple: vec![],
-			walnut: vec![],
-			cherry: vec![],
-			purpleheart: vec![],
+			pine: FurnitureItems::default(),
+			oak: FurnitureItems::default(),
+			maple: FurnitureItems::default(),
+			walnut: FurnitureItems::default(),
+			cherry: FurnitureItems::default(),
+			purpleheart: FurnitureItems::default(),
 		}
 	}
 }
@@ -271,12 +271,33 @@ impl Default for Furniture {
 impl ToDoc for Furniture {
 	fn to_doc(&self) -> Document {
 		doc! {
-			"pine": &self.pine,
-			"oak": &self.oak,
-			"maple": &self.maple,
-			"walnut": &self.walnut,
-			"cherry": &self.cherry,
-			"purpleheart": &self.purpleheart,
+			"pine": &self.pine.to_doc(),
+			"oak": &self.oak.to_doc(),
+			"maple": &self.maple.to_doc(),
+			"walnut": &self.walnut.to_doc(),
+			"cherry": &self.cherry.to_doc(),
+			"purpleheart": &self.purpleheart.to_doc(),
+		}
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct FurnitureItems {
+	pub birdhouse: i64
+}
+
+impl Default for FurnitureItems {
+	fn default() -> Self {
+		Self {
+			birdhouse: 0
+		}
+	}
+}
+
+impl ToDoc for FurnitureItems {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"birdhouse": &self.birdhouse,
 		}
 	}
 }
