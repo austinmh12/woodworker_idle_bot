@@ -7,6 +7,7 @@ use mongodb::{
 use std::error::Error;
 
 pub mod chop;
+pub mod sell;
 
 async fn get_client() -> Result<Client, Box<dyn Error>> {
 	let mon_client_uri = dotenv::var("MONGODB_URI").expect("No mongodb uri");

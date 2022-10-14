@@ -1,8 +1,8 @@
 use std::{
 	collections::HashMap,
-	cmp::Ordering,
 };
 
+use bson::Bson;
 use serde::{Serialize, Deserialize};
 use mongodb::{
 	bson::{
@@ -20,7 +20,7 @@ use chrono::{
 	Duration
 };
 use crate::{
-	get_client
+	get_client, utils::ToDoc
 };
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -32,18 +32,18 @@ pub struct Player {
 	pub axe: Axe,
 	#[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
 	pub last_checked: DateTime<Utc>,
-	pub logs: HashMap<String, i64>,
+	pub logs: Logs,
 	pub loggers: i64,
-	pub lumber: HashMap<String, i64>,
+	pub lumber: Lumber,
 	pub lumberers: i64,
-	pub blueprints: HashMap<String, Vec<String>>,
-	pub furniture: HashMap<String, Vec<String>>,
+	pub blueprints: Blueprints,
+	pub furniture: Furniture,
 	pub cncs: i64,
 	pub upgrades:  Upgrades,
 	pub sawdust: i64,
 	pub sawdust_total: i64,
 	pub sawdust_upgrades: SawdustUpgrades,
-	pub seeds: HashMap<String, i64>,
+	pub seeds: Seeds,
 	pub stats: Stats,
 }
 
@@ -58,24 +58,49 @@ impl Player {
 			cash: 0,
 			axe: Axe::Stone,
 			last_checked: Utc::now(),
-			logs: HashMap::new(),
+			logs: Logs::default(),
 			loggers: 0,
-			lumber: HashMap::new(),
+			lumber: Lumber::default(),
 			lumberers: 0,
-			blueprints,
-			furniture: HashMap::new(),
+			blueprints: Blueprints::default(),
+			furniture: Furniture::default(),
 			cncs: 0,
 			upgrades: Upgrades::default(),
 			sawdust: 0,
 			sawdust_total: 0,
 			sawdust_upgrades: SawdustUpgrades::default(),
-			seeds: HashMap::new(),
+			seeds: Seeds::default(),
 			stats: Stats::default(),
 		}
 	}
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+impl ToDoc for Player {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"$set": {
+				"cash": &self.cash,
+				"axe": &self.axe,
+				"last_checked": &self.last_checked,
+				"logs": &self.logs.to_doc(),
+				"loggers": &self.loggers,
+				"lumber": &self.lumber.to_doc(),
+				"lumberers": &self.lumberers,
+				"blueprints": &self.blueprints.to_doc(),
+				"furniture": &self.furniture.to_doc(),
+				"cncs": &self.cncs,
+				"upgrades": &self.upgrades.to_doc(),
+				"sawdust": &self.sawdust,
+				"sawdust_total": &self.sawdust_total,
+				"sawdust_upgrades": &self.sawdust_upgrades.to_doc(),
+				"seeds": &self.seeds.to_doc(),
+				"stats": &self.stats.to_doc(),
+			}
+		}
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 pub enum Axe {
 	Stone = 1,
 	Iron = 2,
@@ -85,9 +110,216 @@ pub enum Axe {
 	Rune = 6
 }
 
+impl From<Bson> for Axe {
+	fn from(a: Bson) -> Self {
+		match a.as_str().unwrap_or("Stone") {
+			"Stone" => Axe::Stone,
+			"Iron" => Axe::Iron,
+			"Steel" => Axe::Steel,
+			"Mithril" => Axe::Mithril,
+			"Adamant" => Axe::Adamant,
+			"Rune" => Axe::Rune,
+			_ => Axe::Stone
+		}
+	}
+}
+
+impl From<Axe> for Bson {
+	fn from(a: Axe) -> Self {
+		match a {
+			Axe::Stone => Bson::String("Stone".to_string()),
+			Axe::Iron => Bson::String("Iron".to_string()),
+			Axe::Steel => Bson::String("Steel".to_string()),
+			Axe::Mithril => Bson::String("Mithril".to_string()),
+			Axe::Adamant => Bson::String("Adamant".to_string()),
+			Axe::Rune => Bson::String("Rune".to_string()),
+		}
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Logs {
+	pub pine: i64,
+	pub oak: i64,
+	pub maple: i64,
+	pub walnut: i64,
+	pub cherry: i64,
+	pub purpleheart: i64,
+}
+
+impl Default for Logs {
+	fn default() -> Self {
+		Self {
+			pine: 0,
+			oak: 0,
+			maple: 0,
+			walnut: 0,
+			cherry: 0,
+			purpleheart: 0,
+		}
+	}
+}
+
+impl ToDoc for Logs {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"pine": &self.pine,
+			"oak": &self.oak,
+			"maple": &self.maple,
+			"walnut": &self.walnut,
+			"cherry": &self.cherry,
+			"purpleheart": &self.purpleheart,
+		}
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Lumber {
+	pub pine: i64,
+	pub oak: i64,
+	pub maple: i64,
+	pub walnut: i64,
+	pub cherry: i64,
+	pub purpleheart: i64,
+}
+
+impl Default for Lumber {
+	fn default() -> Self {
+		Self {
+			pine: 0,
+			oak: 0,
+			maple: 0,
+			walnut: 0,
+			cherry: 0,
+			purpleheart: 0,
+		}
+	}
+}
+
+impl ToDoc for Lumber {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"pine": &self.pine,
+			"oak": &self.oak,
+			"maple": &self.maple,
+			"walnut": &self.walnut,
+			"cherry": &self.cherry,
+			"purpleheart": &self.purpleheart,
+		}
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Blueprints {
+	pub pine: Vec<String>,
+	pub oak: Vec<String>,
+	pub maple: Vec<String>,
+	pub walnut: Vec<String>,
+	pub cherry: Vec<String>,
+	pub purpleheart: Vec<String>,
+}
+
+impl Default for Blueprints {
+	fn default() -> Self {
+		Self {
+			pine: vec!["birdhouse".to_string()],
+			oak: vec![],
+			maple: vec![],
+			walnut: vec![],
+			cherry: vec![],
+			purpleheart: vec![],
+		}
+	}
+}
+
+impl ToDoc for Blueprints {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"pine": &self.pine,
+			"oak": &self.oak,
+			"maple": &self.maple,
+			"walnut": &self.walnut,
+			"cherry": &self.cherry,
+			"purpleheart": &self.purpleheart,
+		}
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Furniture {
+	pub pine: Vec<String>,
+	pub oak: Vec<String>,
+	pub maple: Vec<String>,
+	pub walnut: Vec<String>,
+	pub cherry: Vec<String>,
+	pub purpleheart: Vec<String>,
+}
+
+impl Default for Furniture {
+	fn default() -> Self {
+		Self {
+			pine: vec![],
+			oak: vec![],
+			maple: vec![],
+			walnut: vec![],
+			cherry: vec![],
+			purpleheart: vec![],
+		}
+	}
+}
+
+impl ToDoc for Furniture {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"pine": &self.pine,
+			"oak": &self.oak,
+			"maple": &self.maple,
+			"walnut": &self.walnut,
+			"cherry": &self.cherry,
+			"purpleheart": &self.purpleheart,
+		}
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Seeds {
+	pub pine: i64,
+	pub oak: i64,
+	pub maple: i64,
+	pub walnut: i64,
+	pub cherry: i64,
+	pub purpleheart: i64,
+}
+
+impl Default for Seeds {
+	fn default() -> Self {
+		Self {
+			pine: 0,
+			oak: 0,
+			maple: 0,
+			walnut: 0,
+			cherry: 0,
+			purpleheart: 0,
+		}
+	}
+}
+
+impl ToDoc for Seeds {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"pine": &self.pine,
+			"oak": &self.oak,
+			"maple": &self.maple,
+			"walnut": &self.walnut,
+			"cherry": &self.cherry,
+			"purpleheart": &self.purpleheart,
+		}
+	}
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Upgrades {
-	sharper_axes: i64,
+	pub sharper_axes: i64,
 }
 
 impl Default for Upgrades {
@@ -98,9 +330,17 @@ impl Default for Upgrades {
 	}
 }
 
+impl ToDoc for Upgrades {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"sharper_axes": &self.sharper_axes,
+		}
+	}
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SawdustUpgrades {
-	sharper_axes: i64,
+	pub sharper_axes: i64,
 }
 
 impl Default for SawdustUpgrades {
@@ -111,21 +351,29 @@ impl Default for SawdustUpgrades {
 	}
 }
 
+impl ToDoc for SawdustUpgrades {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"sharper_axes": 0,
+		}
+	}
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Stats {
-	times_prestiged: i64,
-	pine_trees_chopped: i64,
-	pine_logs_earned: i64,
-	oak_trees_chopped: i64,
-	oak_logs_earned: i64,
-	maple_trees_chopped: i64,
-	maple_logs_earned: i64,
-	walnut_trees_chopped: i64,
-	walnut_logs_earned: i64,
-	cherry_trees_chopped: i64,
-	cherry_logs_earned: i64,
-	purpleheart_trees_chopped: i64,
-	purpleheart_logs_earned: i64,
+	pub times_prestiged: i64,
+	pub pine_trees_chopped: i64,
+	pub pine_logs_earned: i64,
+	pub oak_trees_chopped: i64,
+	pub oak_logs_earned: i64,
+	pub maple_trees_chopped: i64,
+	pub maple_logs_earned: i64,
+	pub walnut_trees_chopped: i64,
+	pub walnut_logs_earned: i64,
+	pub cherry_trees_chopped: i64,
+	pub cherry_logs_earned: i64,
+	pub purpleheart_trees_chopped: i64,
+	pub purpleheart_logs_earned: i64,
 }
 
 impl Default for Stats {
@@ -148,9 +396,29 @@ impl Default for Stats {
 	}
 }
 
+impl ToDoc for Stats {
+	fn to_doc(&self) -> Document {
+		doc! {
+			"times_prestiged": &self.times_prestiged,
+			"pine_trees_chopped": &self.pine_trees_chopped,
+			"pine_logs_earned": &self.pine_logs_earned,
+			"oak_trees_chopped": &self.oak_trees_chopped,
+			"oak_logs_earned": &self.oak_logs_earned,
+			"maple_trees_chopped": &self.maple_trees_chopped,
+			"maple_logs_earned": &self.maple_logs_earned,
+			"walnut_trees_chopped": &self.walnut_trees_chopped,
+			"walnut_logs_earned": &self.walnut_logs_earned,
+			"cherry_trees_chopped": &self.cherry_trees_chopped,
+			"cherry_logs_earned": &self.cherry_logs_earned,
+			"purpleheart_trees_chopped": &self.purpleheart_trees_chopped,
+			"purpleheart_logs_earned": &self.purpleheart_logs_earned,
+		}
+	}
+}
+
 async fn get_player_collection() -> Collection<Player> {
 	let client = get_client().await.unwrap();
-	let collection = client.database("poketcg").collection::<Player>("players");
+	let collection = client.database("lumber-idle").collection::<Player>("players");
 
 	collection
 }

@@ -35,6 +35,7 @@ use std::error::Error;
 
 mod commands;
 mod player;
+mod utils;
 
 struct Handler {
 	is_loop_running: AtomicBool,
@@ -45,12 +46,16 @@ impl EventHandler for Handler {
 	// Allows the bot to interact with slash commands
 	async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
 		if let Interaction::ApplicationCommand(command) = interaction {
-			println!("Received command interaction: {:#?}", command);
+			// println!("Received command interaction: {:#?}", command);
 
 			let content = match command.data.name.as_str() {
 				"chop" => {
 					let player_id = command.member.as_ref().unwrap().user.id.0.clone();
-					commands::chop::run(player_id, &command.data.options)
+					commands::chop::run(player_id, &command.data.options).await
+				},
+				"sell" => {
+					let player_id = command.member.as_ref().unwrap().user.id.0;
+					commands::sell::run(player_id, &command.data.options).await
 				}
 				_ => "not implemented :(".to_string()
 			};
@@ -81,10 +86,11 @@ impl EventHandler for Handler {
 		let commands = GuildId::set_application_commands(&guild_id, &ctx.http, |commands| {
 			commands
 				.create_application_command(|command| commands::chop::register(command))
+				.create_application_command(|command| commands::sell::register(command))
 		})
 		.await;
 
-		println!("I now have the following guild slash commands: {:#?}", commands);
+		// println!("I now have the following guild slash commands: {:#?}", commands);
 	}
 
 	// Here for getting custom emoji IDs

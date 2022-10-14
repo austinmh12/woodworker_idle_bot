@@ -7,7 +7,10 @@ use serenity::model::prelude::interaction::application_command::{
 	CommandDataOptionValue
 };
 
-pub fn run(player_id: u64, options: &[CommandDataOption]) -> String {
+use crate::player::{Player, get_player, update_player, Axe};
+use crate::utils::ToDoc;
+
+pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 	let option = options
 		.get(0)
 		.expect("Expected a string")
@@ -15,11 +18,34 @@ pub fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 		.as_ref()
 		.expect("Expected str");
 
-	println!("{}", player_id);
+	// println!("{}", player_id);
+	let mut player = get_player(player_id).await;
 	if let CommandDataOptionValue::String(tree) = option {
 		match tree.as_str() {
-			"pine" => "You chopped a pine".to_string(),
-			"oak" => "You must have a iron axe!".to_string(),
+			"pine" => {
+				let amt = 1 + player.upgrades.sharper_axes + player.sawdust_upgrades.sharper_axes;
+				player.logs.pine += amt;
+				player.stats.pine_trees_chopped += amt;
+				player.stats.pine_logs_earned += amt;
+				update_player(&player, player.to_doc()).await;
+				let s = if amt >= 1 {
+					"s"
+				} else {
+					""
+				};
+				format!("You chopped **{} pine** log{}!", amt, s)
+			},
+			"oak" => {
+				if player.axe >= Axe::Iron {
+					player.logs.oak += 1;
+					player.stats.oak_trees_chopped += 1;
+					player.stats.oak_logs_earned += 1;
+					update_player(&player, player.to_doc()).await;
+					format!("You chopped {} oak log!", 1)
+				} else {
+					"You need an **Iron** axe to chop oak logs!".to_string()
+				}
+			},
 			_ => "No such tree".to_string()
 		}
 	} else {
