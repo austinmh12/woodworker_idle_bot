@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use bson::Bson;
 use serde::{Serialize, Deserialize};
 use mongodb::{
@@ -14,6 +16,19 @@ pub enum Axe {
 	Mithril = 4,
 	Adamant = 5,
 	Rune = 6
+}
+
+impl Display for Axe {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		match &self {
+			Axe::Stone => write!(f, "Stone"),
+			Axe::Iron => write!(f, "Iron"),
+			Axe::Steel => write!(f, "Steel"),
+			Axe::Mithril => write!(f, "Mithril"),
+			Axe::Adamant => write!(f, "Adamant"),
+			Axe::Rune => write!(f, "Rune"),
+		}
+	}
 }
 
 impl From<Bson> for Axe {

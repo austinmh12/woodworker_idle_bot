@@ -1,13 +1,24 @@
 use std::{
 	sync::{
-		atomic::{AtomicBool},
+		atomic::{AtomicBool, Ordering},
 		Arc,
 	},
 	time::Duration as StdDuration,
 };
 use dotenv;
 
-use serenity::{async_trait, model::{channel::{Message}, prelude::{GuildId, interaction::{Interaction, InteractionResponseType}}}, framework::standard::{CommandOptions, Reason}, prelude::*};
+use serenity::{
+	async_trait, 
+	model::{
+		prelude::{
+			GuildId, 
+			interaction::{
+				Interaction, 
+				InteractionResponseType
+			}
+		}
+	}, 
+};
 use serenity::client::{Client, Context, EventHandler};
 use serenity::model::{
 	gateway::{
@@ -18,18 +29,11 @@ use serenity::model::{
 use serenity::framework::standard::{
     StandardFramework,
 };
-use chrono::{DateTime, Utc, Duration};
-use mongodb::{
-	Client as MongoClient,
-	options::{
-		ClientOptions,
-	},
-};
-use std::error::Error;
 
 mod commands;
 mod player;
 mod utils;
+mod loops;
 
 struct Handler {
 	is_loop_running: AtomicBool,
@@ -42,23 +46,41 @@ impl EventHandler for Handler {
 		if let Interaction::ApplicationCommand(command) = interaction {
 			// println!("Received command interaction: {:#?}", command);
 
-			let content = match command.data.name.as_str() {
+			let player_id = command.member.as_ref().unwrap().user.id.0.clone();
+			let (content, embed) = match command.data.name.as_str() {
 				"chop" => {
-					let player_id = command.member.as_ref().unwrap().user.id.0.clone();
-					commands::chop::run(player_id, &command.data.options).await
+					(commands::chop::run(player_id, &command.data.options).await, None)
 				},
 				"sell" => {
-					let player_id = command.member.as_ref().unwrap().user.id.0;
-					commands::sell::run(player_id, &command.data.options).await
+					(commands::sell::run(player_id, &command.data.options).await, None)
+				},
+				"my" => {
+					let p = command.member.as_ref().unwrap();
+					let player_nick = match p.user.nick_in(&ctx.http, command.guild_id.unwrap()).await {
+						Some(n) => n,
+						None => p.user.name.clone()
+					}.to_string();
+					let player_avatar = p.user.avatar_url().unwrap();
+					commands::player::run(player_id, player_nick, player_avatar, &command.data.options).await
 				}
-				_ => "not implemented :(".to_string()
+				_ => ("not implemented :(".to_string(), None)
 			};
 
 			if let Err(why) = command
 				.create_interaction_response(&ctx.http, |response| {
 					response
 						.kind(InteractionResponseType::ChannelMessageWithSource)
-						.interaction_response_data(|message| message.content(content))
+						.interaction_response_data(|message| {
+							message.content(content);
+							match embed {
+								Some(e) => {
+									message.set_embed(e);
+								},
+								None => ()
+							};
+
+							message
+						})
 				})
 				.await
 			{
@@ -77,14 +99,42 @@ impl EventHandler for Handler {
 			guild_id.parse().expect("GUILD_ID must be an integer")
 		);
 
-		let commands = GuildId::set_application_commands(&guild_id, &ctx.http, |commands| {
+		let _commands = GuildId::set_application_commands(&guild_id, &ctx.http, |commands| {
 			commands
 				.create_application_command(|command| commands::chop::register(command))
 				.create_application_command(|command| commands::sell::register(command))
+				.create_application_command(|command| commands::player::register(command))
 		})
 		.await;
 
-		// println!("I now have the following guild slash commands: {:#?}", commands);
+		let ctx = Arc::new(ctx);
+		
+		if !self.is_loop_running.load(Ordering::Relaxed) {
+			let ctx1 = Arc::clone(&ctx);
+			tokio::spawn(async move {
+				loop {
+					loops::check_actions(Arc::clone(&ctx1)).await;
+					tokio::time::sleep(StdDuration::from_secs(1)).await;
+				}
+			});
+			// Keeping here for reference on how to do multiple bg tasks
+			// let ctx2 = Arc::clone(&ctx);
+			// tokio::spawn(async move {
+			// 	loop {
+			// 		commands::poketcg::refresh_card_prices(Arc::clone(&ctx2)).await;
+			// 		tokio::time::sleep(StdDuration::from_secs(3600)).await;
+			// 	}
+			// });
+			// let ctx3 = Arc::clone(&ctx);
+			// tokio::spawn(async move {
+			// 	loop {
+			// 		commands::poketcg::check_daily_streaks(Arc::clone(&ctx3)).await;
+			// 		tokio::time::sleep(StdDuration::from_secs(1800)).await;
+			// 	}
+			// });
+		}
+
+		// println!("I now have the following guild slash commands: {:#?}", _commands);
 	}
 
 	// Here for getting custom emoji IDs
@@ -125,12 +175,4 @@ async fn main() {
 	if let Err(why) = client.start().await {
 		println!("Client error: {:?}", why);
 	}
-}
-
-async fn get_client() -> Result<MongoClient, Box<dyn Error>> {
-	let mon_client_uri = dotenv::var("MONGODB_URI").expect("No mongodb uri");
-	let options = ClientOptions::parse(&mon_client_uri).await?;
-	let client = MongoClient::with_options(options)?;
-	
-	Ok(client)
 }

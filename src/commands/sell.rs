@@ -10,7 +10,6 @@ use serenity::model::prelude::interaction::application_command::{
 use crate::player::{get_player};
 
 pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
-	println!("{:#?}", &options);
 	let sub_options = &options
 		.get(0)
 		.expect("Expected a SubcommandGroup")

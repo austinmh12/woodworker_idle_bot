@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use bson::Bson;
 use chrono::{
 	DateTime, 
@@ -64,6 +66,16 @@ impl Action {
 		}
 	}
 
+	pub fn none() -> Self {
+		Self {
+			action: ActionEnum::None,
+			start: Utc::now(),
+			end: Utc::now(),
+			tree: "".into(),
+			furniture: None,
+		}
+	}
+
 	pub fn time_to_complete(&self) -> i64 {
 		// Returns the total number of seconds until the endtime
 		&self.end.timestamp() - Utc::now().timestamp()
@@ -82,11 +94,16 @@ impl ToDoc for Action {
 	}
 }
 
-impl ToDoc for Option<Action> {
-	fn to_doc(&self) -> bson::Document {
-		match &self {
-			Some(a) => a.to_doc(),
-			None => doc! {},
+impl Display for Action {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		match &self.action {
+			ActionEnum::None => write!(f, "None!"),
+			ActionEnum::Building => {
+				let alt = "".to_string();
+				let furniture = &self.furniture.as_ref().unwrap_or(&alt);
+				write!(f, "{} {} {}, **{}s** left", &self.action, &self.tree, furniture, &self.time_to_complete())
+			},
+			_ => write!(f, "{} {}, **{}s** left", &self.action, &self.tree, &self.time_to_complete())
 		}
 	}
 }
@@ -96,15 +113,27 @@ pub enum ActionEnum {
 	Chopping,
 	Drying,
 	Building,
+	None,
+}
+
+impl Display for ActionEnum {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		match &self {
+			ActionEnum::Chopping => write!(f, "Chopping"),
+			ActionEnum::Drying => write!(f, "Drying"),
+			ActionEnum::Building => write!(f, "Building"),
+			ActionEnum::None => write!(f, "None"),
+		}
+	}
 }
 
 impl From<Bson> for ActionEnum {
 	fn from(a: Bson) -> Self {
-		match a.as_str().unwrap_or("Chopping") {
+		match a.as_str().unwrap_or("None") {
 			"Chopping" => ActionEnum::Chopping,
 			"Drying" => ActionEnum::Drying,
 			"Building" => ActionEnum::Building,
-			_ => ActionEnum::Chopping
+			_ => ActionEnum::None
 		}
 	}
 }
@@ -115,6 +144,7 @@ impl From<ActionEnum> for Bson {
 			ActionEnum::Chopping => Bson::String("Chopping".to_string()),
 			ActionEnum::Drying => Bson::String("Drying".to_string()),
 			ActionEnum::Building => Bson::String("Building".to_string()),
+			ActionEnum::None => Bson::String("None".to_string()),
 		}
 	}
 }
