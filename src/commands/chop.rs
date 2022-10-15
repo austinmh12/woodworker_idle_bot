@@ -7,7 +7,8 @@ use serenity::model::prelude::interaction::application_command::{
 	CommandDataOptionValue
 };
 
-use crate::player::{get_player, Axe};
+use crate::player::{get_player, Axe, Player, Action};
+use crate::utils;
 
 pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 	let option = options
@@ -22,28 +23,13 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 	if let CommandDataOptionValue::String(tree) = option {
 		match tree.as_str() {
 			"pine" => {
-				let amt = 1 + player.upgrades.sharper_axes + player.sawdust_upgrades.sharper_axes;
-				player.logs.pine += amt;
-				player.stats.pine_trees_chopped += amt;
-				player.stats.pine_logs_earned += amt;
-				player.update().await;
-				let s = if amt >= 1 {
-					"s"
-				} else {
-					""
-				};
-				format!("You chopped **{} pine** log{}!", amt, s)
+				chop_player_update(&mut player, "pine").await
 			},
 			"oak" => {
-				if player.axe >= Axe::Iron {
-					player.logs.oak += 1;
-					player.stats.oak_trees_chopped += 1;
-					player.stats.oak_logs_earned += 1;
-					player.update().await;
-					format!("You chopped {} oak log!", 1)
-				} else {
-					"You need an **Iron** axe to chop oak logs!".to_string()
+				if player.axe < Axe::Iron {
+					return "You need an **Iron** axe to chop oak logs!".to_string();
 				}
+				chop_player_update(&mut player, "oak").await
 			},
 			_ => "No such tree".to_string()
 		}
@@ -66,4 +52,78 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 			.add_string_choice("Cherry", "cherry")
 			.add_string_choice("Purpleheart", "purpleheart")
 	})
+}
+
+fn chop_log(player: &Player, tree: &str) -> Option<Action> {
+	// returns true if insta-chopped.
+	let chop_time = utils::get_tree_time(player, tree);
+	if chop_time == 0 {
+		return None;
+	} else {
+		return Some(Action::chopping(chop_time, tree));
+	}
+}
+
+fn determine_logs_earned(player: &Player) -> i64 {
+	let base_logs = 1;
+	let upgrade = player.upgrades.wider_axes;
+	let sawdust_upgrade = player.sawdust_upgrades.wider_axes;
+	let sawdust = player.sawdust_total; // each is a permanent 5% increase to output
+	
+	((base_logs + upgrade + sawdust_upgrade) as f64 * (1.0 + (0.05 * sawdust as f64))) as i64
+}
+
+async fn chop_player_update(player: &mut Player, tree: &str) -> String {
+	let action = chop_log(&player, tree);
+	match action {
+		Some(a) => {
+			player.current_action = Some(a.clone());
+			player.update().await;
+			
+			format!("You started chopping a **pine** tree! You'll be done in **{}s**", a.time_to_complete())
+		}
+		None => {
+			let amount = determine_logs_earned(&player);
+			player.current_action = None;
+			match tree {
+				"pine" => {
+					player.logs.pine += amount;
+					player.stats.pine_trees_chopped += 1;
+					player.stats.pine_logs_earned += amount;
+				},
+				"oak" => {
+					player.logs.oak += amount;
+					player.stats.oak_trees_chopped += 1;
+					player.stats.oak_logs_earned += amount;
+				},
+				"maple" => {
+					player.logs.maple += amount;
+					player.stats.maple_trees_chopped += 1;
+					player.stats.maple_logs_earned += amount;
+				},
+				"walnut" => {
+					player.logs.walnut += amount;
+					player.stats.walnut_trees_chopped += 1;
+					player.stats.walnut_logs_earned += amount;
+				},
+				"cherry" => {
+					player.logs.cherry += amount;
+					player.stats.cherry_trees_chopped += 1;
+					player.stats.cherry_logs_earned += amount;
+				},
+				"purpleheart" => {
+					player.logs.purpleheart += amount;
+					player.stats.purpleheart_trees_chopped += 1;
+					player.stats.purpleheart_logs_earned += amount;
+				},
+				_ => ()
+			}
+			let s = if amount >= 1 {
+				"s"
+			} else {
+				""
+			};
+			format!("You chopped **{} {}** log{}!", amount, tree, s)
+		}
+	}
 }

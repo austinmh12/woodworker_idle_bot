@@ -1,10 +1,9 @@
 use std::{
 	sync::{
-		atomic::{AtomicBool, Ordering},
+		atomic::{AtomicBool},
 		Arc,
 	},
 	time::Duration as StdDuration,
-	collections::HashMap,
 };
 use dotenv;
 
@@ -18,11 +17,6 @@ use serenity::model::{
 };
 use serenity::framework::standard::{
     StandardFramework,
-    macros::{
-        group,
-		check
-    },
-	Args,
 };
 use chrono::{DateTime, Utc, Duration};
 use mongodb::{
