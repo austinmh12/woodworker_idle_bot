@@ -30,6 +30,8 @@ use crate::player::{
 	Color,
 	SawdustPrestige,
 	SeedPrestige,
+	Kiln,
+	Hammer,
 };
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -39,6 +41,8 @@ pub struct Player {
 	pub discord_id: i64,
 	pub cash: f64,
 	pub axe: Axe,
+	pub kiln: Kiln,
+	pub hammer: Hammer,
 	pub current_action: Action,
 	pub logs: WoodsInt,
 	pub loggers: i64,
@@ -70,6 +74,8 @@ impl Player {
 			discord_id: discord_id as i64,
 			cash: 0.0,
 			axe: Axe::Stone,
+			kiln: Kiln::None,
+			hammer: Hammer::None,
 			current_action: Action::none(),
 			logs: WoodsInt::default(),
 			loggers: 0,

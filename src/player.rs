@@ -1,4 +1,6 @@
 mod axe;
+mod kiln;
+mod hammer;
 mod furnitures;
 mod stats;
 mod upgrades;
@@ -9,6 +11,10 @@ mod color;
 mod prestige;
 
 pub use self::axe::Axe;
+
+pub use self::kiln::Kiln;
+
+pub use self::hammer::Hammer;
 
 pub use self::furnitures::Blueprints;
 pub use self::furnitures::Furniture;
