@@ -24,6 +24,8 @@ use crate::player::{
 	WoodsInt,
 	Action,
 	Color,
+	SawdustPrestige,
+	SeedPrestige,
 };
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -48,6 +50,8 @@ pub struct Player {
 	pub seeds: WoodsInt,
 	pub stats: Stats,
 	pub color: Color,
+	pub sawdust_prestige: SawdustPrestige,
+	pub seed_prestige: SeedPrestige,
 }
 
 impl Player {
@@ -72,6 +76,8 @@ impl Player {
 			seeds: WoodsInt::default(),
 			stats: Stats::default(),
 			color: Color::default(),
+			sawdust_prestige: SawdustPrestige::default(),
+			seed_prestige: SeedPrestige::default(),
 		}
 	}
 
@@ -132,6 +138,8 @@ impl ToDoc for Player {
 				"seeds": &self.seeds.to_doc(),
 				"stats": &self.stats.to_doc(),
 				"color": &self.color.to_doc(),
+				"sawdust_prestige": &self.sawdust_prestige.to_doc(),
+				"seed_prestige": &self.seed_prestige.to_doc(),
 			}
 		}
 	}
