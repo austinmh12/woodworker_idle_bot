@@ -99,7 +99,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 }
 
 fn chop_log(player: &Player, tree: &str) -> Option<Action> {
-	// returns true if insta-chopped.
+	// returns None if insta-chopped.
 	let chop_time = utils::get_tree_time(player, tree);
 	if chop_time == 0 {
 		return None;
