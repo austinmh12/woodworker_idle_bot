@@ -8,7 +8,6 @@ use mongodb::{
 		Document,
 	}, 
 };
-use serenity::builder::CreateEmbed;
 
 use crate::player::Player;
 
