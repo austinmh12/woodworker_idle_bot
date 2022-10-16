@@ -16,10 +16,6 @@ pub trait ToDoc {
 	fn to_doc(&self) -> Document;
 }
 
-pub trait ToEmbed {
-	fn embed(&self) -> CreateEmbed;
-}
-
 pub fn get_tree_time(player: &Player, tree: &str) -> i64 {
 	let base_time = match tree {
 		"pine" => 10.0,

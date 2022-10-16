@@ -6,6 +6,7 @@ mod woods;
 mod player;
 mod action;
 mod color;
+mod prestige;
 
 pub use self::axe::Axe;
 
@@ -29,3 +30,6 @@ pub use self::action::Action;
 pub use self::action::ActionEnum;
 
 pub use self::color::Color;
+
+pub use self::prestige::SawdustPrestige;
+pub use self::prestige::SeedPrestige;
