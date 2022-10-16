@@ -48,12 +48,9 @@ impl EventHandler for Handler {
 
 			let player_id = command.member.as_ref().unwrap().user.id.0.clone();
 			let (content, embed) = match command.data.name.as_str() {
-				"chop" => {
-					(commands::chop::run(player_id, &command.data.options).await, None)
-				},
-				"sell" => {
-					(commands::sell::run(player_id, &command.data.options).await, None)
-				},
+				"chop" => (commands::chop::run(player_id, &command.data.options).await, None),
+				"dry" => (commands::dry::run(player_id, &command.data.options).await, None),
+				"sell" => (commands::sell::run(player_id, &command.data.options).await, None),
 				"my" => {
 					let p = command.member.as_ref().unwrap();
 					let player_nick = match p.user.nick_in(&ctx.http, command.guild_id.unwrap()).await {
@@ -104,6 +101,7 @@ impl EventHandler for Handler {
 				.create_application_command(|command| commands::chop::register(command))
 				.create_application_command(|command| commands::sell::register(command))
 				.create_application_command(|command| commands::player::register(command))
+				.create_application_command(|command| commands::dry::register(command))
 		})
 		.await;
 

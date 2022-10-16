@@ -100,7 +100,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 }
 
 fn dry_log(player: &Player, tree: &str) -> Option<Action> {
-	// returns true if insta-chopped.
+	// returns None if insta-dried.
 	let dry_time = utils::get_dry_time(player, tree);
 	if dry_time == 0 {
 		return None;
@@ -125,18 +125,13 @@ pub async fn dry_player_update(player: &mut Player, tree: &str) -> String {
 			player.current_action = a.clone();
 			player.update().await;
 			
-			format!("You started chopping a **pine** tree! You'll be done in **{}s**", a.time_to_complete())
+			format!("You started drying a **pine** log! You'll be done in **{}s**", a.time_to_complete())
 		}
 		None => {
 			let amount = determine_lumber_earned(&player);
 			update_player_dry(player, amount, tree);
 			player.update().await;
-			let s = if amount >= 1 {
-				"s"
-			} else {
-				""
-			};
-			format!("You chopped **{} {}** log{}!", amount, tree, s)
+			format!("You dried **{} {}** lumber!", amount, tree)
 		}
 	}
 }
@@ -146,33 +141,33 @@ pub fn update_player_dry(player: &mut Player, amount: i64, tree: &str) {
 	match tree {
 		"pine" => {
 			player.lumber.pine += amount;
-			player.stats.pine_trees_chopped += 1;
-			player.stats.pine_logs_earned += amount;
+			player.stats.pine_logs_dried += 1;
+			player.stats.pine_lumber_earned += amount;
 		},
 		"oak" => {
 			player.lumber.oak += amount;
-			player.stats.oak_trees_chopped += 1;
-			player.stats.oak_logs_earned += amount;
+			player.stats.oak_logs_dried += 1;
+			player.stats.oak_lumber_earned += amount;
 		},
 		"maple" => {
 			player.lumber.maple += amount;
-			player.stats.maple_trees_chopped += 1;
-			player.stats.maple_logs_earned += amount;
+			player.stats.maple_logs_dried += 1;
+			player.stats.maple_lumber_earned += amount;
 		},
 		"walnut" => {
 			player.lumber.walnut += amount;
-			player.stats.walnut_trees_chopped += 1;
-			player.stats.walnut_logs_earned += amount;
+			player.stats.walnut_logs_dried += 1;
+			player.stats.walnut_lumber_earned += amount;
 		},
 		"cherry" => {
 			player.lumber.cherry += amount;
-			player.stats.cherry_trees_chopped += 1;
-			player.stats.cherry_logs_earned += amount;
+			player.stats.cherry_logs_dried += 1;
+			player.stats.cherry_lumber_earned += amount;
 		},
 		"purpleheart" => {
 			player.lumber.purpleheart += amount;
-			player.stats.purpleheart_trees_chopped += 1;
-			player.stats.purpleheart_logs_earned += amount;
+			player.stats.purpleheart_logs_dried += 1;
+			player.stats.purpleheart_lumber_earned += amount;
 		},
 		_ => ()
 	}
