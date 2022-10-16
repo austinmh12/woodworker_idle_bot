@@ -32,13 +32,13 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 		},
 		"maple" => {
 			if player.axe < Axe::Steel {
-				return "You need an **Steel** axe to chop maple logs!".to_string();
+				return "You need a **Steel** axe to chop maple logs!".to_string();
 			}
 			chop_player_update(&mut player, "maple").await
 		},
 		"walnut" => {
 			if player.axe < Axe::Mithril {
-				return "You need an **Mithril** axe to chop walnut logs!".to_string();
+				return "You need a **Mithril** axe to chop walnut logs!".to_string();
 			}
 			chop_player_update(&mut player, "walnut").await
 		},
@@ -50,7 +50,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 		},
 		"purpleheart" => {
 			if player.axe < Axe::Rune {
-				return "You need an **Rune** axe to chop purpleheart logs!".to_string();
+				return "You need a **Rune** axe to chop purpleheart logs!".to_string();
 			}
 			chop_player_update(&mut player, "purpleheart").await
 		},
@@ -114,7 +114,7 @@ pub fn determine_logs_earned(player: &Player) -> i64 {
 	let sawdust_upgrade = player.sawdust_upgrades.wider_axes;
 	let sawdust = player.sawdust_total; // each is a permanent 5% increase to output
 	
-	((base_logs + upgrade + sawdust_upgrade) as f64 * (1.0 + (0.05 * sawdust as f64))) as i64
+	(((base_logs + upgrade) * sawdust_upgrade) as f64 * (1.0 + (0.05 * sawdust as f64))) as i64
 }
 
 pub async fn chop_player_update(player: &mut Player, tree: &str) -> String {
@@ -124,13 +124,13 @@ pub async fn chop_player_update(player: &mut Player, tree: &str) -> String {
 			player.current_action = a.clone();
 			player.update().await;
 			
-			format!("You started chopping a **pine** tree! You'll be done in **{}s**", a.time_to_complete())
+			format!("You started chopping a **{}** tree! You'll be done in **{}s**", tree, a.time_to_complete())
 		}
 		None => {
 			let amount = determine_logs_earned(&player);
 			update_player_chop(player, amount, tree);
 			player.update().await;
-			let s = if amount >= 1 {
+			let s = if amount != 1 {
 				"s"
 			} else {
 				""
