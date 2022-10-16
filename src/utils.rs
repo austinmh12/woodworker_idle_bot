@@ -42,8 +42,8 @@ pub fn get_dry_time(player: &Player, tree: &str) -> i64 {
 		_ => 10.0
 	};
 	// TODO: Update to the equivalent drying upgrades
-	let upgrade_mult = 1.0 + (player.upgrades.sharper_axes as f64 * 0.1);
-	let sawdust_mult = 1.0 + (player.sawdust_upgrades.sharper_axes as f64 * 0.1);
+	let upgrade_mult = 1.0 + (player.upgrades.hotter_kilns as f64 * 0.1);
+	let sawdust_mult = 1.0 + (player.sawdust_upgrades.hotter_kilns as f64 * 0.1);
 
 	((base_time / upgrade_mult) / sawdust_mult) as i64
 }

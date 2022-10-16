@@ -4,6 +4,7 @@ use serenity::prelude::Context;
 use crate::player::get_players;
 use crate::player::ActionEnum;
 use crate::commands::chop::{update_player_chop, determine_logs_earned};
+use crate::commands::dry::{update_player_dry, determine_lumber_earned};
 
 pub async fn check_actions(_ctx: Arc<Context>) {
 	let players = get_players().await;
@@ -21,7 +22,10 @@ pub async fn check_actions(_ctx: Arc<Context>) {
 				player.update().await;
 			},
 			ActionEnum::Drying => {
-				todo!()
+				let amount = determine_lumber_earned(&player);
+				let tree = current_action.tree.as_str();
+				update_player_dry(&mut player, amount, tree);
+				player.update().await;
 			},
 			ActionEnum::Building => {
 				todo!()

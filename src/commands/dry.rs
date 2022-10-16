@@ -6,7 +6,7 @@ use serenity::model::prelude::interaction::application_command::{
 	CommandDataOption,
 };
 
-use crate::player::{get_player, Axe, Player, Action, ActionEnum};
+use crate::player::{get_player, Kiln, Player, Action, ActionEnum};
 use crate::utils;
 
 pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
@@ -20,38 +20,41 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 		ActionEnum::None => (),
 		_ => return format!("You're busy for another **{}s**!", player.current_action.time_to_complete()),
 	}
-	// TODO: Check if the player has available kilns
+	if player.kiln == Kiln::None {
+		return "You don't have a kiln! Buy one from the store!".to_string();
+	}
 	match tree.as_str() {
+		// Don't need to check kiln::none since we do it above.
 		"pine" => {
 			dry_player_update(&mut player, "pine").await
 		},
 		"oak" => {
-			if player.axe < Axe::Iron {
-				return "You need an **Iron** axe to chop oak logs!".to_string();
+			if player.kiln < Kiln::Firebrick {
+				return "You need a **Firebrick** kiln to dry oak logs!".to_string();
 			}
 			dry_player_update(&mut player, "oak").await
 		},
 		"maple" => {
-			if player.axe < Axe::Steel {
-				return "You need an **Steel** axe to chop maple logs!".to_string();
+			if player.kiln < Kiln::Hobby {
+				return "You need a **Hobby** kiln to dry maple logs!".to_string();
 			}
 			dry_player_update(&mut player, "maple").await
 		},
 		"walnut" => {
-			if player.axe < Axe::Mithril {
-				return "You need an **Mithril** axe to chop walnut logs!".to_string();
+			if player.kiln < Kiln::LabGrade {
+				return "You need a **Lab Grade** kiln to dry walnut logs!".to_string();
 			}
 			dry_player_update(&mut player, "walnut").await
 		},
 		"cherry" => {
-			if player.axe < Axe::Adamant {
-				return "You need an **Adamant** axe to chop cherry logs!".to_string();
+			if player.kiln < Kiln::Industrial {
+				return "You need an **Industrial** kiln to dry cherry logs!".to_string();
 			}
 			dry_player_update(&mut player, "cherry").await
 		},
 		"purpleheart" => {
-			if player.axe < Axe::Rune {
-				return "You need an **Rune** axe to chop purpleheart logs!".to_string();
+			if player.kiln < Kiln::WorldWide {
+				return "You need a **World Wide** kiln to dry purpleheart logs!".to_string();
 			}
 			dry_player_update(&mut player, "purpleheart").await
 		},
@@ -111,11 +114,10 @@ fn dry_log(player: &Player, tree: &str) -> Option<Action> {
 
 pub fn determine_lumber_earned(player: &Player) -> i64 {
 	let base_lumber = 1;
-	// TODO: Update to the kiln upgrades
-	let upgrade = player.upgrades.wider_axes;
-	let sawdust_upgrade = player.sawdust_upgrades.wider_axes;
+	let upgrade = player.upgrades.better_temperatures;
+	let sawdust_upgrade = player.sawdust_upgrades.better_temperatures;
 	
-	base_lumber + upgrade + sawdust_upgrade
+	(base_lumber + upgrade) * sawdust_upgrade
 }
 
 pub async fn dry_player_update(player: &mut Player, tree: &str) -> String {
@@ -143,31 +145,43 @@ pub fn update_player_dry(player: &mut Player, amount: i64, tree: &str) {
 			player.lumber.pine += amount;
 			player.stats.pine_logs_dried += 1;
 			player.stats.pine_lumber_earned += amount;
+			player.sawdust_prestige.lumber.pine += amount;
+			player.seed_prestige.lumber.pine += amount;
 		},
 		"oak" => {
 			player.lumber.oak += amount;
 			player.stats.oak_logs_dried += 1;
 			player.stats.oak_lumber_earned += amount;
+			player.sawdust_prestige.lumber.oak += amount;
+			player.seed_prestige.lumber.oak += amount;
 		},
 		"maple" => {
 			player.lumber.maple += amount;
 			player.stats.maple_logs_dried += 1;
 			player.stats.maple_lumber_earned += amount;
+			player.sawdust_prestige.lumber.maple += amount;
+			player.seed_prestige.lumber.maple += amount;
 		},
 		"walnut" => {
 			player.lumber.walnut += amount;
 			player.stats.walnut_logs_dried += 1;
 			player.stats.walnut_lumber_earned += amount;
+			player.sawdust_prestige.lumber.walnut += amount;
+			player.seed_prestige.lumber.walnut += amount;
 		},
 		"cherry" => {
 			player.lumber.cherry += amount;
 			player.stats.cherry_logs_dried += 1;
 			player.stats.cherry_lumber_earned += amount;
+			player.sawdust_prestige.lumber.cherry += amount;
+			player.seed_prestige.lumber.cherry += amount;
 		},
 		"purpleheart" => {
 			player.lumber.purpleheart += amount;
 			player.stats.purpleheart_logs_dried += 1;
 			player.stats.purpleheart_lumber_earned += amount;
+			player.sawdust_prestige.lumber.purpleheart += amount;
+			player.seed_prestige.lumber.purpleheart += amount;
 		},
 		_ => ()
 	}
