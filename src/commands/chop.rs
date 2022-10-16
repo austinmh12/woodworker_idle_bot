@@ -147,31 +147,43 @@ pub fn update_player_chop(player: &mut Player, amount: i64, tree: &str) {
 			player.logs.pine += amount;
 			player.stats.pine_trees_chopped += 1;
 			player.stats.pine_logs_earned += amount;
+			player.sawdust_prestige.logs.pine += amount;
+			player.seed_prestige.logs.pine += amount;
 		},
 		"oak" => {
 			player.logs.oak += amount;
 			player.stats.oak_trees_chopped += 1;
 			player.stats.oak_logs_earned += amount;
+			player.sawdust_prestige.logs.oak += amount;
+			player.seed_prestige.logs.oak += amount;
 		},
 		"maple" => {
 			player.logs.maple += amount;
 			player.stats.maple_trees_chopped += 1;
 			player.stats.maple_logs_earned += amount;
+			player.sawdust_prestige.logs.maple += amount;
+			player.seed_prestige.logs.maple += amount;
 		},
 		"walnut" => {
 			player.logs.walnut += amount;
 			player.stats.walnut_trees_chopped += 1;
 			player.stats.walnut_logs_earned += amount;
+			player.sawdust_prestige.logs.walnut += amount;
+			player.seed_prestige.logs.walnut += amount;
 		},
 		"cherry" => {
 			player.logs.cherry += amount;
 			player.stats.cherry_trees_chopped += 1;
 			player.stats.cherry_logs_earned += amount;
+			player.sawdust_prestige.logs.cherry += amount;
+			player.seed_prestige.logs.cherry += amount;
 		},
 		"purpleheart" => {
 			player.logs.purpleheart += amount;
 			player.stats.purpleheart_trees_chopped += 1;
 			player.stats.purpleheart_logs_earned += amount;
+			player.sawdust_prestige.logs.purpleheart += amount;
+			player.seed_prestige.logs.purpleheart += amount;
 		},
 		_ => ()
 	}
