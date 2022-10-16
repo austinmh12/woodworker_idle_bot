@@ -12,6 +12,10 @@ use serenity::{
 	builder::CreateEmbed,
 	utils::Colour
 };
+use chrono::{
+	DateTime, 
+	Utc,
+};
 
 use crate::utils::{get_client, ToDoc};
 use crate::player::{
@@ -38,11 +42,14 @@ pub struct Player {
 	pub current_action: Action,
 	pub logs: WoodsInt,
 	pub loggers: i64,
+	pub loggers_active: WoodsInt,
 	pub lumber: WoodsInt,
 	pub lumberers: i64,
+	pub lumberers_active: WoodsInt,
 	pub blueprints: Blueprints,
 	pub furniture: Furniture,
 	pub cncs: i64,
+	pub cncs_active: Furniture,
 	pub upgrades:  Upgrades,
 	pub sawdust: i64,
 	pub sawdust_total: i64,
@@ -52,6 +59,8 @@ pub struct Player {
 	pub color: Color,
 	pub sawdust_prestige: SawdustPrestige,
 	pub seed_prestige: SeedPrestige,
+	#[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
+	pub last_updated: DateTime<Utc>,
 }
 
 impl Player {
@@ -64,11 +73,14 @@ impl Player {
 			current_action: Action::none(),
 			logs: WoodsInt::default(),
 			loggers: 0,
+			loggers_active: WoodsInt::default(),
 			lumber: WoodsInt::default(),
 			lumberers: 0,
+			lumberers_active: WoodsInt::default(),
 			blueprints: Blueprints::default(),
 			furniture: Furniture::default(),
 			cncs: 0,
+			cncs_active: Furniture::default(),
 			upgrades: Upgrades::default(),
 			sawdust: 0,
 			sawdust_total: 0,
@@ -78,6 +90,7 @@ impl Player {
 			color: Color::default(),
 			sawdust_prestige: SawdustPrestige::default(),
 			seed_prestige: SeedPrestige::default(),
+			last_updated: Utc::now(),
 		}
 	}
 
