@@ -20,105 +20,106 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 		ActionEnum::None => (),
 		_ => return format!("You're busy for another **{}s**!", player.current_action.time_to_complete()),
 	}
+	// TODO: Check if the player has available kilns
 	match tree.as_str() {
 		"pine" => {
-			chop_player_update(&mut player, "pine").await
+			dry_player_update(&mut player, "pine").await
 		},
 		"oak" => {
 			if player.axe < Axe::Iron {
 				return "You need an **Iron** axe to chop oak logs!".to_string();
 			}
-			chop_player_update(&mut player, "oak").await
+			dry_player_update(&mut player, "oak").await
 		},
 		"maple" => {
 			if player.axe < Axe::Steel {
 				return "You need an **Steel** axe to chop maple logs!".to_string();
 			}
-			chop_player_update(&mut player, "maple").await
+			dry_player_update(&mut player, "maple").await
 		},
 		"walnut" => {
 			if player.axe < Axe::Mithril {
 				return "You need an **Mithril** axe to chop walnut logs!".to_string();
 			}
-			chop_player_update(&mut player, "walnut").await
+			dry_player_update(&mut player, "walnut").await
 		},
 		"cherry" => {
 			if player.axe < Axe::Adamant {
 				return "You need an **Adamant** axe to chop cherry logs!".to_string();
 			}
-			chop_player_update(&mut player, "cherry").await
+			dry_player_update(&mut player, "cherry").await
 		},
 		"purpleheart" => {
 			if player.axe < Axe::Rune {
 				return "You need an **Rune** axe to chop purpleheart logs!".to_string();
 			}
-			chop_player_update(&mut player, "purpleheart").await
+			dry_player_update(&mut player, "purpleheart").await
 		},
 		_ => "No such tree".to_string()
 	}
 }
 
 pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicationCommand {
-	command.name("chop").description("Chop trees for logs!")
+	command.name("dry").description("Dry logs for lumber!")
 		.create_option(|option| {
 			option
 				.name("pine")
-				.description("Chop a pine tree")
+				.description("Dry a pine log")
 				.kind(CommandOptionType::SubCommand)
 		})
 		.create_option(|option| {
 			option
 				.name("oak")
-				.description("Chop an oak tree")
+				.description("Dry an oak log")
 				.kind(CommandOptionType::SubCommand)	
 		})
 		.create_option(|option| {
 			option
 				.name("maple")
-				.description("Chop a maple tree")
+				.description("Dry a maple log")
 				.kind(CommandOptionType::SubCommand)	
 		})
 		.create_option(|option| {
 			option
 				.name("walnut")
-				.description("Chop a walnut tree")
+				.description("Dry a walnut log")
 				.kind(CommandOptionType::SubCommand)	
 		})
 		.create_option(|option| {
 			option
 				.name("cherry")
-				.description("Chop a cherry tree")
+				.description("Dry a cherry log")
 				.kind(CommandOptionType::SubCommand)	
 		})
 		.create_option(|option| {
 			option
 				.name("purpleheart")
-				.description("Chop a purpleheart tree")
+				.description("Dry a purpleheart log")
 				.kind(CommandOptionType::SubCommand)	
 		})
 }
 
-fn chop_log(player: &Player, tree: &str) -> Option<Action> {
+fn dry_log(player: &Player, tree: &str) -> Option<Action> {
 	// returns true if insta-chopped.
-	let chop_time = utils::get_tree_time(player, tree);
-	if chop_time == 0 {
+	let dry_time = utils::get_dry_time(player, tree);
+	if dry_time == 0 {
 		return None;
 	} else {
-		return Some(Action::chopping(chop_time, tree));
+		return Some(Action::drying(dry_time, tree));
 	}
 }
 
-pub fn determine_logs_earned(player: &Player) -> i64 {
-	let base_logs = 1;
+pub fn determine_lumber_earned(player: &Player) -> i64 {
+	let base_lumber = 1;
+	// TODO: Update to the kiln upgrades
 	let upgrade = player.upgrades.wider_axes;
 	let sawdust_upgrade = player.sawdust_upgrades.wider_axes;
-	let sawdust = player.sawdust_total; // each is a permanent 5% increase to output
 	
-	((base_logs + upgrade + sawdust_upgrade) as f64 * (1.0 + (0.05 * sawdust as f64))) as i64
+	base_lumber + upgrade + sawdust_upgrade
 }
 
-pub async fn chop_player_update(player: &mut Player, tree: &str) -> String {
-	let action = chop_log(&player, tree);
+pub async fn dry_player_update(player: &mut Player, tree: &str) -> String {
+	let action = dry_log(&player, tree);
 	match action {
 		Some(a) => {
 			player.current_action = a.clone();
@@ -127,8 +128,8 @@ pub async fn chop_player_update(player: &mut Player, tree: &str) -> String {
 			format!("You started chopping a **pine** tree! You'll be done in **{}s**", a.time_to_complete())
 		}
 		None => {
-			let amount = determine_logs_earned(&player);
-			update_player_chop(player, amount, tree);
+			let amount = determine_lumber_earned(&player);
+			update_player_dry(player, amount, tree);
 			player.update().await;
 			let s = if amount >= 1 {
 				"s"
@@ -140,36 +141,36 @@ pub async fn chop_player_update(player: &mut Player, tree: &str) -> String {
 	}
 }
 
-pub fn update_player_chop(player: &mut Player, amount: i64, tree: &str) {
+pub fn update_player_dry(player: &mut Player, amount: i64, tree: &str) {
 	player.current_action = Action::none();
 	match tree {
 		"pine" => {
-			player.logs.pine += amount;
+			player.lumber.pine += amount;
 			player.stats.pine_trees_chopped += 1;
 			player.stats.pine_logs_earned += amount;
 		},
 		"oak" => {
-			player.logs.oak += amount;
+			player.lumber.oak += amount;
 			player.stats.oak_trees_chopped += 1;
 			player.stats.oak_logs_earned += amount;
 		},
 		"maple" => {
-			player.logs.maple += amount;
+			player.lumber.maple += amount;
 			player.stats.maple_trees_chopped += 1;
 			player.stats.maple_logs_earned += amount;
 		},
 		"walnut" => {
-			player.logs.walnut += amount;
+			player.lumber.walnut += amount;
 			player.stats.walnut_trees_chopped += 1;
 			player.stats.walnut_logs_earned += amount;
 		},
 		"cherry" => {
-			player.logs.cherry += amount;
+			player.lumber.cherry += amount;
 			player.stats.cherry_trees_chopped += 1;
 			player.stats.cherry_logs_earned += amount;
 		},
 		"purpleheart" => {
-			player.logs.purpleheart += amount;
+			player.lumber.purpleheart += amount;
 			player.stats.purpleheart_trees_chopped += 1;
 			player.stats.purpleheart_logs_earned += amount;
 		},
