@@ -21,7 +21,7 @@ pub struct Blueprints {
 impl Default for Blueprints {
 	fn default() -> Self {
 		Self {
-			pine: FurnitureUnlocks { birdhouse: true },
+			pine: FurnitureUnlocks { birdhouse: true, ..Default::default() },
 			oak: FurnitureUnlocks::default(),
 			maple: FurnitureUnlocks::default(),
 			walnut: FurnitureUnlocks::default(),
@@ -82,13 +82,21 @@ impl ToDoc for Furniture {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FurnitureItems {
-	pub birdhouse: i64
+	pub birdhouse: i64,
+	pub shelf: i64,
+	pub side_table: i64,
+	pub coffee_table: i64,
+	pub dining_set: i64,
 }
 
 impl Default for FurnitureItems {
 	fn default() -> Self {
 		Self {
-			birdhouse: 0
+			birdhouse: 0,
+			shelf: 0,
+			side_table: 0,
+			coffee_table: 0,
+			dining_set: 0,
 		}
 	}
 }
@@ -97,19 +105,31 @@ impl ToDoc for FurnitureItems {
 	fn to_doc(&self) -> Document {
 		doc! {
 			"birdhouse": &self.birdhouse,
+			"shelf": &self.shelf,
+			"side_table": &self.side_table,
+			"coffee_table": &self.coffee_table,
+			"dining_set": &self.dining_set,
 		}
 	}
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FurnitureUnlocks {
-	pub birdhouse: bool
+	pub birdhouse: bool,
+	pub shelf: bool,
+	pub side_table: bool,
+	pub coffee_table: bool,
+	pub dining_set: bool,
 }
 
 impl Default for FurnitureUnlocks {
 	fn default() -> Self {
 		Self {
-			birdhouse: false
+			birdhouse: false,
+			shelf: false,
+			side_table: false,
+			coffee_table: false,
+			dining_set: false,
 		}
 	}
 }
@@ -118,6 +138,10 @@ impl ToDoc for FurnitureUnlocks {
 	fn to_doc(&self) -> Document {
 		doc! {
 			"birdhouse": &self.birdhouse,
+			"shelf": &self.shelf,
+			"side_table": &self.side_table,
+			"coffee_table": &self.coffee_table,
+			"dining_set": &self.dining_set,
 		}
 	}
 }
