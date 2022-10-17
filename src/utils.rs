@@ -8,8 +8,9 @@ use mongodb::{
 		Document,
 	}, 
 };
+use serenity::utils::Colour;
 
-use crate::player::Player;
+use crate::player::{Player, Color};
 
 pub trait ToDoc {
 	fn to_doc(&self) -> Document;
@@ -80,4 +81,10 @@ pub async fn get_client() -> Result<Client, Box<dyn Error>> {
 	let client = Client::with_options(options)?;
 	
 	Ok(client)
+}
+
+pub fn default_colour() -> Colour {
+	let color = Color::default();
+
+	Colour::from_rgb(color.red, color.green, color.blue)
 }
