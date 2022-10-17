@@ -117,7 +117,7 @@ pub fn determine_lumber_earned(player: &Player) -> i64 {
 	let upgrade = player.upgrades.better_temperatures;
 	let sawdust_upgrade = player.sawdust_upgrades.better_temperatures;
 	
-	(base_lumber + upgrade) * sawdust_upgrade
+	(base_lumber + upgrade) * (1 + sawdust_upgrade)
 }
 
 pub async fn dry_player_update(player: &mut Player, tree: &str) -> String {

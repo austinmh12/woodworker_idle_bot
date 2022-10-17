@@ -114,7 +114,7 @@ pub fn determine_logs_earned(player: &Player) -> i64 {
 	let sawdust_upgrade = player.sawdust_upgrades.wider_axes;
 	let sawdust = player.sawdust_total; // each is a permanent 5% increase to output
 	
-	(((base_logs + upgrade) * sawdust_upgrade) as f64 * (1.0 + (0.05 * sawdust as f64))) as i64
+	(((base_logs + upgrade) * (1 + sawdust_upgrade)) as f64 * (1.0 + (0.05 * sawdust as f64))) as i64
 }
 
 pub async fn chop_player_update(player: &mut Player, tree: &str) -> String {

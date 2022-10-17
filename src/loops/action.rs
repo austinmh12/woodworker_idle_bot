@@ -18,6 +18,7 @@ pub async fn check_actions(_ctx: Arc<Context>) {
 			ActionEnum::Chopping => {
 				let amount = determine_logs_earned(&player);
 				let tree = current_action.tree.as_str();
+				println!("{} done chopping, earned {} {} logs", &player.discord_id, &amount, &tree);
 				update_player_chop(&mut player, amount, tree);
 				player.update().await;
 			},
