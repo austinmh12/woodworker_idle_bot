@@ -142,6 +142,7 @@ pub fn update_player_dry(player: &mut Player, amount: i64, tree: &str) {
 	player.current_action = Action::none();
 	match tree {
 		"pine" => {
+			player.logs.pine -= 1;
 			player.lumber.pine += amount;
 			player.stats.pine_logs_dried += 1;
 			player.stats.pine_lumber_earned += amount;
@@ -149,6 +150,7 @@ pub fn update_player_dry(player: &mut Player, amount: i64, tree: &str) {
 			player.seed_prestige.lumber.pine += amount;
 		},
 		"oak" => {
+			player.logs.oak -= 1;
 			player.lumber.oak += amount;
 			player.stats.oak_logs_dried += 1;
 			player.stats.oak_lumber_earned += amount;
@@ -156,6 +158,7 @@ pub fn update_player_dry(player: &mut Player, amount: i64, tree: &str) {
 			player.seed_prestige.lumber.oak += amount;
 		},
 		"maple" => {
+			player.logs.maple -= 1;
 			player.lumber.maple += amount;
 			player.stats.maple_logs_dried += 1;
 			player.stats.maple_lumber_earned += amount;
@@ -163,6 +166,7 @@ pub fn update_player_dry(player: &mut Player, amount: i64, tree: &str) {
 			player.seed_prestige.lumber.maple += amount;
 		},
 		"walnut" => {
+			player.logs.walnut -= 1;
 			player.lumber.walnut += amount;
 			player.stats.walnut_logs_dried += 1;
 			player.stats.walnut_lumber_earned += amount;
@@ -170,6 +174,7 @@ pub fn update_player_dry(player: &mut Player, amount: i64, tree: &str) {
 			player.seed_prestige.lumber.walnut += amount;
 		},
 		"cherry" => {
+			player.logs.cherry -= 1;
 			player.lumber.cherry += amount;
 			player.stats.cherry_logs_dried += 1;
 			player.stats.cherry_lumber_earned += amount;
@@ -177,6 +182,7 @@ pub fn update_player_dry(player: &mut Player, amount: i64, tree: &str) {
 			player.seed_prestige.lumber.cherry += amount;
 		},
 		"purpleheart" => {
+			player.logs.purpleheart -= 1;
 			player.lumber.purpleheart += amount;
 			player.stats.purpleheart_logs_dried += 1;
 			player.stats.purpleheart_lumber_earned += amount;
