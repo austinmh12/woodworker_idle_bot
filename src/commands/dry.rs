@@ -26,33 +26,51 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 	match tree.as_str() {
 		// Don't need to check kiln::none since we do it above.
 		"pine" => {
+			if player.logs.pine == 0 {
+				return "You don't have any pine logs!".to_string()
+			}
 			dry_player_update(&mut player, "pine").await
 		},
 		"oak" => {
+			if player.logs.oak == 0 {
+				return "You don't have any oak logs!".to_string()
+			}
 			if player.kiln < Kiln::Firebrick {
 				return "You need a **Firebrick** kiln to dry oak logs!".to_string();
 			}
 			dry_player_update(&mut player, "oak").await
 		},
 		"maple" => {
+			if player.logs.maple == 0 {
+				return "You don't have any maple logs!".to_string()
+			}
 			if player.kiln < Kiln::Hobby {
 				return "You need a **Hobby** kiln to dry maple logs!".to_string();
 			}
 			dry_player_update(&mut player, "maple").await
 		},
 		"walnut" => {
+			if player.logs.walnut == 0 {
+				return "You don't have any walnut logs!".to_string()
+			}
 			if player.kiln < Kiln::LabGrade {
 				return "You need a **Lab Grade** kiln to dry walnut logs!".to_string();
 			}
 			dry_player_update(&mut player, "walnut").await
 		},
 		"cherry" => {
+			if player.logs.cherry == 0 {
+				return "You don't have any cherry logs!".to_string()
+			}
 			if player.kiln < Kiln::Industrial {
 				return "You need an **Industrial** kiln to dry cherry logs!".to_string();
 			}
 			dry_player_update(&mut player, "cherry").await
 		},
 		"purpleheart" => {
+			if player.logs.purpleheart == 0 {
+				return "You don't have any purpleheart logs!".to_string()
+			}
 			if player.kiln < Kiln::WorldWide {
 				return "You need a **World Wide** kiln to dry purpleheart logs!".to_string();
 			}
@@ -127,7 +145,7 @@ pub async fn dry_player_update(player: &mut Player, tree: &str) -> String {
 			player.current_action = a.clone();
 			player.update().await;
 			
-			format!("You started drying a **pine** log! You'll be done in **{}s**", a.time_to_complete())
+			format!("You started drying a **{}** log! You'll be done in **{}s**", tree, a.time_to_complete())
 		}
 		None => {
 			let amount = determine_lumber_earned(&player);
