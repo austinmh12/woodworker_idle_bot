@@ -115,7 +115,9 @@ impl Player {
 	pub async fn embed(&self, nickname: String, avatar: String) -> CreateEmbed {
 		// let daily_reset_local: DateTime<Local> = DateTime::from(self.daily_reset);
 		let mut desc = format!("**Wallet:** ${:.2}\n", &self.cash);
-		desc.push_str(&format!("**Axe:** {}\n\n", &self.axe));
+		desc.push_str(&format!("**Axe:** {}\n", &self.axe));
+		desc.push_str(&format!("**Kiln:** {}\n", &self.kiln));
+		desc.push_str(&format!("**Hammer:** {}\n\n", &self.hammer));
 		desc.push_str(&format!("**Current Action:** {}\n\n", &self.current_action));
 		desc.push_str("__**Total Logs and Lumber:**__\n");
 		desc.push_str(&format!("<:GameCornerBlank:1030960408145698816> **Pine:** {} | {}\n", self.logs.pine, self.lumber.pine));
