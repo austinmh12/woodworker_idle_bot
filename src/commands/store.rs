@@ -73,46 +73,38 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 			let ret = match slot {
 				1 => {
 					player.axe = get_next_axe(&player);
-					player.update().await;
 
 					(format!("You bought the **{}** axe!", &player.axe), None)
 				},
 				2 => {
-					println!("{}", &player.kiln);
 					player.kiln = get_next_kiln(&player);
-					println!("{}", &player.kiln);
-					player.update().await;
 
 					(format!("You bought the **{}** kiln!", player.kiln), None)
 				},
 				3 => {
 					player.hammer = get_next_hammer(&player);
-					player.update().await;
 
 					(format!("You bought the **{}** hammer!", &player.hammer), None)
 				},
 				4 => {
 					player.loggers += count;
-					player.update().await;
 
 					(format!("You bought **{}** loggers!", count), None)
 				},
 				5 => {
 					player.lumberers += count;
-					player.update().await;
 
 					(format!("You bought **{}** lumberers!", count), None)
 				},
 				6 => {
 					player.cncs += count;
-					player.update().await;
 
 					(format!("You bought **{}** CNCs!", count), None)
 				},
 				_ => ("How'd you get here?".to_string(), None)
 			};
 			// Stats maybe?
-			
+			player.update().await;
 
 			ret
 		},
