@@ -17,7 +17,6 @@ pub struct Upgrades {
 	pub fast_drying_glue: i64, // Decreases time to build
 	pub industrial_nails: i64, // Increases builds per loop
 	pub accurate_measuring: i64, // Decreases lumber used when building
-	pub multitasking: i64, // Increases the max number of actions at a time
 }
 
 impl Default for Upgrades {
@@ -30,7 +29,6 @@ impl Default for Upgrades {
 			fast_drying_glue: 0,
 			industrial_nails: 0,
 			accurate_measuring: 0,
-			multitasking: 0,
 		}
 	}
 }
@@ -45,7 +43,6 @@ impl ToDoc for Upgrades {
 			"fast_drying_glue": self.fast_drying_glue,
 			"industrial_nails": self.industrial_nails,
 			"accurate_measuring": self.accurate_measuring,
-			"multitasking": self.multitasking,
 		}
 	}
 }
