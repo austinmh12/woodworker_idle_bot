@@ -41,7 +41,81 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 
 			("".to_string(), Some(ret))
 		},
-		"buy" => ("todo".to_string(), None),
+		"buy" => {
+			let slot = match action.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
+				CommandDataOptionValue::Integer(i) => i.to_owned(),
+				_ => 0,
+			};
+			if !(1..=6).contains(&slot) {
+				return ("Invalid slot".to_string(), None);
+			}
+			let amount = if &action.options.len() == &1usize {
+				1
+			} else {
+				match action.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
+					CommandDataOptionValue::Integer(i) => i.to_owned(),
+					_ => 1
+				}
+			};
+			let (count, total_price) = match slot {
+				1 => (1, get_axe_price(get_next_axe(&player))),
+				2 => (1, get_kiln_price(get_next_kiln(&player))),
+				3 => (1, get_hammer_price(get_next_hammer(&player))),
+				4 => get_total_price(amount, &player, &get_logger_price),
+				5 => get_total_price(amount, &player, &get_lumberer_price),
+				6 => get_total_price(amount, &player, &get_cnc_price),
+				_ => (0, 0.0) // Can't get here
+			};
+			if player.cash < total_price || count == 0 {
+				return (format!("You need **${:.2}** more to buy that", total_price - player.cash), None);
+			}
+			player.cash -= total_price;
+			let ret = match slot {
+				1 => {
+					player.axe = get_next_axe(&player);
+					player.update().await;
+
+					(format!("You bought the **{}** axe!", &player.axe), None)
+				},
+				2 => {
+					println!("{}", &player.kiln);
+					player.kiln = get_next_kiln(&player);
+					println!("{}", &player.kiln);
+					player.update().await;
+
+					(format!("You bought the **{}** kiln!", player.kiln), None)
+				},
+				3 => {
+					player.hammer = get_next_hammer(&player);
+					player.update().await;
+
+					(format!("You bought the **{}** hammer!", &player.hammer), None)
+				},
+				4 => {
+					player.loggers += count;
+					player.update().await;
+
+					(format!("You bought **{}** loggers!", count), None)
+				},
+				5 => {
+					player.lumberers += count;
+					player.update().await;
+
+					(format!("You bought **{}** lumberers!", count), None)
+				},
+				6 => {
+					player.cncs += count;
+					player.update().await;
+
+					(format!("You bought **{}** CNCs!", count), None)
+				},
+				_ => ("How'd you get here?".to_string(), None)
+			};
+			// Stats maybe?
+			
+
+			ret
+		},
 		_ => ("todo".to_string(), None),
 	}
 	
@@ -161,4 +235,29 @@ fn get_hammer_price(hammer: Hammer) -> f64 {
 		Hammer::Adamant => 250000.0,
 		Hammer::Rune => 2500000.0,
 	}
+}
+
+fn get_total_price(amount: i64, player: &Player, f: &dyn Fn(&Player) -> f64) -> (i64, f64) {
+	let mut total_price = 0.0; // There's probably a better way to calculate this
+	let mut count = 0;
+	let mut player_clone = player.clone();
+	for i in 0..amount {
+		let next_cost = f(&player_clone);
+		if total_price + next_cost > player.cash {
+			if i == 0 {
+				// So we know how much the player needs
+				return (i, total_price + next_cost);
+			}
+			return (i, total_price);
+		}
+		total_price += next_cost;
+		count = i;
+
+		// Just add one to all of them so we can get the next price
+		player_clone.loggers += 1;
+		player_clone.lumberers += 1;
+		player_clone.cncs += 1;
+	}
+
+	(count, total_price)
 }
