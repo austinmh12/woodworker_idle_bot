@@ -31,9 +31,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 			if player.hammer != Hammer::Rune {
 				desc.push_str(&format!("**3:** {} Hammer - ${:.2}\n", get_next_hammer(&player), get_hammer_price(get_next_hammer(&player))));
 			}
-			desc.push_str(&format!("**4:** Loggers - ${:.2}\n", get_logger_price(&player)));
-			desc.push_str(&format!("**5:** Lumberers - ${:.2}\n", get_lumberer_price(&player)));
-			desc.push_str(&format!("**6:** CNCs - ${:.2}\n", get_cnc_price(&player)));
+			desc.push_str(&format!("**4:** Loggers - ${:.2}\n", get_logger_price(&player, 1).1));
+			desc.push_str(&format!("**5:** Lumberers - ${:.2}\n", get_lumberer_price(&player, 1).1));
+			desc.push_str(&format!("**6:** CNCs - ${:.2}\n", get_cnc_price(&player, 1).1));
 			ret
 				.title("Store")
 				.description(&desc)
@@ -61,9 +61,10 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 				1 => (1, get_axe_price(get_next_axe(&player))),
 				2 => (1, get_kiln_price(get_next_kiln(&player))),
 				3 => (1, get_hammer_price(get_next_hammer(&player))),
-				4 => get_total_price(amount, &player, &get_logger_price),
-				5 => get_total_price(amount, &player, &get_lumberer_price),
-				6 => get_total_price(amount, &player, &get_cnc_price),
+				// 4 => get_total_price(amount, &player, &get_logger_price),
+				4 => get_logger_price(&player, amount),
+				5 => get_lumberer_price(&player, amount),
+				6 => get_cnc_price(&player, amount),
 				_ => (0, 0.0) // Can't get here
 			};
 			if player.cash < total_price || count == 0 {
@@ -147,16 +148,36 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 		})
 }
 
-fn get_logger_price(player: &Player) -> f64 {
-	25.0 * f64::powi(1.01, player.loggers as i32)
+fn get_max_buyable(player: &Player, base: f64, exp: f64, owned: i64) -> i64 {
+	f64::floor(f64::log((&player.cash * (exp - 1.0))/(base * f64::powi(exp, owned as i32)), exp) + 1.0) as i64
 }
 
-fn get_lumberer_price(player: &Player) -> f64 {
-	50.0 * f64::powi(1.03, player.lumberers as i32)
+fn get_price(amount: i64, base: f64, exp: f64, owned: i64) -> f64 {
+	base * (exp.powi(owned as i32) * (exp.powi(amount as i32) - 1.0) / (exp - 1.0))
 }
 
-fn get_cnc_price(player: &Player) -> f64 {
-	100.0 * f64::powi(1.07, player.cncs as i32)
+fn get_logger_price(player: &Player, amount: i64) -> (i64, f64) {
+	let max_amount = get_max_buyable(&player, 25.0, 1.01, player.loggers);
+	let amounts = vec![amount, max_amount];
+	let amount = amounts.iter().min().unwrap().to_owned();
+	
+	(amount, get_price(amount, 25.0, 1.01, player.loggers))
+}
+
+fn get_lumberer_price(player: &Player, amount: i64) -> (i64, f64) {
+	let max_amount = get_max_buyable(&player, 150.0, 1.03, player.lumberers);
+	let amounts = vec![amount, max_amount];
+	let amount = amounts.iter().min().unwrap().to_owned();
+	
+	(amount, get_price(amount, 150.0, 1.03, player.lumberers))
+}
+
+fn get_cnc_price(player: &Player, amount: i64) -> (i64, f64) {
+	let max_amount = get_max_buyable(&player, 1000.0, 1.07, player.cncs);
+	let amounts = vec![amount, max_amount];
+	let amount = amounts.iter().min().unwrap().to_owned();
+	
+	(amount, get_price(amount, 1000.0, 1.07, player.cncs))
 }
 
 fn get_next_axe(player: &Player) -> Axe {
@@ -173,11 +194,11 @@ fn get_next_axe(player: &Player) -> Axe {
 fn get_axe_price(axe: Axe) -> f64 {
 	match axe {
 		Axe::Stone => 0.0,
-		Axe::Iron => 100.0,
-		Axe::Steel => 1000.0,
-		Axe::Mithril => 10000.0,
-		Axe::Adamant => 100000.0,
-		Axe::Rune => 1000000.0,
+		Axe::Iron => 650.0,
+		Axe::Steel => 7500.0,
+		Axe::Mithril => 67000.0,
+		Axe::Adamant => 318500.0,
+		Axe::Rune => 1111500.0,
 	}
 }
 
@@ -196,12 +217,12 @@ fn get_next_kiln(player: &Player) -> Kiln {
 fn get_kiln_price(kiln: Kiln) -> f64 {
 	match kiln {
 		Kiln::None => 0.0,
-		Kiln::SteelBucket => 10.0,
-		Kiln::Firebrick => 500.0,
-		Kiln::Hobby => 5000.0,
-		Kiln::LabGrade => 50000.0,
-		Kiln::Industrial => 500000.0,
-		Kiln::WorldWide => 5000000.0,
+		Kiln::SteelBucket => 5.0,
+		Kiln::Firebrick => 710.0,
+		Kiln::Hobby => 7900.0,
+		Kiln::LabGrade => 69690.0,
+		Kiln::Industrial => 330000.0,
+		Kiln::WorldWide => 1140000.0,
 	}
 }
 
@@ -220,36 +241,36 @@ fn get_next_hammer(player: &Player) -> Hammer {
 fn get_hammer_price(hammer: Hammer) -> f64 {
 	match hammer {
 		Hammer::None => 0.0,
-		Hammer::Stone => 25.0,
-		Hammer::Iron => 250.0,
-		Hammer::Steel => 2500.0,
-		Hammer::Mithril => 25000.0,
-		Hammer::Adamant => 250000.0,
-		Hammer::Rune => 2500000.0,
+		Hammer::Stone => 15.0,
+		Hammer::Iron => 770.0,
+		Hammer::Steel => 8300.0,
+		Hammer::Mithril => 72360.0,
+		Hammer::Adamant => 339000.0,
+		Hammer::Rune => 1168500.0,
 	}
 }
 
-fn get_total_price(amount: i64, player: &Player, f: &dyn Fn(&Player) -> f64) -> (i64, f64) {
-	let mut total_price = 0.0; // There's probably a better way to calculate this
-	let mut count = 0;
-	let mut player_clone = player.clone();
-	for i in 0..amount {
-		let next_cost = f(&player_clone);
-		if total_price + next_cost > player.cash {
-			if i == 0 {
-				// So we know how much the player needs
-				return (i, total_price + next_cost);
-			}
-			return (i, total_price);
-		}
-		total_price += next_cost;
-		count = i;
+// fn get_total_price(amount: i64, player: &Player, f: &dyn Fn(&Player) -> f64) -> (i64, f64) {
+// 	let mut total_price = 0.0; // There's probably a better way to calculate this
+// 	let mut count = 0;
+// 	let mut player_clone = player.clone();
+// 	for i in 0..amount {
+// 		let next_cost = f(&player_clone);
+// 		if total_price + next_cost > player.cash {
+// 			if i == 0 {
+// 				// So we know how much the player needs
+// 				return (i, total_price + next_cost);
+// 			}
+// 			return (i, total_price);
+// 		}
+// 		total_price += next_cost;
+// 		count = i;
 
-		// Just add one to all of them so we can get the next price
-		player_clone.loggers += 1;
-		player_clone.lumberers += 1;
-		player_clone.cncs += 1;
-	}
+// 		// Just add one to all of them so we can get the next price
+// 		player_clone.loggers += 1;
+// 		player_clone.lumberers += 1;
+// 		player_clone.cncs += 1;
+// 	}
 
-	(count, total_price)
-}
+// 	(count, total_price)
+// }
