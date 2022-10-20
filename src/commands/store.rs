@@ -31,9 +31,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 			if player.hammer != Hammer::Rune {
 				desc.push_str(&format!("**3:** {} Hammer - ${:.2}\n", get_next_hammer(&player), get_hammer_price(get_next_hammer(&player))));
 			}
-			desc.push_str(&format!("**4:** Loggers - ${:.2}\n", get_logger_price(&player, 1).1));
-			desc.push_str(&format!("**5:** Lumberers - ${:.2}\n", get_lumberer_price(&player, 1).1));
-			desc.push_str(&format!("**6:** CNCs - ${:.2}\n", get_cnc_price(&player, 1).1));
+			desc.push_str(&format!("**4:** Loggers - ${:.2}\n", get_price(1, 25.0, 1.01, player.loggers)));
+			desc.push_str(&format!("**5:** Lumberers - ${:.2}\n", get_price(1, 150.0, 1.03, player.lumberers)));
+			desc.push_str(&format!("**6:** CNCs - ${:.2}\n", get_price(1, 1000.0, 1.07, player.cncs)));
 			ret
 				.title("Store")
 				.description(&desc)
@@ -149,11 +149,20 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 }
 
 fn get_max_buyable(player: &Player, base: f64, exp: f64, owned: i64) -> i64 {
-	f64::floor(f64::log((&player.cash * (exp - 1.0))/(base * f64::powi(exp, owned as i32)), exp) + 1.0) as i64
+	let top = player.cash * (exp - 1.0);
+	let bot = base * exp.powi(owned as i32);
+	let inner = (top / bot) + 1.0;
+	let log = inner.log(exp);
+	
+	log.floor() as i64
 }
 
 fn get_price(amount: i64, base: f64, exp: f64, owned: i64) -> f64 {
-	base * (exp.powi(owned as i32) * (exp.powi(amount as i32) - 1.0) / (exp - 1.0))
+	let top1 = exp.powi(owned as i32);
+	let top2 = exp.powi(amount as i32) - 1.0;
+	let bottom = exp - 1.0;
+	
+	base * ((top1 * top2) / bottom)
 }
 
 fn get_logger_price(player: &Player, amount: i64) -> (i64, f64) {
