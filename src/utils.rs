@@ -67,9 +67,8 @@ pub fn get_build_time(player: &Player, tree: &str, furniture: &str) -> i64 {
 		_ => 1.0
 	};
 	let base_time = base_time * furniture_mult;
-	// TODO: Update to the equivalent building upgrades
-	let upgrade_mult = 1.0 + (player.upgrades.sharper_axes as f64 * 0.1);
-	let sawdust_mult = 1.0 + (player.sawdust_upgrades.sharper_axes as f64 * 0.1);
+	let upgrade_mult = 1.0 + (player.upgrades.fast_drying_glue as f64 * 0.1);
+	let sawdust_mult = 1.0 + (player.sawdust_upgrades.fast_drying_glue as f64 * 0.1);
 
 	((base_time / upgrade_mult) / sawdust_mult) as i64
 }
