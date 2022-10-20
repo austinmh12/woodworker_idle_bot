@@ -5,6 +5,7 @@ use crate::player::get_players;
 use crate::player::ActionEnum;
 use crate::commands::chop::{update_player_chop, determine_logs_earned};
 use crate::commands::dry::{update_player_dry, determine_lumber_earned};
+use crate::commands::build::{update_player_build, determine_furniture_earned};
 
 pub async fn check_actions(_ctx: Arc<Context>) {
 	let players = get_players().await;
@@ -29,7 +30,11 @@ pub async fn check_actions(_ctx: Arc<Context>) {
 				player.update().await;
 			},
 			ActionEnum::Building => {
-				todo!()
+				let amount = determine_furniture_earned(&player);
+				let tree = current_action.tree.as_str();
+				let furniture = current_action.furniture.unwrap();
+				update_player_build(&mut player, amount, tree, furniture.as_str());
+				player.update().await;
 			},
 		}
 	}
