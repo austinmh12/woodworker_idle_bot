@@ -215,7 +215,490 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			}
 		},
 		"furniture" => {
-			"todo".to_string()
+			let log_type = &action.options.get(0).expect("Expected a subcommand");
+			let furniture = match log_type.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
+				CommandDataOptionValue::String(s) => s.to_owned(),
+				_ => "".to_string()
+			};
+			let amount = if &log_type.options.len() == &1usize {
+				1
+			} else {
+				match log_type.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
+					CommandDataOptionValue::Integer(i) => i.to_owned(),
+					_ => 1
+				}
+			};
+			match log_type.name.as_str() {
+				"pine" => match furniture.to_lowercase().as_str() {
+					"birdhouse" | "bird house" => {
+						let amounts = vec![amount, player.furniture.pine.birdhouse];
+						let amount = *amounts.iter().min().unwrap();
+						let money = PINE_BIRDHOUSE_PRICE * amount as f64;
+						player.furniture.pine.birdhouse -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"bird house"
+						} else {
+							"bird houses"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"shelf" => {
+						let amounts = vec![amount, player.furniture.pine.shelf];
+						let amount = *amounts.iter().min().unwrap();
+						let money = PINE_SHELF_PRICE * amount as f64;
+						player.furniture.pine.shelf -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"shelf"
+						} else {
+							"shelves"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"sidetable" | "side table" => {
+						let amounts = vec![amount, player.furniture.pine.side_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = PINE_SIDE_TABLE_PRICE * amount as f64;
+						player.furniture.pine.side_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"side table"
+						} else {
+							"side tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"coffeetable" | "coffee table" => {
+						let amounts = vec![amount, player.furniture.pine.coffee_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = PINE_COFFEE_TABLE_PRICE * amount as f64;
+						player.furniture.pine.coffee_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"coffee table"
+						} else {
+							"coffee tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"diningset" | "dining set" => {
+						let amounts = vec![amount, player.furniture.pine.dining_set];
+						let amount = *amounts.iter().min().unwrap();
+						let money = PINE_DINING_SET_PRICE * amount as f64;
+						player.furniture.pine.dining_set -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"dining set"
+						} else {
+							"dining sets"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					_ => "No such furniture".to_string()
+				},
+				"oak" => match furniture.to_lowercase().as_str() {
+					"birdhouse" | "bird house" => {
+						let amounts = vec![amount, player.furniture.oak.birdhouse];
+						let amount = *amounts.iter().min().unwrap();
+						let money = OAK_BIRDHOUSE_PRICE * amount as f64;
+						player.furniture.oak.birdhouse -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"bird house"
+						} else {
+							"bird houses"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"shelf" => {
+						let amounts = vec![amount, player.furniture.oak.shelf];
+						let amount = *amounts.iter().min().unwrap();
+						let money = OAK_SHELF_PRICE * amount as f64;
+						player.furniture.oak.shelf -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"shelf"
+						} else {
+							"shelves"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"sidetable" | "side table" => {
+						let amounts = vec![amount, player.furniture.oak.side_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = OAK_SIDE_TABLE_PRICE * amount as f64;
+						player.furniture.oak.side_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"side table"
+						} else {
+							"side tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"coffeetable" | "coffee table" => {
+						let amounts = vec![amount, player.furniture.oak.coffee_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = OAK_COFFEE_TABLE_PRICE * amount as f64;
+						player.furniture.oak.coffee_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"coffee table"
+						} else {
+							"coffee tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"diningset" | "dining set" => {
+						let amounts = vec![amount, player.furniture.oak.dining_set];
+						let amount = *amounts.iter().min().unwrap();
+						let money = OAK_DINING_SET_PRICE * amount as f64;
+						player.furniture.oak.dining_set -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"dining set"
+						} else {
+							"dining sets"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					_ => "No such furniture".to_string()
+				},
+				"maple" => match furniture.to_lowercase().as_str() {
+					"birdhouse" | "bird house" => {
+						let amounts = vec![amount, player.furniture.maple.birdhouse];
+						let amount = *amounts.iter().min().unwrap();
+						let money = MAPLE_BIRDHOUSE_PRICE * amount as f64;
+						player.furniture.maple.birdhouse -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"bird house"
+						} else {
+							"bird houses"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"shelf" => {
+						let amounts = vec![amount, player.furniture.maple.shelf];
+						let amount = *amounts.iter().min().unwrap();
+						let money = MAPLE_SHELF_PRICE * amount as f64;
+						player.furniture.maple.shelf -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"shelf"
+						} else {
+							"shelves"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"sidetable" | "side table" => {
+						let amounts = vec![amount, player.furniture.maple.side_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = MAPLE_SIDE_TABLE_PRICE * amount as f64;
+						player.furniture.maple.side_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"side table"
+						} else {
+							"side tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"coffeetable" | "coffee table" => {
+						let amounts = vec![amount, player.furniture.maple.coffee_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = MAPLE_COFFEE_TABLE_PRICE * amount as f64;
+						player.furniture.maple.coffee_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"coffee table"
+						} else {
+							"coffee tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"diningset" | "dining set" => {
+						let amounts = vec![amount, player.furniture.maple.dining_set];
+						let amount = *amounts.iter().min().unwrap();
+						let money = MAPLE_DINING_SET_PRICE * amount as f64;
+						player.furniture.maple.dining_set -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"dining set"
+						} else {
+							"dining sets"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					_ => "No such furniture".to_string()
+				},
+				"walnut" => match furniture.to_lowercase().as_str() {
+					"birdhouse" | "bird house" => {
+						let amounts = vec![amount, player.furniture.walnut.birdhouse];
+						let amount = *amounts.iter().min().unwrap();
+						let money = WALNUT_BIRDHOUSE_PRICE * amount as f64;
+						player.furniture.walnut.birdhouse -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"bird house"
+						} else {
+							"bird houses"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"shelf" => {
+						let amounts = vec![amount, player.furniture.walnut.shelf];
+						let amount = *amounts.iter().min().unwrap();
+						let money = WALNUT_SHELF_PRICE * amount as f64;
+						player.furniture.walnut.shelf -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"shelf"
+						} else {
+							"shelves"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"sidetable" | "side table" => {
+						let amounts = vec![amount, player.furniture.walnut.side_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = WALNUT_SIDE_TABLE_PRICE * amount as f64;
+						player.furniture.walnut.side_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"side table"
+						} else {
+							"side tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"coffeetable" | "coffee table" => {
+						let amounts = vec![amount, player.furniture.walnut.coffee_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = WALNUT_COFFEE_TABLE_PRICE * amount as f64;
+						player.furniture.walnut.coffee_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"coffee table"
+						} else {
+							"coffee tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"diningset" | "dining set" => {
+						let amounts = vec![amount, player.furniture.walnut.dining_set];
+						let amount = *amounts.iter().min().unwrap();
+						let money = WALNUT_DINING_SET_PRICE * amount as f64;
+						player.furniture.walnut.dining_set -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"dining set"
+						} else {
+							"dining sets"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					_ => "No such furniture".to_string()
+				},
+				"cherry" => match furniture.to_lowercase().as_str() {
+					"birdhouse" | "bird house" => {
+						let amounts = vec![amount, player.furniture.cherry.birdhouse];
+						let amount = *amounts.iter().min().unwrap();
+						let money = CHERRY_BIRDHOUSE_PRICE * amount as f64;
+						player.furniture.cherry.birdhouse -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"bird house"
+						} else {
+							"bird houses"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"shelf" => {
+						let amounts = vec![amount, player.furniture.cherry.shelf];
+						let amount = *amounts.iter().min().unwrap();
+						let money = CHERRY_SHELF_PRICE * amount as f64;
+						player.furniture.cherry.shelf -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"shelf"
+						} else {
+							"shelves"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"sidetable" | "side table" => {
+						let amounts = vec![amount, player.furniture.cherry.side_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = CHERRY_SIDE_TABLE_PRICE * amount as f64;
+						player.furniture.cherry.side_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"side table"
+						} else {
+							"side tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"coffeetable" | "coffee table" => {
+						let amounts = vec![amount, player.furniture.cherry.coffee_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = CHERRY_COFFEE_TABLE_PRICE * amount as f64;
+						player.furniture.cherry.coffee_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"coffee table"
+						} else {
+							"coffee tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"diningset" | "dining set" => {
+						let amounts = vec![amount, player.furniture.cherry.dining_set];
+						let amount = *amounts.iter().min().unwrap();
+						let money = CHERRY_DINING_SET_PRICE * amount as f64;
+						player.furniture.cherry.dining_set -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"dining set"
+						} else {
+							"dining sets"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					_ => "No such furniture".to_string()
+				},
+				"purpleheart" => match furniture.to_lowercase().as_str() {
+					"birdhouse" | "bird house" => {
+						let amounts = vec![amount, player.furniture.purpleheart.birdhouse];
+						let amount = *amounts.iter().min().unwrap();
+						let money = PURPLEHEART_BIRDHOUSE_PRICE * amount as f64;
+						player.furniture.purpleheart.birdhouse -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"bird house"
+						} else {
+							"bird houses"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"shelf" => {
+						let amounts = vec![amount, player.furniture.purpleheart.shelf];
+						let amount = *amounts.iter().min().unwrap();
+						let money = PURPLEHEART_SHELF_PRICE * amount as f64;
+						player.furniture.purpleheart.shelf -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"shelf"
+						} else {
+							"shelves"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"sidetable" | "side table" => {
+						let amounts = vec![amount, player.furniture.purpleheart.side_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = PURPLEHEART_SIDE_TABLE_PRICE * amount as f64;
+						player.furniture.purpleheart.side_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"side table"
+						} else {
+							"side tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"coffeetable" | "coffee table" => {
+						let amounts = vec![amount, player.furniture.purpleheart.coffee_table];
+						let amount = *amounts.iter().min().unwrap();
+						let money = PURPLEHEART_COFFEE_TABLE_PRICE * amount as f64;
+						player.furniture.purpleheart.coffee_table -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"coffee table"
+						} else {
+							"coffee tables"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					"diningset" | "dining set" => {
+						let amounts = vec![amount, player.furniture.purpleheart.dining_set];
+						let amount = *amounts.iter().min().unwrap();
+						let money = PURPLEHEART_DINING_SET_PRICE * amount as f64;
+						player.furniture.purpleheart.dining_set -= amount;
+						player.cash += money;
+						player.update().await;
+						let s = if amount == 1 {
+							"dining set"
+						} else {
+							"dining sets"
+						};
+
+						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+					},
+					_ => "No such furniture".to_string()
+				},
+				_ => "No such wood".to_string()
+			}
 		},
 		_ => "No such action".to_string()
 	}
@@ -241,7 +724,77 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 								.required(false)
 								.min_int_value(0)
 						})
-				})	
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("oak")
+						.description("Sell oak lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(0)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("maple")
+						.description("Sell maple lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(0)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("walnut")
+						.description("Sell walnut lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(0)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("cherry")
+						.description("Sell cherry lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(0)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("purpleheart")
+						.description("Sell purpleheart lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(0)
+						})
+				})
 		})
 		.create_option(|option| {
 			option
@@ -261,6 +814,208 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 								.required(false)
 								.min_int_value(1)
 						})
-				})	
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("oak")
+						.description("Sell oak lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("maple")
+						.description("Sell maple lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("walnut")
+						.description("Sell walnut lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("cherry")
+						.description("Sell cherry lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("purpleheart")
+						.description("Sell purpleheart lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
+		})
+		.create_option(|option| {
+			option
+				.name("furniture")
+				.description("sell your furniture!")
+				.kind(CommandOptionType::SubCommandGroup)
+				.create_sub_option(|sub| {
+					sub
+						.name("pine")
+						.description("Sell pine lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("kind")
+								.description("The kind to sell")
+								.kind(CommandOptionType::String)
+								.required(true)
+						})
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("oak")
+						.description("Sell oak lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("kind")
+								.description("The kind to sell")
+								.kind(CommandOptionType::String)
+								.required(true)
+						})
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("maple")
+						.description("Sell maple lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("kind")
+								.description("The kind to sell")
+								.kind(CommandOptionType::String)
+								.required(true)
+						})
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("walnut")
+						.description("Sell walnut lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("kind")
+								.description("The kind to sell")
+								.kind(CommandOptionType::String)
+								.required(true)
+						})
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("cherry")
+						.description("Sell cherry lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("kind")
+								.description("The kind to sell")
+								.kind(CommandOptionType::String)
+								.required(true)
+						})
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("purpleheart")
+						.description("Sell purpleheart lumber")
+						.kind(CommandOptionType::SubCommand)
+						.create_sub_option(|subsub| {
+							subsub
+								.name("kind")
+								.description("The kind to sell")
+								.kind(CommandOptionType::String)
+								.required(true)
+						})
+						.create_sub_option(|subsub| {
+							subsub
+								.name("amount")
+								.description("The amount to sell")
+								.kind(CommandOptionType::Integer)
+								.required(false)
+								.min_int_value(1)
+						})
+				})
 		})
 }
