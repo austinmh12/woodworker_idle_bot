@@ -18,7 +18,13 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 	let mut player = get_player(player_id).await;
 	match player.current_action.action {
 		ActionEnum::None => (),
-		_ => return format!("You're busy for another **{}s**!", player.current_action.time_to_complete()),
+		_ => {
+			if player.queued_actions.len() < (player.sawdust_upgrades.multitasking + 2) as usize {
+				()
+			} else {
+				return format!("You're busy for another **{}s**!", player.current_action.time_to_complete());
+			}
+		},
 	}
 	if player.kiln == Kiln::None {
 		return "You don't have a kiln! Buy one from the store!".to_string();
@@ -26,13 +32,13 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 	match tree.as_str() {
 		// Don't need to check kiln::none since we do it above.
 		"pine" => {
-			if player.logs.pine == 0 {
+			if player.logs.pine + player.queued_logs("pine") == 0 {
 				return "You don't have any pine logs!".to_string()
 			}
 			dry_player_update(&mut player, "pine").await
 		},
 		"oak" => {
-			if player.logs.oak == 0 {
+			if player.logs.oak + player.queued_logs("oak") == 0 {
 				return "You don't have any oak logs!".to_string()
 			}
 			if player.kiln < Kiln::Firebrick {
@@ -41,7 +47,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			dry_player_update(&mut player, "oak").await
 		},
 		"maple" => {
-			if player.logs.maple == 0 {
+			if player.logs.maple + player.queued_logs("maple") == 0 {
 				return "You don't have any maple logs!".to_string()
 			}
 			if player.kiln < Kiln::Hobby {
@@ -50,7 +56,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			dry_player_update(&mut player, "maple").await
 		},
 		"walnut" => {
-			if player.logs.walnut == 0 {
+			if player.logs.walnut + player.queued_logs("walnut") == 0 {
 				return "You don't have any walnut logs!".to_string()
 			}
 			if player.kiln < Kiln::LabGrade {
@@ -59,7 +65,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			dry_player_update(&mut player, "walnut").await
 		},
 		"cherry" => {
-			if player.logs.cherry == 0 {
+			if player.logs.cherry + player.queued_logs("cherry") == 0 {
 				return "You don't have any cherry logs!".to_string()
 			}
 			if player.kiln < Kiln::Industrial {
@@ -68,7 +74,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			dry_player_update(&mut player, "cherry").await
 		},
 		"purpleheart" => {
-			if player.logs.purpleheart == 0 {
+			if player.logs.purpleheart + player.queued_logs("purpleheart") == 0 {
 				return "You don't have any purpleheart logs!".to_string()
 			}
 			if player.kiln < Kiln::WorldWide {
@@ -142,10 +148,20 @@ pub async fn dry_player_update(player: &mut Player, tree: &str) -> String {
 	let action = dry_log(&player, tree);
 	match action {
 		Some(a) => {
-			player.current_action = a.clone();
-			player.update().await;
-			
-			format!("You started drying a **{}** log! You'll be done in **{}s**", tree, a.time_to_complete())
+			match player.current_action.action {
+				ActionEnum::None => {
+					player.current_action = a.clone();
+					player.update().await;
+
+					format!("You started drying a **{}** log! You'll be done in **{}s**", tree, a.time_to_complete())
+				},
+				_ => {
+					let queued_action = player.queue_action(a);
+					player.update().await;
+
+					format!("You started drying a **{}** log! You'll be done in **{}s**", tree, queued_action.time_to_complete())
+				},
+			}
 		}
 		None => {
 			let amount = determine_lumber_earned(&player);

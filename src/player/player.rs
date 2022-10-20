@@ -27,6 +27,7 @@ use crate::player::{
 	SawdustUpgrades,
 	WoodsInt,
 	Action,
+	ActionEnum,
 	Color,
 	SawdustPrestige,
 	SeedPrestige,
@@ -44,6 +45,7 @@ pub struct Player {
 	pub kiln: Kiln,
 	pub hammer: Hammer,
 	pub current_action: Action,
+	pub queued_actions: Vec<Action>,
 	pub logs: WoodsInt,
 	pub loggers: i64,
 	pub loggers_active: WoodsInt,
@@ -77,6 +79,7 @@ impl Player {
 			kiln: Kiln::None,
 			hammer: Hammer::None,
 			current_action: Action::none(),
+			queued_actions: vec![],
 			logs: WoodsInt::default(),
 			loggers: 0,
 			loggers_active: WoodsInt::default(),
@@ -136,6 +139,54 @@ impl Player {
 
 		ret
 	}
+
+	pub fn queue_action(&mut self, a: Action) -> Action {
+		// Pushes the action on the queued_actions and returns it with it's new start/end time
+		let mut action = a.clone();
+		let duration = action.end - action.start;
+		if self.queued_actions.len() > 0usize {
+			let last_action = self.queued_actions.get(self.queued_actions.len() - 1usize).unwrap();
+			action.start = last_action.end;
+			action.end = action.start + duration;
+		} else {
+			action.start = self.current_action.end;
+			action.end = action.start + duration;
+		}
+		self.queued_actions.push(action.clone());
+		// self.update().await;
+
+		action
+	}
+
+	pub fn queued_logs(&self, req: &str) -> i64 {
+		let mut all_actions = vec![self.current_action.clone()];
+		for qa in &self.queued_actions {
+			all_actions.push(qa.clone());
+		}
+		let req = all_actions
+			.iter()
+			.filter(|a| a.action == ActionEnum::Chopping && a.tree == req)
+			.map(|a| a.to_owned())
+			.collect::<Vec<Action>>()
+			.len();
+		
+		req as i64
+	}
+
+	pub fn queued_lumber(&self, req: &str) -> i64 {
+		let mut all_actions = vec![self.current_action.clone()];
+		for qa in &self.queued_actions {
+			all_actions.push(qa.clone());
+		}
+		let req = all_actions
+			.iter()
+			.filter(|a| a.action == ActionEnum::Drying && a.tree == req)
+			.map(|a| a.to_owned())
+			.collect::<Vec<Action>>()
+			.len();
+		
+		req as i64
+	}
 }
 
 impl ToDoc for Player {
@@ -147,6 +198,7 @@ impl ToDoc for Player {
 				"kiln": &self.kiln,
 				"hammer": &self.hammer,
 				"current_action": &self.current_action.to_doc(),
+				"queued_actions": &self.queued_actions.iter().map(|a| a.to_doc()).collect::<Vec<Document>>(),
 				"logs": &self.logs.to_doc(),
 				"loggers": &self.loggers,
 				"loggers_active": &self.loggers_active.to_doc(),

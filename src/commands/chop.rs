@@ -18,7 +18,13 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 	let mut player = get_player(player_id).await;
 	match player.current_action.action {
 		ActionEnum::None => (),
-		_ => return format!("You're busy for another **{}s**!", player.current_action.time_to_complete()),
+		_ => {
+			if player.queued_actions.len() < (player.sawdust_upgrades.multitasking + 2) as usize {
+				()
+			} else {
+				return format!("You're busy for another **{}s**!", player.current_action.time_to_complete());
+			}
+		},
 	}
 	match tree.as_str() {
 		"pine" => {
@@ -121,10 +127,20 @@ pub async fn chop_player_update(player: &mut Player, tree: &str) -> String {
 	let action = chop_log(&player, tree);
 	match action {
 		Some(a) => {
-			player.current_action = a.clone();
-			player.update().await;
-			
-			format!("You started chopping a **{}** tree! You'll be done in **{}s**", tree, a.time_to_complete())
+			match player.current_action.action {
+				ActionEnum::None => {
+					player.current_action = a.clone();
+					player.update().await;
+
+					format!("You started chopping a **{}** tree! You'll be done in **{}s**", tree, a.time_to_complete())
+				},
+				_ => {
+					let queued_action = player.queue_action(a);
+					player.update().await;
+
+					format!("You started chopping a **{}** tree! You'll be done in **{}s**", tree, queued_action.time_to_complete())
+				},
+			}
 		}
 		None => {
 			let amount = determine_logs_earned(&player);
