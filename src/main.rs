@@ -50,6 +50,7 @@ impl EventHandler for Handler {
 			let (content, embed) = match command.data.name.as_str() {
 				"chop" => (commands::chop::run(player_id, &command.data.options).await, None),
 				"dry" => (commands::dry::run(player_id, &command.data.options).await, None),
+				"build" => (commands::build::run(player_id, &command.data.options).await, None),
 				"sell" => (commands::sell::run(player_id, &command.data.options).await, None),
 				"my" => {
 					let p = command.member.as_ref().unwrap();
@@ -104,6 +105,7 @@ impl EventHandler for Handler {
 				.create_application_command(|command| commands::player::register(command))
 				.create_application_command(|command| commands::dry::register(command))
 				.create_application_command(|command| commands::store::register(command))
+				.create_application_command(|command| commands::build::register(command))
 		})
 		.await;
 

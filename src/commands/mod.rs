@@ -4,3 +4,4 @@ pub mod player;
 pub mod dry;
 pub mod store;
 pub mod upgrade;
+pub mod build;
