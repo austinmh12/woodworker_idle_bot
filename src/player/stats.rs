@@ -10,8 +10,7 @@ use crate::utils::ToDoc;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Stats {
-	pub times_sawdust_prestiged: i64,
-	pub times_seed_prestiged: i64,
+	pub cash_earned: f64,
 	pub pine_trees_chopped: i64,
 	pub pine_logs_earned: i64,
 	pub pine_logs_dried: i64,
@@ -66,8 +65,9 @@ pub struct Stats {
 	pub purpleheart_side_tables_built: i64,
 	pub purpleheart_coffee_tables_built: i64,
 	pub purpleheart_dining_sets_built: i64,
-	pub cash_earned: i64,
+	pub times_sawdust_prestiged: i64,
 	pub sawdust_earned: i64,
+	pub times_seed_prestiged: i64,
 	pub pine_seeds_earned: i64,
 	pub oak_seeds_earned: i64,
 	pub maple_seeds_earned: i64,
@@ -79,8 +79,7 @@ pub struct Stats {
 impl ToDoc for Stats {
 	fn to_doc(&self) -> Document {
 		let mut doc = Document::new();
-		doc.insert("times_sawdust_prestiged", &self.times_sawdust_prestiged);
-		doc.insert("times_seed_prestiged", &self.times_seed_prestiged);
+		doc.insert("cash_earned", &self.cash_earned);
 		doc.insert("pine_trees_chopped", &self.pine_trees_chopped);
 		doc.insert("pine_logs_earned", &self.pine_logs_earned);
 		doc.insert("pine_logs_dried", &self.pine_logs_dried);
@@ -135,8 +134,9 @@ impl ToDoc for Stats {
 		doc.insert("purpleheart_side_tables_built", &self.purpleheart_side_tables_built);
 		doc.insert("purpleheart_coffee_tables_built", &self.purpleheart_coffee_tables_built);
 		doc.insert("purpleheart_dining_sets_built", &self.purpleheart_dining_sets_built);
-		doc.insert("cash_earned", &self.cash_earned);
+		doc.insert("times_sawdust_prestiged", &self.times_sawdust_prestiged);
 		doc.insert("sawdust_earned", &self.sawdust_earned);
+		doc.insert("times_seed_prestiged", &self.times_seed_prestiged);
 		doc.insert("pine_seeds_earned", &self.pine_seeds_earned);
 		doc.insert("oak_seeds_earned", &self.oak_seeds_earned);
 		doc.insert("maple_seeds_earned", &self.maple_seeds_earned);

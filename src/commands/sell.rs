@@ -236,6 +236,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = PINE_BIRDHOUSE_PRICE * amount as f64;
 						player.furniture.pine.birdhouse -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"bird house"
@@ -251,6 +252,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = PINE_SHELF_PRICE * amount as f64;
 						player.furniture.pine.shelf -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"shelf"
@@ -266,6 +268,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = PINE_SIDE_TABLE_PRICE * amount as f64;
 						player.furniture.pine.side_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"side table"
@@ -281,6 +284,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = PINE_COFFEE_TABLE_PRICE * amount as f64;
 						player.furniture.pine.coffee_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"coffee table"
@@ -296,6 +300,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = PINE_DINING_SET_PRICE * amount as f64;
 						player.furniture.pine.dining_set -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"dining set"
@@ -314,6 +319,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = OAK_BIRDHOUSE_PRICE * amount as f64;
 						player.furniture.oak.birdhouse -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"bird house"
@@ -329,6 +335,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = OAK_SHELF_PRICE * amount as f64;
 						player.furniture.oak.shelf -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"shelf"
@@ -344,6 +351,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = OAK_SIDE_TABLE_PRICE * amount as f64;
 						player.furniture.oak.side_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"side table"
@@ -359,6 +367,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = OAK_COFFEE_TABLE_PRICE * amount as f64;
 						player.furniture.oak.coffee_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"coffee table"
@@ -374,6 +383,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = OAK_DINING_SET_PRICE * amount as f64;
 						player.furniture.oak.dining_set -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"dining set"
@@ -392,6 +402,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = MAPLE_BIRDHOUSE_PRICE * amount as f64;
 						player.furniture.maple.birdhouse -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"bird house"
@@ -407,6 +418,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = MAPLE_SHELF_PRICE * amount as f64;
 						player.furniture.maple.shelf -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"shelf"
@@ -422,6 +434,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = MAPLE_SIDE_TABLE_PRICE * amount as f64;
 						player.furniture.maple.side_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"side table"
@@ -437,6 +450,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = MAPLE_COFFEE_TABLE_PRICE * amount as f64;
 						player.furniture.maple.coffee_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"coffee table"
@@ -452,6 +466,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = MAPLE_DINING_SET_PRICE * amount as f64;
 						player.furniture.maple.dining_set -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"dining set"
@@ -470,6 +485,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = WALNUT_BIRDHOUSE_PRICE * amount as f64;
 						player.furniture.walnut.birdhouse -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"bird house"
@@ -485,6 +501,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = WALNUT_SHELF_PRICE * amount as f64;
 						player.furniture.walnut.shelf -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"shelf"
@@ -500,6 +517,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = WALNUT_SIDE_TABLE_PRICE * amount as f64;
 						player.furniture.walnut.side_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"side table"
@@ -515,6 +533,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = WALNUT_COFFEE_TABLE_PRICE * amount as f64;
 						player.furniture.walnut.coffee_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"coffee table"
@@ -530,6 +549,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = WALNUT_DINING_SET_PRICE * amount as f64;
 						player.furniture.walnut.dining_set -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"dining set"
@@ -548,6 +568,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = CHERRY_BIRDHOUSE_PRICE * amount as f64;
 						player.furniture.cherry.birdhouse -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"bird house"
@@ -563,6 +584,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = CHERRY_SHELF_PRICE * amount as f64;
 						player.furniture.cherry.shelf -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"shelf"
@@ -578,6 +600,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = CHERRY_SIDE_TABLE_PRICE * amount as f64;
 						player.furniture.cherry.side_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"side table"
@@ -593,6 +616,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = CHERRY_COFFEE_TABLE_PRICE * amount as f64;
 						player.furniture.cherry.coffee_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"coffee table"
@@ -608,6 +632,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = CHERRY_DINING_SET_PRICE * amount as f64;
 						player.furniture.cherry.dining_set -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"dining set"
@@ -626,6 +651,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = PURPLEHEART_BIRDHOUSE_PRICE * amount as f64;
 						player.furniture.purpleheart.birdhouse -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"bird house"
@@ -641,6 +667,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = PURPLEHEART_SHELF_PRICE * amount as f64;
 						player.furniture.purpleheart.shelf -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"shelf"
@@ -656,6 +683,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = PURPLEHEART_SIDE_TABLE_PRICE * amount as f64;
 						player.furniture.purpleheart.side_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"side table"
@@ -671,6 +699,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = PURPLEHEART_COFFEE_TABLE_PRICE * amount as f64;
 						player.furniture.purpleheart.coffee_table -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"coffee table"
@@ -686,6 +715,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 						let money = PURPLEHEART_DINING_SET_PRICE * amount as f64;
 						player.furniture.purpleheart.dining_set -= amount;
 						player.cash += money;
+						player.stats.cash_earned += money;
 						player.update().await;
 						let s = if amount == 1 {
 							"dining set"

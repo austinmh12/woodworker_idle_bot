@@ -849,30 +849,35 @@ pub fn update_player_build(player: &mut Player) -> i64 {
 				player.furniture.pine.birdhouse += amount;
 				player.sawdust_prestige.furniture.pine.birdhouse += amount;
 				player.seed_prestige.furniture.pine.birdhouse += amount;
+				player.stats.pine_birdhouses_built += amount;
 			},
 			"shelf" => {
 				player.lumber.pine -= 2 * times;
 				player.furniture.pine.shelf += amount;
 				player.sawdust_prestige.furniture.pine.shelf += amount;
 				player.seed_prestige.furniture.pine.shelf += amount;
+				player.stats.pine_shelves_built += amount;
 			},
 			"sidetable" => {
 				player.lumber.pine -= 3 * times;
 				player.furniture.pine.side_table += amount;
 				player.sawdust_prestige.furniture.pine.side_table += amount;
 				player.seed_prestige.furniture.pine.side_table += amount;
+				player.stats.pine_side_tables_built += amount;
 			},
 			"coffeetable" => {
 				player.lumber.pine -= 4 * times;
 				player.furniture.pine.coffee_table += amount;
 				player.sawdust_prestige.furniture.pine.coffee_table += amount;
 				player.seed_prestige.furniture.pine.coffee_table += amount;
+				player.stats.pine_coffee_tables_built += amount;
 			},
 			"diningset" => {
 				player.lumber.pine -= 5 * times;
 				player.furniture.pine.dining_set += amount;
 				player.sawdust_prestige.furniture.pine.dining_set += amount;
 				player.seed_prestige.furniture.pine.dining_set += amount;
+				player.stats.pine_dining_sets_built += amount;
 			},
 			_ => (),
 		},
@@ -882,30 +887,35 @@ pub fn update_player_build(player: &mut Player) -> i64 {
 				player.furniture.oak.birdhouse += amount;
 				player.sawdust_prestige.furniture.oak.birdhouse += amount;
 				player.seed_prestige.furniture.oak.birdhouse += amount;
+				player.stats.oak_birdhouses_built += amount;
 			},
 			"shelf" => {
 				player.lumber.oak -= 2 * times;
 				player.furniture.oak.shelf += amount;
 				player.sawdust_prestige.furniture.oak.shelf += amount;
 				player.seed_prestige.furniture.oak.shelf += amount;
+				player.stats.oak_shelves_built += amount;
 			},
 			"sidetable" => {
 				player.lumber.oak -= 3 * times;
 				player.furniture.oak.side_table += amount;
 				player.sawdust_prestige.furniture.oak.side_table += amount;
 				player.seed_prestige.furniture.oak.side_table += amount;
+				player.stats.oak_side_tables_built += amount;
 			},
 			"coffeetable" => {
 				player.lumber.oak -= 4 * times;
 				player.furniture.oak.coffee_table += amount;
 				player.sawdust_prestige.furniture.oak.coffee_table += amount;
 				player.seed_prestige.furniture.oak.coffee_table += amount;
+				player.stats.oak_coffee_tables_built += amount;
 			},
 			"diningset" => {
 				player.lumber.oak -= 5 * times;
 				player.furniture.oak.dining_set += amount;
 				player.sawdust_prestige.furniture.oak.dining_set += amount;
 				player.seed_prestige.furniture.oak.dining_set += amount;
+				player.stats.oak_dining_sets_built += amount;
 			},
 			_ => (),
 		},
@@ -915,30 +925,35 @@ pub fn update_player_build(player: &mut Player) -> i64 {
 				player.furniture.maple.birdhouse += amount;
 				player.sawdust_prestige.furniture.maple.birdhouse += amount;
 				player.seed_prestige.furniture.maple.birdhouse += amount;
+				player.stats.maple_birdhouses_built += amount;
 			},
 			"shelf" => {
 				player.lumber.maple -= 2 * times;
 				player.furniture.maple.shelf += amount;
 				player.sawdust_prestige.furniture.maple.shelf += amount;
 				player.seed_prestige.furniture.maple.shelf += amount;
+				player.stats.maple_shelves_built += amount;
 			},
 			"sidetable" => {
 				player.lumber.maple -= 3 * times;
 				player.furniture.maple.side_table += amount;
 				player.sawdust_prestige.furniture.maple.side_table += amount;
 				player.seed_prestige.furniture.maple.side_table += amount;
+				player.stats.maple_side_tables_built += amount;
 			},
 			"coffeetable" => {
 				player.lumber.maple -= 4 * times;
 				player.furniture.maple.coffee_table += amount;
 				player.sawdust_prestige.furniture.maple.coffee_table += amount;
 				player.seed_prestige.furniture.maple.coffee_table += amount;
+				player.stats.maple_coffee_tables_built += amount;
 			},
 			"diningset" => {
 				player.lumber.maple -= 5 * times;
 				player.furniture.maple.dining_set += amount;
 				player.sawdust_prestige.furniture.maple.dining_set += amount;
 				player.seed_prestige.furniture.maple.dining_set += amount;
+				player.stats.maple_dining_sets_built += amount;
 			},
 			_ => (),
 		},
@@ -948,30 +963,35 @@ pub fn update_player_build(player: &mut Player) -> i64 {
 				player.furniture.walnut.birdhouse += amount;
 				player.sawdust_prestige.furniture.walnut.birdhouse += amount;
 				player.seed_prestige.furniture.walnut.birdhouse += amount;
+				player.stats.walnut_birdhouses_built += amount;
 			},
 			"shelf" => {
 				player.lumber.walnut -= 2 * times;
 				player.furniture.walnut.shelf += amount;
 				player.sawdust_prestige.furniture.walnut.shelf += amount;
 				player.seed_prestige.furniture.walnut.shelf += amount;
+				player.stats.walnut_shelves_built += amount;
 			},
 			"sidetable" => {
 				player.lumber.walnut -= 3 * times;
 				player.furniture.walnut.side_table += amount;
 				player.sawdust_prestige.furniture.walnut.side_table += amount;
 				player.seed_prestige.furniture.walnut.side_table += amount;
+				player.stats.walnut_side_tables_built += amount;
 			},
 			"coffeetable" => {
 				player.lumber.walnut -= 4 * times;
 				player.furniture.walnut.coffee_table += amount;
 				player.sawdust_prestige.furniture.walnut.coffee_table += amount;
 				player.seed_prestige.furniture.walnut.coffee_table += amount;
+				player.stats.walnut_coffee_tables_built += amount;
 			},
 			"diningset" => {
 				player.lumber.walnut -= 5 * times;
 				player.furniture.walnut.dining_set += amount;
 				player.sawdust_prestige.furniture.walnut.dining_set += amount;
 				player.seed_prestige.furniture.walnut.dining_set += amount;
+				player.stats.walnut_dining_sets_built += amount;
 			},
 			_ => (),
 		},
@@ -981,30 +1001,35 @@ pub fn update_player_build(player: &mut Player) -> i64 {
 				player.furniture.cherry.birdhouse += amount;
 				player.sawdust_prestige.furniture.cherry.birdhouse += amount;
 				player.seed_prestige.furniture.cherry.birdhouse += amount;
+				player.stats.cherry_birdhouses_built += amount;
 			},
 			"shelf" => {
 				player.lumber.cherry -= 2 * times;
 				player.furniture.cherry.shelf += amount;
 				player.sawdust_prestige.furniture.cherry.shelf += amount;
 				player.seed_prestige.furniture.cherry.shelf += amount;
+				player.stats.cherry_shelves_built += amount;
 			},
 			"sidetable" => {
 				player.lumber.cherry -= 3 * times;
 				player.furniture.cherry.side_table += amount;
 				player.sawdust_prestige.furniture.cherry.side_table += amount;
 				player.seed_prestige.furniture.cherry.side_table += amount;
+				player.stats.cherry_side_tables_built += amount;
 			},
 			"coffeetable" => {
 				player.lumber.cherry -= 4 * times;
 				player.furniture.cherry.coffee_table += amount;
 				player.sawdust_prestige.furniture.cherry.coffee_table += amount;
 				player.seed_prestige.furniture.cherry.coffee_table += amount;
+				player.stats.cherry_coffee_tables_built += amount;
 			},
 			"diningset" => {
 				player.lumber.cherry -= 5 * times;
 				player.furniture.cherry.dining_set += amount;
 				player.sawdust_prestige.furniture.cherry.dining_set += amount;
 				player.seed_prestige.furniture.cherry.dining_set += amount;
+				player.stats.cherry_dining_sets_built += amount;
 			},
 			_ => (),
 		},
@@ -1014,30 +1039,35 @@ pub fn update_player_build(player: &mut Player) -> i64 {
 				player.furniture.purpleheart.birdhouse += amount;
 				player.sawdust_prestige.furniture.purpleheart.birdhouse += amount;
 				player.seed_prestige.furniture.purpleheart.birdhouse += amount;
+				player.stats.purpleheart_birdhouses_built += amount;
 			},
 			"shelf" => {
 				player.lumber.purpleheart -= 2 * times;
 				player.furniture.purpleheart.shelf += amount;
 				player.sawdust_prestige.furniture.purpleheart.shelf += amount;
 				player.seed_prestige.furniture.purpleheart.shelf += amount;
+				player.stats.purpleheart_shelves_built += amount;
 			},
 			"sidetable" => {
 				player.lumber.purpleheart -= 3 * times;
 				player.furniture.purpleheart.side_table += amount;
 				player.sawdust_prestige.furniture.purpleheart.side_table += amount;
 				player.seed_prestige.furniture.purpleheart.side_table += amount;
+				player.stats.purpleheart_side_tables_built += amount;
 			},
 			"coffeetable" => {
 				player.lumber.purpleheart -= 4 * times;
 				player.furniture.purpleheart.coffee_table += amount;
 				player.sawdust_prestige.furniture.purpleheart.coffee_table += amount;
 				player.seed_prestige.furniture.purpleheart.coffee_table += amount;
+				player.stats.purpleheart_coffee_tables_built += amount;
 			},
 			"diningset" => {
 				player.lumber.purpleheart -= 5 * times;
 				player.furniture.purpleheart.dining_set += amount;
 				player.sawdust_prestige.furniture.purpleheart.dining_set += amount;
 				player.seed_prestige.furniture.purpleheart.dining_set += amount;
+				player.stats.purpleheart_dining_sets_built += amount;
 			},
 			_ => (),
 		},
