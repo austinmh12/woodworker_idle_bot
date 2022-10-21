@@ -166,11 +166,10 @@ impl Player {
 		let req = all_actions
 			.iter()
 			.filter(|a| a.action == ActionEnum::Chopping && a.tree == req)
-			.map(|a| a.to_owned())
-			.collect::<Vec<Action>>()
-			.len();
+			.map(|a| a.amount)
+			.sum::<i64>();
 		
-		req as i64
+		req
 	}
 
 	pub fn queued_lumber(&self, req: &str) -> i64 {
@@ -181,11 +180,10 @@ impl Player {
 		let req = all_actions
 			.iter()
 			.filter(|a| a.action == ActionEnum::Drying && a.tree == req)
-			.map(|a| a.to_owned())
-			.collect::<Vec<Action>>()
-			.len();
+			.map(|a| a.amount)
+			.sum::<i64>();
 		
-		req as i64
+		req
 	}
 }
 

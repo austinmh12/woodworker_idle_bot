@@ -4,6 +4,7 @@ use serenity::model::prelude::command::{
 };
 use serenity::model::prelude::interaction::application_command::{
 	CommandDataOption,
+	CommandDataOptionValue
 };
 
 use crate::player::{get_player, Kiln, Player, Action, ActionEnum};
@@ -12,8 +13,15 @@ use crate::utils;
 pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 	let tree = &options
 		.get(0)
-		.expect("Expected a Subcommand")
-		.name;
+		.expect("Expected a Subcommand");
+	let actions = if &tree.options.len() == &0usize {
+		1
+	} else {
+		match tree.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
+			CommandDataOptionValue::Integer(i) => i.to_owned(),
+			_ => 1
+		}
+	};
 
 	let mut player = get_player(player_id).await;
 	match player.current_action.action {
@@ -29,58 +37,58 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 	if player.kiln == Kiln::None {
 		return "You don't have a kiln! Buy one from the store!".to_string();
 	}
-	match tree.as_str() {
+	match tree.name.as_str() {
 		// Don't need to check kiln::none since we do it above.
 		"pine" => {
-			if player.logs.pine + player.queued_logs("pine") == 0 {
-				return "You don't have any pine logs!".to_string()
+			if player.logs.pine + player.queued_logs("pine") < actions {
+				return "You don't have enough pine logs!".to_string()
 			}
-			dry_player_update(&mut player, "pine").await
+			dry_player_update(&mut player, "pine", actions).await
 		},
 		"oak" => {
-			if player.logs.oak + player.queued_logs("oak") == 0 {
-				return "You don't have any oak logs!".to_string()
+			if player.logs.oak + player.queued_logs("oak") < actions {
+				return "You don't have enough oak logs!".to_string()
 			}
 			if player.kiln < Kiln::Firebrick {
 				return "You need a **Firebrick** kiln to dry oak logs!".to_string();
 			}
-			dry_player_update(&mut player, "oak").await
+			dry_player_update(&mut player, "oak", actions).await
 		},
 		"maple" => {
-			if player.logs.maple + player.queued_logs("maple") == 0 {
-				return "You don't have any maple logs!".to_string()
+			if player.logs.maple + player.queued_logs("maple") < actions {
+				return "You don't have enough maple logs!".to_string()
 			}
 			if player.kiln < Kiln::Hobby {
 				return "You need a **Hobby** kiln to dry maple logs!".to_string();
 			}
-			dry_player_update(&mut player, "maple").await
+			dry_player_update(&mut player, "maple", actions).await
 		},
 		"walnut" => {
-			if player.logs.walnut + player.queued_logs("walnut") == 0 {
-				return "You don't have any walnut logs!".to_string()
+			if player.logs.walnut + player.queued_logs("walnut") < actions {
+				return "You don't have enough walnut logs!".to_string()
 			}
 			if player.kiln < Kiln::LabGrade {
 				return "You need a **Lab Grade** kiln to dry walnut logs!".to_string();
 			}
-			dry_player_update(&mut player, "walnut").await
+			dry_player_update(&mut player, "walnut", actions).await
 		},
 		"cherry" => {
-			if player.logs.cherry + player.queued_logs("cherry") == 0 {
-				return "You don't have any cherry logs!".to_string()
+			if player.logs.cherry + player.queued_logs("cherry") < actions {
+				return "You don't have enough cherry logs!".to_string()
 			}
 			if player.kiln < Kiln::Industrial {
 				return "You need an **Industrial** kiln to dry cherry logs!".to_string();
 			}
-			dry_player_update(&mut player, "cherry").await
+			dry_player_update(&mut player, "cherry", actions).await
 		},
 		"purpleheart" => {
-			if player.logs.purpleheart + player.queued_logs("purpleheart") == 0 {
-				return "You don't have any purpleheart logs!".to_string()
+			if player.logs.purpleheart + player.queued_logs("purpleheart") < actions {
+				return "You don't have enough purpleheart logs!".to_string()
 			}
 			if player.kiln < Kiln::WorldWide {
 				return "You need a **World Wide** kiln to dry purpleheart logs!".to_string();
 			}
-			dry_player_update(&mut player, "purpleheart").await
+			dry_player_update(&mut player, "purpleheart", actions).await
 		},
 		_ => "No such tree".to_string()
 	}
@@ -92,47 +100,95 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 			option
 				.name("pine")
 				.description("Dry a pine log")
-				.kind(CommandOptionType::SubCommand)
+				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
+					sub
+						.name("amount")
+						.description("amount to chop (1-5)")
+						.kind(CommandOptionType::Integer)
+						.required(false)
+						.min_int_value(1)
+						.max_int_value(5)
+				})
 		})
 		.create_option(|option| {
 			option
 				.name("oak")
 				.description("Dry an oak log")
-				.kind(CommandOptionType::SubCommand)	
+				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
+					sub
+						.name("amount")
+						.description("amount to chop (1-5)")
+						.kind(CommandOptionType::Integer)
+						.required(false)
+						.min_int_value(1)
+						.max_int_value(5)
+				})	
 		})
 		.create_option(|option| {
 			option
 				.name("maple")
 				.description("Dry a maple log")
-				.kind(CommandOptionType::SubCommand)	
+				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
+					sub
+						.name("amount")
+						.description("amount to chop (1-5)")
+						.kind(CommandOptionType::Integer)
+						.required(false)
+						.min_int_value(1)
+						.max_int_value(5)
+				})	
 		})
 		.create_option(|option| {
 			option
 				.name("walnut")
 				.description("Dry a walnut log")
-				.kind(CommandOptionType::SubCommand)	
+				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
+					sub
+						.name("amount")
+						.description("amount to chop (1-5)")
+						.kind(CommandOptionType::Integer)
+						.required(false)
+						.min_int_value(1)
+						.max_int_value(5)
+				})	
 		})
 		.create_option(|option| {
 			option
 				.name("cherry")
 				.description("Dry a cherry log")
-				.kind(CommandOptionType::SubCommand)	
+				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
+					sub
+						.name("amount")
+						.description("amount to chop (1-5)")
+						.kind(CommandOptionType::Integer)
+						.required(false)
+						.min_int_value(1)
+						.max_int_value(5)
+				})	
 		})
 		.create_option(|option| {
 			option
 				.name("purpleheart")
 				.description("Dry a purpleheart log")
-				.kind(CommandOptionType::SubCommand)	
+				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
+					sub
+						.name("amount")
+						.description("amount to chop (1-5)")
+						.kind(CommandOptionType::Integer)
+						.required(false)
+						.min_int_value(1)
+						.max_int_value(5)
+				})	
 		})
 }
 
-fn dry_log(player: &Player, tree: &str) -> Option<Action> {
+fn dry_log(player: &Player, tree: &str, actions: i64) -> Option<Action> {
 	// returns None if insta-dried.
-	let dry_time = utils::get_dry_time(player, tree);
+	let dry_time = utils::get_dry_time(player, tree, actions);
 	if dry_time == 0 {
 		return None;
 	} else {
-		return Some(Action::drying(dry_time, tree));
+		return Some(Action::drying(dry_time, tree, actions));
 	}
 }
 
@@ -144,8 +200,8 @@ pub fn determine_lumber_earned(player: &Player) -> i64 {
 	(base_lumber + upgrade) * (1 + sawdust_upgrade)
 }
 
-pub async fn dry_player_update(player: &mut Player, tree: &str) -> String {
-	let action = dry_log(&player, tree);
+pub async fn dry_player_update(player: &mut Player, tree: &str, actions: i64) -> String {
+	let action = dry_log(&player, tree, actions);
 	match action {
 		Some(a) => {
 			match player.current_action.action {
@@ -164,65 +220,69 @@ pub async fn dry_player_update(player: &mut Player, tree: &str) -> String {
 			}
 		}
 		None => {
-			let amount = determine_lumber_earned(&player);
-			update_player_dry(player, amount, tree);
+			let amount = update_player_dry(player);
 			player.update().await;
 			format!("You dried **{} {}** lumber!", amount, tree)
 		}
 	}
 }
 
-pub fn update_player_dry(player: &mut Player, amount: i64, tree: &str) {
+pub fn update_player_dry(player: &mut Player) -> i64 {
+	let times = player.current_action.amount;
+	let amount = times * determine_lumber_earned(&player);
+	let tree = player.current_action.tree.clone();
 	player.current_action = Action::none();
-	match tree {
+	match tree.as_str() {
 		"pine" => {
-			player.logs.pine -= 1;
+			player.logs.pine -= times;
 			player.lumber.pine += amount;
-			player.stats.pine_logs_dried += 1;
+			player.stats.pine_logs_dried += times;
 			player.stats.pine_lumber_earned += amount;
 			player.sawdust_prestige.lumber.pine += amount;
 			player.seed_prestige.lumber.pine += amount;
 		},
 		"oak" => {
-			player.logs.oak -= 1;
+			player.logs.oak -= times;
 			player.lumber.oak += amount;
-			player.stats.oak_logs_dried += 1;
+			player.stats.oak_logs_dried += times;
 			player.stats.oak_lumber_earned += amount;
 			player.sawdust_prestige.lumber.oak += amount;
 			player.seed_prestige.lumber.oak += amount;
 		},
 		"maple" => {
-			player.logs.maple -= 1;
+			player.logs.maple -= times;
 			player.lumber.maple += amount;
-			player.stats.maple_logs_dried += 1;
+			player.stats.maple_logs_dried += times;
 			player.stats.maple_lumber_earned += amount;
 			player.sawdust_prestige.lumber.maple += amount;
 			player.seed_prestige.lumber.maple += amount;
 		},
 		"walnut" => {
-			player.logs.walnut -= 1;
+			player.logs.walnut -= times;
 			player.lumber.walnut += amount;
-			player.stats.walnut_logs_dried += 1;
+			player.stats.walnut_logs_dried += times;
 			player.stats.walnut_lumber_earned += amount;
 			player.sawdust_prestige.lumber.walnut += amount;
 			player.seed_prestige.lumber.walnut += amount;
 		},
 		"cherry" => {
-			player.logs.cherry -= 1;
+			player.logs.cherry -= times;
 			player.lumber.cherry += amount;
-			player.stats.cherry_logs_dried += 1;
+			player.stats.cherry_logs_dried += times;
 			player.stats.cherry_lumber_earned += amount;
 			player.sawdust_prestige.lumber.cherry += amount;
 			player.seed_prestige.lumber.cherry += amount;
 		},
 		"purpleheart" => {
-			player.logs.purpleheart -= 1;
+			player.logs.purpleheart -= times;
 			player.lumber.purpleheart += amount;
-			player.stats.purpleheart_logs_dried += 1;
+			player.stats.purpleheart_logs_dried += times;
 			player.stats.purpleheart_lumber_earned += amount;
 			player.sawdust_prestige.lumber.purpleheart += amount;
 			player.seed_prestige.lumber.purpleheart += amount;
 		},
 		_ => ()
 	}
+
+	amount
 }

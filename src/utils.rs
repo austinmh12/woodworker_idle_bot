@@ -16,7 +16,7 @@ pub trait ToDoc {
 	fn to_doc(&self) -> Document;
 }
 
-pub fn get_tree_time(player: &Player, tree: &str) -> i64 {
+pub fn get_tree_time(player: &Player, tree: &str, actions: i64) -> i64 {
 	let base_time = match tree {
 		"pine" => 10.0,
 		"oak" => 15.0,
@@ -29,10 +29,10 @@ pub fn get_tree_time(player: &Player, tree: &str) -> i64 {
 	let upgrade_mult = 1.0 + (player.upgrades.sharper_axes as f64 * 0.1);
 	let sawdust_mult = 1.0 + (player.sawdust_upgrades.sharper_axes as f64 * 0.1);
 
-	((base_time / upgrade_mult) / sawdust_mult) as i64
+	((base_time / upgrade_mult) / sawdust_mult) as i64 * actions
 }
 
-pub fn get_dry_time(player: &Player, tree: &str) -> i64 {
+pub fn get_dry_time(player: &Player, tree: &str, actions: i64) -> i64 {
 	let base_time = match tree {
 		"pine" => 10.0,
 		"oak" => 15.0,
@@ -45,10 +45,10 @@ pub fn get_dry_time(player: &Player, tree: &str) -> i64 {
 	let upgrade_mult = 1.0 + (player.upgrades.hotter_kilns as f64 * 0.1);
 	let sawdust_mult = 1.0 + (player.sawdust_upgrades.hotter_kilns as f64 * 0.1);
 
-	((base_time / upgrade_mult) / sawdust_mult) as i64
+	((base_time / upgrade_mult) / sawdust_mult) as i64 * actions
 }
 
-pub fn get_build_time(player: &Player, tree: &str, furniture: &str) -> i64 {
+pub fn get_build_time(player: &Player, tree: &str, furniture: &str, actions: i64) -> i64 {
 	let base_time = match tree {
 		"pine" => 10.0,
 		"oak" => 15.0,
@@ -70,7 +70,7 @@ pub fn get_build_time(player: &Player, tree: &str, furniture: &str) -> i64 {
 	let upgrade_mult = 1.0 + (player.upgrades.fast_drying_glue as f64 * 0.1);
 	let sawdust_mult = 1.0 + (player.sawdust_upgrades.fast_drying_glue as f64 * 0.1);
 
-	((base_time / upgrade_mult) / sawdust_mult) as i64
+	((base_time / upgrade_mult) / sawdust_mult) as i64 * actions
 }
 
 pub async fn get_client() -> Result<Client, Box<dyn Error>> {

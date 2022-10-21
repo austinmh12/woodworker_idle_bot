@@ -4,9 +4,9 @@ use serenity::prelude::Context;
 
 use crate::player::get_players;
 use crate::player::ActionEnum;
-use crate::commands::chop::{update_player_chop, determine_logs_earned};
-use crate::commands::dry::{update_player_dry, determine_lumber_earned};
-use crate::commands::build::{update_player_build, determine_furniture_earned};
+use crate::commands::chop::update_player_chop;
+use crate::commands::dry::update_player_dry;
+use crate::commands::build::update_player_build;
 
 pub async fn check_actions(_ctx: Arc<Context>) {
 	let players = get_players().await;
@@ -18,10 +18,7 @@ pub async fn check_actions(_ctx: Arc<Context>) {
 		match current_action.action {
 			ActionEnum::None => continue,
 			ActionEnum::Chopping => {
-				let amount = determine_logs_earned(&player);
-				let tree = current_action.tree.as_str();
-				println!("{} done chopping, earned {} {} logs", &player.discord_id, &amount, &tree);
-				update_player_chop(&mut player, amount, tree);
+				update_player_chop(&mut player);
 				if player.queued_actions.len() > 0usize {
 					let mut queued_actions = VecDeque::from(player.queued_actions.clone());
 					player.current_action = queued_actions.pop_front().unwrap().clone();
@@ -30,9 +27,7 @@ pub async fn check_actions(_ctx: Arc<Context>) {
 				player.update().await;
 			},
 			ActionEnum::Drying => {
-				let amount = determine_lumber_earned(&player);
-				let tree = current_action.tree.as_str();
-				update_player_dry(&mut player, amount, tree);
+				update_player_dry(&mut player);
 				if player.queued_actions.len() > 0usize {
 					let mut queued_actions = VecDeque::from(player.queued_actions.clone());
 					player.current_action = queued_actions.pop_front().unwrap().clone();
@@ -41,10 +36,7 @@ pub async fn check_actions(_ctx: Arc<Context>) {
 				player.update().await;
 			},
 			ActionEnum::Building => {
-				let amount = determine_furniture_earned(&player);
-				let tree = current_action.tree.as_str();
-				let furniture = current_action.furniture.unwrap();
-				update_player_build(&mut player, amount, tree, furniture.as_str());
+				update_player_build(&mut player);
 				if player.queued_actions.len() > 0usize {
 					let mut queued_actions = VecDeque::from(player.queued_actions.clone());
 					player.current_action = queued_actions.pop_front().unwrap().clone();

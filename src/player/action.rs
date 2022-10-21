@@ -18,6 +18,7 @@ use crate::utils::ToDoc;
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Action {
 	pub action: ActionEnum,
+	pub amount: i64,
 	#[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
 	pub start: DateTime<Utc>,
 	#[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
@@ -27,12 +28,13 @@ pub struct Action {
 }
 
 impl Action {
-	pub fn chopping(duration: i64, tree: &str) -> Self {
+	pub fn chopping(duration: i64, tree: &str, amount: i64) -> Self {
 		let start = Utc::now();
 		let end = start + Duration::seconds(duration);
 		
 		Self {
 			action: ActionEnum::Chopping,
+			amount,
 			start,
 			end,
 			tree: tree.into(),
@@ -40,12 +42,13 @@ impl Action {
 		}
 	}
 
-	pub fn drying(duration: i64, tree: &str) -> Self {
+	pub fn drying(duration: i64, tree: &str, amount: i64) -> Self {
 		let start = Utc::now();
 		let end = start + Duration::seconds(duration);
 		
 		Self {
 			action: ActionEnum::Drying,
+			amount,
 			start,
 			end,
 			tree: tree.into(),
@@ -53,12 +56,13 @@ impl Action {
 		}
 	}
 
-	pub fn building(duration: i64, tree: &str, furniture: &str) -> Self {
+	pub fn building(duration: i64, tree: &str, furniture: &str, amount: i64) -> Self {
 		let start = Utc::now();
 		let end = start + Duration::seconds(duration);
 		
 		Self {
 			action: ActionEnum::Building,
+			amount,
 			start,
 			end,
 			tree: tree.into(),
@@ -69,6 +73,7 @@ impl Action {
 	pub fn none() -> Self {
 		Self {
 			action: ActionEnum::None,
+			amount: 1,
 			start: Utc::now(),
 			end: Utc::now(),
 			tree: "".into(),
@@ -86,6 +91,7 @@ impl ToDoc for Action {
 	fn to_doc(&self) -> bson::Document {
 		doc! {
 			"action": &self.action,
+			"amount": &self.amount,
 			"start": &self.start,
 			"end": &self.end,
 			"tree": &self.tree,
