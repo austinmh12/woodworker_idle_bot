@@ -86,3 +86,28 @@ pub fn default_colour() -> Colour {
 
 	Colour::from_rgb(color.red, color.green, color.blue)
 }
+
+pub fn get_max_buyable(player: &Player, base: f64, exp: f64, owned: i64) -> i64 {
+	let top = player.cash * (exp - 1.0);
+	let bot = base * exp.powi(owned as i32);
+	let inner = (top / bot) + 1.0;
+	let log = inner.log(exp);
+	
+	log.floor() as i64
+}
+
+pub fn get_price(amount: i64, base: f64, exp: f64, owned: i64) -> f64 {
+	let top1 = exp.powi(owned as i32);
+	let top2 = exp.powi(amount as i32) - 1.0;
+	let bottom = exp - 1.0;
+	
+	base * ((top1 * top2) / bottom)
+}
+
+pub fn get_max_buyable_amount_and_price(player: &Player, amount: i64, base: f64, exp: f64, owned: i64) -> (i64, f64) {
+	let max_amount = get_max_buyable(&player, base, exp, owned);
+	let amounts = vec![amount, max_amount];
+	let amount = amounts.iter().min().unwrap().to_owned();
+	
+	(amount, get_price(amount, base, exp, owned))
+}

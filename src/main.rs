@@ -62,6 +62,7 @@ impl EventHandler for Handler {
 					commands::player::run(player_id, player_nick, player_avatar, &command.data.options).await
 				},
 				"store" => commands::store::run(player_id, &command.data.options).await,
+				"upgrade" => commands::upgrade::run(player_id, &command.data.options).await,
 				_ => ("not implemented :(".to_string(), None)
 			};
 
@@ -106,6 +107,7 @@ impl EventHandler for Handler {
 				.create_application_command(|command| commands::dry::register(command))
 				.create_application_command(|command| commands::store::register(command))
 				.create_application_command(|command| commands::build::register(command))
+				.create_application_command(|command| commands::upgrade::register(command))
 		})
 		.await;
 

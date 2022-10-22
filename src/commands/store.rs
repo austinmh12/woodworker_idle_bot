@@ -10,6 +10,13 @@ use serenity::model::prelude::interaction::application_command::{
 use crate::player::{get_player, Player, Axe, Kiln, Hammer};
 use crate::utils;
 
+const LOGGER_BASE: f64 = 25.0;
+const LOGGER_EXP: f64 = 1.01;
+const LUMBERER_BASE: f64 = 150.0;
+const LUMBERER_EXP: f64 = 1.03;
+const CNC_BASE: f64 = 1000.0;
+const CNC_EXP: f64 = 1.07;
+
 pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Option<CreateEmbed>) {
 	// store.view
 	// store.buy.slot amount
@@ -31,9 +38,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 			if player.hammer != Hammer::Rune {
 				desc.push_str(&format!("**3:** {} Hammer - ${:.2}\n", get_next_hammer(&player), get_hammer_price(get_next_hammer(&player))));
 			}
-			desc.push_str(&format!("**4:** Loggers - ${:.2}\n", get_price(1, 25.0, 1.01, player.loggers)));
-			desc.push_str(&format!("**5:** Lumberers - ${:.2}\n", get_price(1, 150.0, 1.03, player.lumberers)));
-			desc.push_str(&format!("**6:** CNCs - ${:.2}\n", get_price(1, 1000.0, 1.07, player.cncs)));
+			desc.push_str(&format!("**4:** Loggers - ${:.2}\n", utils::get_price(1, LOGGER_BASE, LOGGER_EXP, player.loggers)));
+			desc.push_str(&format!("**5:** Lumberers - ${:.2}\n", utils::get_price(1, LUMBERER_BASE, LUMBERER_EXP, player.lumberers)));
+			desc.push_str(&format!("**6:** CNCs - ${:.2}\n", utils::get_price(1, CNC_BASE, CNC_EXP, player.cncs)));
 			ret
 				.title("Store")
 				.description(&desc)
@@ -61,10 +68,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 				1 => (1, get_axe_price(get_next_axe(&player))),
 				2 => (1, get_kiln_price(get_next_kiln(&player))),
 				3 => (1, get_hammer_price(get_next_hammer(&player))),
-				// 4 => get_total_price(amount, &player, &get_logger_price),
-				4 => get_logger_price(&player, amount),
-				5 => get_lumberer_price(&player, amount),
-				6 => get_cnc_price(&player, amount),
+				4 => utils::get_max_buyable_amount_and_price(&player, amount, LOGGER_BASE, LOGGER_EXP, player.loggers),
+				5 => utils::get_max_buyable_amount_and_price(&player, amount, LUMBERER_BASE, LUMBERER_EXP, player.lumberers),
+				6 => utils::get_max_buyable_amount_and_price(&player, amount, CNC_BASE, CNC_EXP, player.cncs),
 				_ => (0, 0.0) // Can't get here
 			};
 			if player.cash < total_price || count == 0 {
@@ -148,47 +154,6 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 		})
 }
 
-fn get_max_buyable(player: &Player, base: f64, exp: f64, owned: i64) -> i64 {
-	let top = player.cash * (exp - 1.0);
-	let bot = base * exp.powi(owned as i32);
-	let inner = (top / bot) + 1.0;
-	let log = inner.log(exp);
-	
-	log.floor() as i64
-}
-
-fn get_price(amount: i64, base: f64, exp: f64, owned: i64) -> f64 {
-	let top1 = exp.powi(owned as i32);
-	let top2 = exp.powi(amount as i32) - 1.0;
-	let bottom = exp - 1.0;
-	
-	base * ((top1 * top2) / bottom)
-}
-
-fn get_logger_price(player: &Player, amount: i64) -> (i64, f64) {
-	let max_amount = get_max_buyable(&player, 25.0, 1.01, player.loggers);
-	let amounts = vec![amount, max_amount];
-	let amount = amounts.iter().min().unwrap().to_owned();
-	
-	(amount, get_price(amount, 25.0, 1.01, player.loggers))
-}
-
-fn get_lumberer_price(player: &Player, amount: i64) -> (i64, f64) {
-	let max_amount = get_max_buyable(&player, 150.0, 1.03, player.lumberers);
-	let amounts = vec![amount, max_amount];
-	let amount = amounts.iter().min().unwrap().to_owned();
-	
-	(amount, get_price(amount, 150.0, 1.03, player.lumberers))
-}
-
-fn get_cnc_price(player: &Player, amount: i64) -> (i64, f64) {
-	let max_amount = get_max_buyable(&player, 1000.0, 1.07, player.cncs);
-	let amounts = vec![amount, max_amount];
-	let amount = amounts.iter().min().unwrap().to_owned();
-	
-	(amount, get_price(amount, 1000.0, 1.07, player.cncs))
-}
-
 fn get_next_axe(player: &Player) -> Axe {
 	match player.axe {
 		Axe::Stone => Axe::Iron,
@@ -258,28 +223,3 @@ fn get_hammer_price(hammer: Hammer) -> f64 {
 		Hammer::Rune => 1168500.0,
 	}
 }
-
-// fn get_total_price(amount: i64, player: &Player, f: &dyn Fn(&Player) -> f64) -> (i64, f64) {
-// 	let mut total_price = 0.0; // There's probably a better way to calculate this
-// 	let mut count = 0;
-// 	let mut player_clone = player.clone();
-// 	for i in 0..amount {
-// 		let next_cost = f(&player_clone);
-// 		if total_price + next_cost > player.cash {
-// 			if i == 0 {
-// 				// So we know how much the player needs
-// 				return (i, total_price + next_cost);
-// 			}
-// 			return (i, total_price);
-// 		}
-// 		total_price += next_cost;
-// 		count = i;
-
-// 		// Just add one to all of them so we can get the next price
-// 		player_clone.loggers += 1;
-// 		player_clone.lumberers += 1;
-// 		player_clone.cncs += 1;
-// 	}
-
-// 	(count, total_price)
-// }
