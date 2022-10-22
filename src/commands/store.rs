@@ -29,18 +29,18 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 			let mut ret = CreateEmbed::default();
 			let mut desc = "Welcome to the store! See something you like, buy it with **/store buy**\n".to_string();
 			desc.push_str(&format!("You have **${:.2}**\n\n", player.cash));
+			desc.push_str(&format!("**1:** Loggers - ${:.2}\n", utils::get_price(1, LOGGER_BASE, LOGGER_EXP, player.loggers)));
+			desc.push_str(&format!("**2:** Lumberers - ${:.2}\n", utils::get_price(1, LUMBERER_BASE, LUMBERER_EXP, player.lumberers)));
+			desc.push_str(&format!("**3:** CNCs - ${:.2}\n", utils::get_price(1, CNC_BASE, CNC_EXP, player.cncs)));
 			if player.axe != Axe::Rune {
-				desc.push_str(&format!("**1:** {} Axe - ${:.2}\n", get_next_axe(&player), get_axe_price(get_next_axe(&player))));
+				desc.push_str(&format!("**4:** {} Axe - ${:.2}\n", get_next_axe(&player), get_axe_price(get_next_axe(&player))));
 			}
 			if player.kiln != Kiln::WorldWide {
-				desc.push_str(&format!("**2:** {} Kiln - ${:.2}\n", get_next_kiln(&player), get_kiln_price(get_next_kiln(&player))));
+				desc.push_str(&format!("**5:** {} Kiln - ${:.2}\n", get_next_kiln(&player), get_kiln_price(get_next_kiln(&player))));
 			}
 			if player.hammer != Hammer::Rune {
-				desc.push_str(&format!("**3:** {} Hammer - ${:.2}\n", get_next_hammer(&player), get_hammer_price(get_next_hammer(&player))));
+				desc.push_str(&format!("**6:** {} Hammer - ${:.2}\n", get_next_hammer(&player), get_hammer_price(get_next_hammer(&player))));
 			}
-			desc.push_str(&format!("**4:** Loggers - ${:.2}\n", utils::get_price(1, LOGGER_BASE, LOGGER_EXP, player.loggers)));
-			desc.push_str(&format!("**5:** Lumberers - ${:.2}\n", utils::get_price(1, LUMBERER_BASE, LUMBERER_EXP, player.lumberers)));
-			desc.push_str(&format!("**6:** CNCs - ${:.2}\n", utils::get_price(1, CNC_BASE, CNC_EXP, player.cncs)));
 			ret
 				.title("Store")
 				.description(&desc)
@@ -65,12 +65,12 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 				}
 			};
 			let (count, total_price) = match slot {
-				1 => (1, get_axe_price(get_next_axe(&player))),
-				2 => (1, get_kiln_price(get_next_kiln(&player))),
-				3 => (1, get_hammer_price(get_next_hammer(&player))),
-				4 => utils::get_max_buyable_amount_and_price(&player, amount, LOGGER_BASE, LOGGER_EXP, player.loggers),
-				5 => utils::get_max_buyable_amount_and_price(&player, amount, LUMBERER_BASE, LUMBERER_EXP, player.lumberers),
-				6 => utils::get_max_buyable_amount_and_price(&player, amount, CNC_BASE, CNC_EXP, player.cncs),
+				1 => utils::get_max_buyable_amount_and_price(&player, amount, LOGGER_BASE, LOGGER_EXP, player.loggers),
+				2 => utils::get_max_buyable_amount_and_price(&player, amount, LUMBERER_BASE, LUMBERER_EXP, player.lumberers),
+				3 => utils::get_max_buyable_amount_and_price(&player, amount, CNC_BASE, CNC_EXP, player.cncs),
+				4 => (1, get_axe_price(get_next_axe(&player))),
+				5 => (1, get_kiln_price(get_next_kiln(&player))),
+				6 => (1, get_hammer_price(get_next_hammer(&player))),
 				_ => (0, 0.0) // Can't get here
 			};
 			if player.cash < total_price || count == 0 {
@@ -79,34 +79,34 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 			player.cash -= total_price;
 			let ret = match slot {
 				1 => {
+					player.loggers += count;
+					
+					(format!("You bought **{}** loggers!", count), None)
+				},
+				2 => {
+					player.lumberers += count;
+					
+					(format!("You bought **{}** lumberers!", count), None)
+				},
+				3 => {
+					player.cncs += count;
+					
+					(format!("You bought **{}** CNCs!", count), None)
+				},
+				4 => {
 					player.axe = get_next_axe(&player);
 
 					(format!("You bought the **{}** axe!", &player.axe), None)
 				},
-				2 => {
+				5 => {
 					player.kiln = get_next_kiln(&player);
 
 					(format!("You bought the **{}** kiln!", player.kiln), None)
 				},
-				3 => {
+				6 => {
 					player.hammer = get_next_hammer(&player);
 
 					(format!("You bought the **{}** hammer!", &player.hammer), None)
-				},
-				4 => {
-					player.loggers += count;
-
-					(format!("You bought **{}** loggers!", count), None)
-				},
-				5 => {
-					player.lumberers += count;
-
-					(format!("You bought **{}** lumberers!", count), None)
-				},
-				6 => {
-					player.cncs += count;
-
-					(format!("You bought **{}** CNCs!", count), None)
 				},
 				_ => ("How'd you get here?".to_string(), None)
 			};
