@@ -240,6 +240,101 @@ impl Player {
 		}
 	}
 
+	pub fn blueprint_embed(&self, nickname: String, avatar: String, tree: Tree) -> CreateEmbed {
+		let mut ret = CreateEmbed::default();
+		let desc = match tree {
+			Tree::Pine(_) => "**Pine**",
+			Tree::Oak(_) => "**Oak**",
+			Tree::Maple(_) => "**Maple**",
+			Tree::Walnut(_) => "**Walnut**",
+			Tree::Cherry(_) => "**Cherry**",
+			Tree::PurpleHeart(_) => "**Purple Heart**",
+		};
+		let (r, g, b) = match tree {
+			Tree::Pine(_) => (178, 147, 116),
+			Tree::Oak(_) => (211, 146, 90),
+			Tree::Maple(_) => (233, 186, 134),
+			Tree::Walnut(_) => (135, 93, 79),
+			Tree::Cherry(_) => (124, 46, 42),
+			Tree::PurpleHeart(_) => (138, 93, 100),
+		};
+		ret
+			.title(format!("{}'s Blueprints", nickname))
+			.thumbnail(avatar)
+			.description(desc)
+			.colour(Colour::from_rgb(r, g, b))
+			.fields(self.bp_helper(tree));
+
+		ret
+	}
+
+	fn bp_helper(&self, tree: Tree) -> Vec<(String, String, bool)> {
+		
+		fn bool_to_emoji(b: bool) -> String {
+			match b {
+				true => ":white_check_mark:".to_string(),
+				false => ":x:".to_string(),
+			}
+		}
+
+		match tree {
+			Tree::Pine(_) => {
+				vec![
+					("Bird House".to_string(), bool_to_emoji(self.blueprints.pine.birdhouse), false),
+					("Shelf".to_string(), bool_to_emoji(self.blueprints.pine.shelf), false),
+					("Side Table".to_string(), bool_to_emoji(self.blueprints.pine.side_table), false),
+					("Coffee Table".to_string(), bool_to_emoji(self.blueprints.pine.coffee_table), false),
+					("Dining Set".to_string(), bool_to_emoji(self.blueprints.pine.dining_set), false),
+				]
+			},
+			Tree::Oak(_) => {
+				vec![
+					("Bird Houses".to_string(), bool_to_emoji(self.blueprints.oak.birdhouse), false),
+					("Shelves".to_string(), bool_to_emoji(self.blueprints.oak.shelf), false),
+					("Side Tables".to_string(), bool_to_emoji(self.blueprints.oak.side_table), false),
+					("Coffee Tables".to_string(), bool_to_emoji(self.blueprints.oak.coffee_table), false),
+					("Dining Sets".to_string(), bool_to_emoji(self.blueprints.oak.dining_set), false),
+				]
+			},
+			Tree::Maple(_) => {
+				vec![
+					("Bird Houses".to_string(), bool_to_emoji(self.blueprints.maple.birdhouse), false),
+					("Shelves".to_string(), bool_to_emoji(self.blueprints.maple.shelf), false),
+					("Side Tables".to_string(), bool_to_emoji(self.blueprints.maple.side_table), false),
+					("Coffee Tables".to_string(), bool_to_emoji(self.blueprints.maple.coffee_table), false),
+					("Dining Sets".to_string(), bool_to_emoji(self.blueprints.maple.dining_set), false),
+				]
+			},
+			Tree::Walnut(_) => {
+				vec![
+					("Bird Houses".to_string(), bool_to_emoji(self.blueprints.walnut.birdhouse), false),
+					("Shelves".to_string(), bool_to_emoji(self.blueprints.walnut.shelf), false),
+					("Side Tables".to_string(), bool_to_emoji(self.blueprints.walnut.side_table), false),
+					("Coffee Tables".to_string(), bool_to_emoji(self.blueprints.walnut.coffee_table), false),
+					("Dining Sets".to_string(), bool_to_emoji(self.blueprints.walnut.dining_set), false),
+				]
+			},
+			Tree::Cherry(_) => {
+				vec![
+					("Bird Houses".to_string(), bool_to_emoji(self.blueprints.cherry.birdhouse), false),
+					("Shelves".to_string(), bool_to_emoji(self.blueprints.cherry.shelf), false),
+					("Side Tables".to_string(), bool_to_emoji(self.blueprints.cherry.side_table), false),
+					("Coffee Tables".to_string(), bool_to_emoji(self.blueprints.cherry.coffee_table), false),
+					("Dining Sets".to_string(), bool_to_emoji(self.blueprints.cherry.dining_set), false),
+				]
+			},
+			Tree::PurpleHeart(_) => {
+				vec![
+					("Bird Houses".to_string(), bool_to_emoji(self.blueprints.purpleheart.birdhouse), false),
+					("Shelves".to_string(), bool_to_emoji(self.blueprints.purpleheart.shelf), false),
+					("Side Tables".to_string(), bool_to_emoji(self.blueprints.purpleheart.side_table), false),
+					("Coffee Tables".to_string(), bool_to_emoji(self.blueprints.purpleheart.coffee_table), false),
+					("Dining Sets".to_string(), bool_to_emoji(self.blueprints.purpleheart.dining_set), false),
+				]
+			},
+		}
+	}
+
 	pub fn queue_action(&mut self, a: Action) -> Action {
 		// Pushes the action on the queued_actions and returns it with it's new start/end time
 		let mut action = a.clone();

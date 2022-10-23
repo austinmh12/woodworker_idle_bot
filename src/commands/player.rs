@@ -29,8 +29,17 @@ pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[Co
 				_ => ("How did you get here?".to_string(), None)
 			}
 		},
-		
-		"blueprints" => ("todo".to_string(), None),
+		"blueprints" => {
+			match option.options.get(0).expect("Subcommand").name.as_str() {
+				"pine" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::Pine(BPUnlock::None)))),
+				"oak" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::Oak(BPUnlock::None)))),
+				"maple" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::Maple(BPUnlock::None)))),
+				"walnut" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::Walnut(BPUnlock::None)))),
+				"cherry" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::Cherry(BPUnlock::None)))),
+				"purpleheart" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::PurpleHeart(BPUnlock::None)))),
+				_ => ("How did you get here?".to_string(), None)
+			}
+		},
 		"colour" => {
 			let red = match option.options.get(0).expect("Expected an integer").resolved.as_ref().expect("Expected an integer") {
 				CommandDataOptionValue::Integer(r) => *r as u8,
@@ -115,7 +124,43 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 			option
 				.name("blueprints")
 				.description("Your blueprints")
-				.kind(CommandOptionType::SubCommand)
+				.kind(CommandOptionType::SubCommandGroup)
+				.create_sub_option(|sub| {
+					sub
+						.name("pine")
+						.description("Your pine blueprints")
+						.kind(CommandOptionType::SubCommand)
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("oak")
+						.description("Your oak blueprints")
+						.kind(CommandOptionType::SubCommand)
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("maple")
+						.description("Your maple blueprints")
+						.kind(CommandOptionType::SubCommand)
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("walnut")
+						.description("Your walnut blueprints")
+						.kind(CommandOptionType::SubCommand)
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("cherry")
+						.description("Your cherry blueprints")
+						.kind(CommandOptionType::SubCommand)
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("purpleheart")
+						.description("Your purpleheart blueprints")
+						.kind(CommandOptionType::SubCommand)
+				})
 		})
 		.create_option(|option| {
 			option
