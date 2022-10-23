@@ -223,7 +223,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			let amount = if &log_type.options.len() == &1usize {
 				1
 			} else {
-				match log_type.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
+				match log_type.options.get(1).expect("expected int").resolved.as_ref().expect("int") {
 					CommandDataOptionValue::Integer(i) => i.to_owned(),
 					_ => 1
 				}
@@ -924,7 +924,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.create_sub_option(|sub| {
 					sub
 						.name("pine")
-						.description("Sell pine lumber")
+						.description("Sell pine furniture")
 						.kind(CommandOptionType::SubCommand)
 						.create_sub_option(|subsub| {
 							subsub
@@ -945,7 +945,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.create_sub_option(|sub| {
 					sub
 						.name("oak")
-						.description("Sell oak lumber")
+						.description("Sell oak furniture")
 						.kind(CommandOptionType::SubCommand)
 						.create_sub_option(|subsub| {
 							subsub
@@ -966,7 +966,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.create_sub_option(|sub| {
 					sub
 						.name("maple")
-						.description("Sell maple lumber")
+						.description("Sell maple furniture")
 						.kind(CommandOptionType::SubCommand)
 						.create_sub_option(|subsub| {
 							subsub
@@ -987,7 +987,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.create_sub_option(|sub| {
 					sub
 						.name("walnut")
-						.description("Sell walnut lumber")
+						.description("Sell walnut furniture")
 						.kind(CommandOptionType::SubCommand)
 						.create_sub_option(|subsub| {
 							subsub
@@ -1008,7 +1008,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.create_sub_option(|sub| {
 					sub
 						.name("cherry")
-						.description("Sell cherry lumber")
+						.description("Sell cherry furniture")
 						.kind(CommandOptionType::SubCommand)
 						.create_sub_option(|subsub| {
 							subsub
@@ -1029,7 +1029,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.create_sub_option(|sub| {
 					sub
 						.name("purpleheart")
-						.description("Sell purpleheart lumber")
+						.description("Sell purpleheart furniture")
 						.kind(CommandOptionType::SubCommand)
 						.create_sub_option(|subsub| {
 							subsub
