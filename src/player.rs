@@ -1,6 +1,4 @@
-mod axe;
-mod kiln;
-mod hammer;
+mod enums;
 mod furnitures;
 mod stats;
 mod upgrades;
@@ -10,11 +8,11 @@ mod action;
 mod color;
 mod prestige;
 
-pub use self::axe::Axe;
-
-pub use self::kiln::Kiln;
-
-pub use self::hammer::Hammer;
+pub use self::enums::Tree;
+pub use self::enums::Axe;
+pub use self::enums::Kiln;
+pub use self::enums::Hammer;
+pub use self::enums::BPUnlock;
 
 pub use self::furnitures::Blueprints;
 pub use self::furnitures::Furniture;

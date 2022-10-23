@@ -7,7 +7,7 @@ use serenity::model::prelude::interaction::application_command::{
 	CommandDataOptionValue
 };
 
-use crate::player::{get_player, Player, Axe, Kiln, Hammer};
+use crate::player::{get_player, Player, Axe, Kiln, Hammer, Tree, BPUnlock};
 use crate::utils;
 
 const LOGGER_BASE: f64 = 25.0;
@@ -41,6 +41,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 			if player.hammer != Hammer::Rune {
 				desc.push_str(&format!("**6:** {} Hammer - ${:.2}\n", get_next_hammer(&player), get_hammer_price(get_next_hammer(&player))));
 			}
+			if player.blueprints.next_unlock() != None {
+				desc.push_str(&format!("**7:** {} - ${:.2}\n", get_next_blueprint(&player).unwrap(), get_blueprint_price(get_next_blueprint(&player).unwrap())))
+			}
 			ret
 				.title("Store")
 				.description(&desc)
@@ -71,6 +74,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 				4 => (1, get_axe_price(get_next_axe(&player))),
 				5 => (1, get_kiln_price(get_next_kiln(&player))),
 				6 => (1, get_hammer_price(get_next_hammer(&player))),
+				7 => (1, get_blueprint_price(get_next_blueprint(&player).unwrap())),
 				_ => (0, 0.0) // Can't get here
 			};
 			if player.cash < total_price || count == 0 {
@@ -108,6 +112,13 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 
 					(format!("You bought the **{}** hammer!", &player.hammer), None)
 				},
+				7 => {
+					let bp = player.unlock_next_blueprint();
+					match bp {
+						Some(t) => (format!("You bought the **{}** blueprint!", t), None),
+						None => ("How'd you get here?".to_string(), None)
+					}
+				},
 				_ => ("How'd you get here?".to_string(), None)
 			};
 			// Stats maybe?
@@ -140,7 +151,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.description("slot to purchase")
 						.kind(CommandOptionType::Integer)
 						.min_int_value(1)
-						.max_int_value(9)
+						.max_int_value(7)
 						.required(true)
 				})
 				.create_sub_option(|sub| {
@@ -221,5 +232,62 @@ fn get_hammer_price(hammer: Hammer) -> f64 {
 		Hammer::Mithril => 72360.0,
 		Hammer::Adamant => 339000.0,
 		Hammer::Rune => 1168500.0,
+	}
+}
+
+fn get_next_blueprint(player: &Player) -> Option<Tree> {
+	player.blueprints.next_unlock()
+}
+
+fn get_blueprint_price(tree: Tree) -> f64 {
+	match tree {
+		Tree::Pine(b) => match b {
+			BPUnlock::BirdHouse => 0.0,
+			BPUnlock::Shelf => 45.5,
+			BPUnlock::SideTable => 128.0,
+			BPUnlock::CoffeeTable => 247.5,
+			BPUnlock::DiningSet => 420.0,
+			_ => 0.0
+		},
+		Tree::Oak(b) => match b {
+			BPUnlock::BirdHouse => 767.0,
+			BPUnlock::Shelf => 826.0,
+			BPUnlock::SideTable => 1552.5,
+			BPUnlock::CoffeeTable => 2992.0,
+			BPUnlock::DiningSet => 4930.0,
+			_ => 0.0
+		},
+		Tree::Maple(b) => match b {
+			BPUnlock::BirdHouse => 8300.0,
+			BPUnlock::Shelf => 8715.0,
+			BPUnlock::SideTable => 13200.0,
+			BPUnlock::CoffeeTable => 26105.0,
+			BPUnlock::DiningSet => 43812.0,
+			_ => 0.0
+		},
+		Tree::Walnut(b) => match b {
+			BPUnlock::BirdHouse => 72360.0,
+			BPUnlock::Shelf => 75040.0,
+			BPUnlock::SideTable => 77720.0,
+			BPUnlock::CoffeeTable => 122700.0,
+			BPUnlock::DiningSet => 207746.5,
+			_ => 0.0
+		},
+		Tree::Cherry(b) => match b {
+			BPUnlock::BirdHouse => 338470.0,
+			BPUnlock::Shelf => 348425.0,
+			BPUnlock::SideTable => 358380.0,
+			BPUnlock::CoffeeTable => 420875.0,
+			BPUnlock::DiningSet => 722000.0,
+			_ => 0.0
+		},
+		Tree::PurpleHeart(b) => match b {
+			BPUnlock::BirdHouse => 1168500.0,
+			BPUnlock::Shelf => 1197000.0,
+			BPUnlock::SideTable => 1225500.0,
+			BPUnlock::CoffeeTable => 1862256.0,
+			BPUnlock::DiningSet => 3226050.0,
+			_ => 0.0
+		},
 	}
 }

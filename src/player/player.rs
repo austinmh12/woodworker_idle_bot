@@ -33,6 +33,8 @@ use crate::player::{
 	SeedPrestige,
 	Kiln,
 	Hammer,
+	Tree,
+	BPUnlock
 };
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -184,6 +186,18 @@ impl Player {
 			.sum::<i64>();
 		
 		req
+	}
+
+	pub fn unlock_next_blueprint(&mut self) -> Option<Tree> {
+		match self.blueprints.next_unlock() {
+			Some(t) => {
+				let ret = t.clone();
+				self.blueprints.unlock(t);
+
+				Some(ret)
+			},
+			None => None
+		}
 	}
 }
 

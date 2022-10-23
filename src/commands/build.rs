@@ -45,6 +45,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 		// Don't need to check hammer::none since we do it above.
 		"pine" => match furniture.name.as_str() {
 			"birdhouse" => {
+				if !player.blueprints.pine.birdhouse {
+					return format!("You don't know how to make a pine bird house!");
+				}
 				if player.lumber.pine + player.queued_lumber("pine") < 1 * actions {
 					return format!("You don't have enough pine lumber, you need **{}** more", (1 * actions) - player.lumber.pine + player.queued_lumber("pine"));
 				}
@@ -52,6 +55,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 				build_player_update(&mut player, "pine", "birdhouse", actions).await
 			},
 			"shelf" => {
+				if !player.blueprints.pine.shelf {
+					return format!("You don't know how to make a pine shelf!");
+				}
 				if player.lumber.pine + player.queued_lumber("pine") < 2 * actions {
 					return format!("You don't have enough pine lumber, you need **{}** more", (2 * actions) - player.lumber.pine + player.queued_lumber("pine"));
 				}
@@ -59,6 +65,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 				build_player_update(&mut player, "pine", "shelf", actions).await
 			},
 			"sidetable" => {
+				if !player.blueprints.pine.side_table {
+					return format!("You don't know how to make a pine side table!");
+				}
 				if player.lumber.pine + player.queued_lumber("pine") < 3 * actions {
 					return format!("You don't have enough pine lumber, you need **{}** more", (3 * actions) - player.lumber.pine + player.queued_lumber("pine"));
 				}
@@ -66,6 +75,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 				build_player_update(&mut player, "pine", "sidetable", actions).await
 			},
 			"coffeetable" => {
+				if !player.blueprints.pine.coffee_table {
+					return format!("You don't know how to make a pine coffee table!");
+				}
 				if player.lumber.pine + player.queued_lumber("pine") < 4 * actions {
 					return format!("You don't have enough pine lumber, you need **{}** more", (4 * actions) - player.lumber.pine + player.queued_lumber("pine"));
 				}
@@ -73,6 +85,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 				build_player_update(&mut player, "pine", "coffeetable", actions).await
 			},
 			"diningset" => {
+				if !player.blueprints.pine.dining_set {
+					return format!("You don't know how to make a pine dining set!");
+				}
 				if player.lumber.pine + player.queued_lumber("pine") < 5 * actions {
 					return format!("You don't have enough pine lumber, you need **{}** more", (5 * actions) - player.lumber.pine + player.queued_lumber("pine"));
 				}
@@ -87,6 +102,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			}
 			match furniture.name.as_str() {
 				"birdhouse" => {
+				if !player.blueprints.oak.birdhouse {
+					return format!("You don't know how to make a oak bird house!");
+				}
 					if player.lumber.oak + player.queued_lumber("oak") < 1 * actions {
 						return format!("You don't have enough oak lumber, you need **{}** more", (1 * actions) - player.lumber.oak + player.queued_lumber("oak"));
 					}
@@ -94,6 +112,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "oak", "birdhouse", actions).await
 				},
 				"shelf" => {
+				if !player.blueprints.oak.shelf {
+					return format!("You don't know how to make a oak shelf!");
+				}
 					if player.lumber.oak + player.queued_lumber("oak") < 2 * actions {
 						return format!("You don't have enough oak lumber, you need **{}** more", (2 * actions) - player.lumber.oak + player.queued_lumber("oak"));
 					}
@@ -101,6 +122,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "oak", "shelf", actions).await
 				},
 				"sidetable" => {
+				if !player.blueprints.oak.side_table {
+					return format!("You don't know how to make a oak side table!");
+				}
 					if player.lumber.oak + player.queued_lumber("oak") < 3 * actions {
 						return format!("You don't have enough oak lumber, you need **{}** more", (3 * actions) - player.lumber.oak + player.queued_lumber("oak"));
 					}
@@ -108,6 +132,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "oak", "sidetable", actions).await
 				},
 				"coffeetable" => {
+				if !player.blueprints.oak.coffee_table {
+					return format!("You don't know how to make a oak coffee table!");
+				}
 					if player.lumber.oak + player.queued_lumber("oak") < 4 * actions {
 						return format!("You don't have enough oak lumber, you need **{}** more", (4 * actions) - player.lumber.oak + player.queued_lumber("oak"));
 					}
@@ -115,6 +142,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "oak", "coffeetable", actions).await
 				},
 				"diningset" => {
+				if !player.blueprints.oak.dining_set {
+					return format!("You don't know how to make a oak dining set!");
+				}
 					if player.lumber.oak + player.queued_lumber("oak") < 5 * actions {
 						return format!("You don't have enough oak lumber, you need **{}** more", (5 * actions) - player.lumber.oak + player.queued_lumber("oak"));
 					}
@@ -130,6 +160,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			}
 			match furniture.name.as_str() {
 				"birdhouse" => {
+				if !player.blueprints.maple.birdhouse {
+					return format!("You don't know how to make a maple bird house!");
+				}
 					if player.lumber.maple + player.queued_lumber("maple") < 1 * actions {
 						return format!("You don't have enough maple lumber, you need **{}** more", (1 * actions) - player.lumber.maple + player.queued_lumber("maple"));
 					}
@@ -137,6 +170,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "maple", "birdhouse", actions).await
 				},
 				"shelf" => {
+				if !player.blueprints.maple.shelf {
+					return format!("You don't know how to make a maple shelf!");
+				}
 					if player.lumber.maple + player.queued_lumber("maple") < 2 * actions {
 						return format!("You don't have enough maple lumber, you need **{}** more", (2 * actions) - player.lumber.maple + player.queued_lumber("maple"));
 					}
@@ -144,6 +180,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "maple", "shelf", actions).await
 				},
 				"sidetable" => {
+				if !player.blueprints.maple.side_table {
+					return format!("You don't know how to make a maple side table!");
+				}
 					if player.lumber.maple + player.queued_lumber("maple") < 3 * actions {
 						return format!("You don't have enough maple lumber, you need **{}** more", (3 * actions) - player.lumber.maple + player.queued_lumber("maple"));
 					}
@@ -151,6 +190,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "maple", "sidetable", actions).await
 				},
 				"coffeetable" => {
+				if !player.blueprints.maple.coffee_table {
+					return format!("You don't know how to make a maple coffee table!");
+				}
 					if player.lumber.maple + player.queued_lumber("maple") < 4 * actions {
 						return format!("You don't have enough maple lumber, you need **{}** more", (4 * actions) - player.lumber.maple + player.queued_lumber("maple"));
 					}
@@ -158,6 +200,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "maple", "coffeetable", actions).await
 				},
 				"diningset" => {
+				if !player.blueprints.maple.dining_set {
+					return format!("You don't know how to make a maple dining set!");
+				}
 					if player.lumber.maple + player.queued_lumber("maple") < 5 * actions {
 						return format!("You don't have enough maple lumber, you need **{}** more", (5 * actions) - player.lumber.maple + player.queued_lumber("maple"));
 					}
@@ -173,6 +218,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			}
 			match furniture.name.as_str() {
 				"birdhouse" => {
+				if !player.blueprints.walnut.birdhouse {
+					return format!("You don't know how to make a walnut bird house!");
+				}
 					if player.lumber.walnut + player.queued_lumber("walnut") < 1 * actions {
 						return format!("You don't have enough walnut lumber, you need **{}** more", (1 * actions) - player.lumber.walnut + player.queued_lumber("walnut"));
 					}
@@ -180,6 +228,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "walnut", "birdhouse", actions).await
 				},
 				"shelf" => {
+				if !player.blueprints.walnut.shelf {
+					return format!("You don't know how to make a walnut shelf!");
+				}
 					if player.lumber.walnut + player.queued_lumber("walnut") < 2 * actions {
 						return format!("You don't have enough walnut lumber, you need **{}** more", (2 * actions) - player.lumber.walnut + player.queued_lumber("walnut"));
 					}
@@ -187,6 +238,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "walnut", "shelf", actions).await
 				},
 				"sidetable" => {
+				if !player.blueprints.walnut.side_table {
+					return format!("You don't know how to make a walnut side table!");
+				}
 					if player.lumber.walnut + player.queued_lumber("walnut") < 3 * actions {
 						return format!("You don't have enough walnut lumber, you need **{}** more", (3 * actions) - player.lumber.walnut + player.queued_lumber("walnut"));
 					}
@@ -194,6 +248,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "walnut", "sidetable", actions).await
 				},
 				"coffeetable" => {
+				if !player.blueprints.walnut.coffee_table {
+					return format!("You don't know how to make a walnut coffee table!");
+				}
 					if player.lumber.walnut + player.queued_lumber("walnut") < 4 * actions {
 						return format!("You don't have enough walnut lumber, you need **{}** more", (4 * actions) - player.lumber.walnut + player.queued_lumber("walnut"));
 					}
@@ -201,6 +258,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "walnut", "coffeetable", actions).await
 				},
 				"diningset" => {
+				if !player.blueprints.walnut.dining_set {
+					return format!("You don't know how to make a walnut dining set!");
+				}
 					if player.lumber.walnut + player.queued_lumber("walnut") < 5 * actions {
 						return format!("You don't have enough walnut lumber, you need **{}** more", (5 * actions) - player.lumber.walnut + player.queued_lumber("walnut"));
 					}
@@ -216,6 +276,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			}
 			match furniture.name.as_str() {
 				"birdhouse" => {
+				if !player.blueprints.cherry.birdhouse {
+					return format!("You don't know how to make a cherry bird house!");
+				}
 					if player.lumber.cherry + player.queued_lumber("cherry") < 1 * actions {
 						return format!("You don't have enough cherry lumber, you need **{}** more", (1 * actions) - player.lumber.cherry + player.queued_lumber("cherry"));
 					}
@@ -223,6 +286,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "cherry", "birdhouse", actions).await
 				},
 				"shelf" => {
+				if !player.blueprints.cherry.shelf {
+					return format!("You don't know how to make a cherry shelf!");
+				}
 					if player.lumber.cherry + player.queued_lumber("cherry") < 2 * actions {
 						return format!("You don't have enough cherry lumber, you need **{}** more", (2 * actions) - player.lumber.cherry + player.queued_lumber("cherry"));
 					}
@@ -230,6 +296,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "cherry", "shelf", actions).await
 				},
 				"sidetable" => {
+				if !player.blueprints.cherry.side_table {
+					return format!("You don't know how to make a cherry side table!");
+				}
 					if player.lumber.cherry + player.queued_lumber("cherry") < 3 * actions {
 						return format!("You don't have enough cherry lumber, you need **{}** more", (3 * actions) - player.lumber.cherry + player.queued_lumber("cherry"));
 					}
@@ -237,6 +306,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "cherry", "sidetable", actions).await
 				},
 				"coffeetable" => {
+				if !player.blueprints.cherry.coffee_table {
+					return format!("You don't know how to make a cherry coffee table!");
+				}
 					if player.lumber.cherry + player.queued_lumber("cherry") < 4 * actions {
 						return format!("You don't have enough cherry lumber, you need **{}** more", (4 * actions) - player.lumber.cherry + player.queued_lumber("cherry"));
 					}
@@ -244,6 +316,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "cherry", "coffeetable", actions).await
 				},
 				"diningset" => {
+				if !player.blueprints.cherry.dining_set {
+					return format!("You don't know how to make a cherry dining set!");
+				}
 					if player.lumber.cherry + player.queued_lumber("cherry") < 5 * actions {
 						return format!("You don't have enough cherry lumber, you need **{}** more", (5 * actions) - player.lumber.cherry + player.queued_lumber("cherry"));
 					}
@@ -259,6 +334,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			}
 			match furniture.name.as_str() {
 				"birdhouse" => {
+				if !player.blueprints.purpleheart.birdhouse {
+					return format!("You don't know how to make a purpleheart bird house!");
+				}
 					if player.lumber.purpleheart + player.queued_lumber("purpleheart") < 1 * actions {
 						return format!("You don't have enough purpleheart lumber, you need **{}** more", (1 * actions) - player.lumber.purpleheart + player.queued_lumber("purpleheart"));
 					}
@@ -266,6 +344,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "purpleheart", "birdhouse", actions).await
 				},
 				"shelf" => {
+				if !player.blueprints.purpleheart.shelf {
+					return format!("You don't know how to make a purpleheart shelf!");
+				}
 					if player.lumber.purpleheart + player.queued_lumber("purpleheart") < 2 * actions {
 						return format!("You don't have enough purpleheart lumber, you need **{}** more", (2 * actions) - player.lumber.purpleheart + player.queued_lumber("purpleheart"));
 					}
@@ -273,6 +354,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "purpleheart", "shelf", actions).await
 				},
 				"sidetable" => {
+				if !player.blueprints.purpleheart.side_table {
+					return format!("You don't know how to make a purpleheart side table!");
+				}
 					if player.lumber.purpleheart + player.queued_lumber("purpleheart") < 3 * actions {
 						return format!("You don't have enough purpleheart lumber, you need **{}** more", (3 * actions) - player.lumber.purpleheart + player.queued_lumber("purpleheart"));
 					}
@@ -280,6 +364,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "purpleheart", "sidetable", actions).await
 				},
 				"coffeetable" => {
+				if !player.blueprints.purpleheart.coffee_table {
+					return format!("You don't know how to make a purpleheart coffee table!");
+				}
 					if player.lumber.purpleheart + player.queued_lumber("purpleheart") < 4 * actions {
 						return format!("You don't have enough purpleheart lumber, you need **{}** more", (4 * actions) - player.lumber.purpleheart + player.queued_lumber("purpleheart"));
 					}
@@ -287,6 +374,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					build_player_update(&mut player, "purpleheart", "coffeetable", actions).await
 				},
 				"diningset" => {
+				if !player.blueprints.purpleheart.dining_set {
+					return format!("You don't know how to make a purpleheart dining set!");
+				}
 					if player.lumber.purpleheart + player.queued_lumber("purpleheart") < 5 * actions {
 						return format!("You don't have enough purpleheart lumber, you need **{}** more", (5 * actions) - player.lumber.purpleheart + player.queued_lumber("purpleheart"));
 					}
