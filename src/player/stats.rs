@@ -155,7 +155,7 @@ impl Stats {
 		}
 		let mut ret = CreateEmbed::default();
 		ret
-			.title(format!("{}'s profile", nickname))
+			.title(format!("{}'s Stats", nickname))
 			.thumbnail(avatar)
 			.description(desc)
 			.colour(default_colour());

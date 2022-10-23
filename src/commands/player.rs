@@ -18,7 +18,7 @@ pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[Co
 	match option.name.as_str() {
 		"profile" => ("".to_string(), Some(player.embed(nickname, avatar))),
 		"stats" => ("".to_string(), Some(player.stats.embed(nickname, avatar))),
-		"inventory" => ("todo".to_string(), None),
+		"inventory" => ("".to_string(), Some(player.inventory(nickname, avatar))),
 		"blueprints" => ("todo".to_string(), None),
 		"colour" => {
 			let red = match option.options.get(0).expect("Expected an integer").resolved.as_ref().expect("Expected an integer") {
