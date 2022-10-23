@@ -7,7 +7,7 @@ use serenity::model::prelude::interaction::application_command::{
 	CommandDataOptionValue
 };
 
-use crate::player::{get_player};
+use crate::player::{get_player, Tree, BPUnlock};
 
 pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[CommandDataOption]) -> (String, Option<CreateEmbed>) {
 	let option = &options
@@ -18,7 +18,18 @@ pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[Co
 	match option.name.as_str() {
 		"profile" => ("".to_string(), Some(player.embed(nickname, avatar))),
 		"stats" => ("".to_string(), Some(player.stats.embed(nickname, avatar))),
-		"inventory" => ("".to_string(), Some(player.inventory(nickname, avatar))),
+		"inventory" => {
+			match option.options.get(0).expect("Subcommand").name.as_str() {
+				"pine" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::Pine(BPUnlock::None)))),
+				"oak" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::Oak(BPUnlock::None)))),
+				"maple" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::Maple(BPUnlock::None)))),
+				"walnut" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::Walnut(BPUnlock::None)))),
+				"cherry" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::Cherry(BPUnlock::None)))),
+				"purpleheart" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::PurpleHeart(BPUnlock::None)))),
+				_ => ("How did you get here?".to_string(), None)
+			}
+		},
+		
 		"blueprints" => ("todo".to_string(), None),
 		"colour" => {
 			let red = match option.options.get(0).expect("Expected an integer").resolved.as_ref().expect("Expected an integer") {
@@ -62,7 +73,43 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 			option
 				.name("inventory")
 				.description("Your inventory")
-				.kind(CommandOptionType::SubCommand)
+				.kind(CommandOptionType::SubCommandGroup)
+				.create_sub_option(|sub| {
+					sub
+						.name("pine")
+						.description("Your pine inventory")
+						.kind(CommandOptionType::SubCommand)
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("oak")
+						.description("Your oak inventory")
+						.kind(CommandOptionType::SubCommand)
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("maple")
+						.description("Your maple inventory")
+						.kind(CommandOptionType::SubCommand)
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("walnut")
+						.description("Your walnut inventory")
+						.kind(CommandOptionType::SubCommand)
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("cherry")
+						.description("Your cherry inventory")
+						.kind(CommandOptionType::SubCommand)
+				})
+				.create_sub_option(|sub| {
+					sub
+						.name("purpleheart")
+						.description("Your purpleheart inventory")
+						.kind(CommandOptionType::SubCommand)
+				})
 		})
 		.create_option(|option| {
 			option

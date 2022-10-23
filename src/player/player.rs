@@ -133,12 +133,111 @@ impl Player {
 
 		let mut ret = CreateEmbed::default();
 		ret
-			.title(format!("{}'s profile", nickname))
+			.title(format!("{}'s Profile", nickname))
 			.thumbnail(avatar)
 			.description(desc)
 			.colour(Colour::from_rgb(self.color.red, self.color.green, self.color.blue));
 
 		ret
+	}
+
+	pub fn inventory(&self, nickname: String, avatar: String, tree: Tree) -> CreateEmbed {
+		let mut ret = CreateEmbed::default();
+		let desc = match tree {
+			Tree::Pine(_) => "**Pine**",
+			Tree::Oak(_) => "**Oak**",
+			Tree::Maple(_) => "**Maple**",
+			Tree::Walnut(_) => "**Walnut**",
+			Tree::Cherry(_) => "**Cherry**",
+			Tree::PurpleHeart(_) => "**Purple Heart**",
+		};
+		let (r, g, b) = match tree {
+			Tree::Pine(_) => (178, 147, 116),
+			Tree::Oak(_) => (211, 146, 90),
+			Tree::Maple(_) => (233, 186, 134),
+			Tree::Walnut(_) => (135, 93, 79),
+			Tree::Cherry(_) => (124, 46, 42),
+			Tree::PurpleHeart(_) => (138, 93, 100),
+		};
+		ret
+			.title(format!("{}'s Inventory", nickname))
+			.thumbnail(avatar)
+			.description(desc)
+			.colour(Colour::from_rgb(r, g, b))
+			.fields(self.inv_helper(tree));
+
+		ret
+	}
+	
+	fn inv_helper(&self, tree: Tree) -> Vec<(String, String, bool)> {
+		match tree {
+			Tree::Pine(_) => {
+				vec![
+					("Logs".to_string(), format!("{}", self.logs.pine), true),
+					("Lumber".to_string(), format!("{}", self.lumber.pine), true),
+					("Bird Houses".to_string(), format!("{}", self.furniture.pine.birdhouse), true),
+					("Shelves".to_string(), format!("{}", self.furniture.pine.shelf), true),
+					("Side Tables".to_string(), format!("{}", self.furniture.pine.side_table), true),
+					("Coffee Tables".to_string(), format!("{}", self.furniture.pine.coffee_table), true),
+					("Dining Sets".to_string(), format!("{}", self.furniture.pine.dining_set), true),
+				]
+			},
+			Tree::Oak(_) => {
+				vec![
+					("Logs".to_string(), format!("{}", self.logs.oak), true),
+					("Lumber".to_string(), format!("{}", self.lumber.oak), true),
+					("Bird Houses".to_string(), format!("{}", self.furniture.oak.birdhouse), true),
+					("Shelves".to_string(), format!("{}", self.furniture.oak.shelf), true),
+					("Side Tables".to_string(), format!("{}", self.furniture.oak.side_table), true),
+					("Coffee Tables".to_string(), format!("{}", self.furniture.oak.coffee_table), true),
+					("Dining Sets".to_string(), format!("{}", self.furniture.oak.dining_set), true),
+				]
+			},
+			Tree::Maple(_) => {
+				vec![
+					("Logs".to_string(), format!("{}", self.logs.maple), true),
+					("Lumber".to_string(), format!("{}", self.lumber.maple), true),
+					("Bird Houses".to_string(), format!("{}", self.furniture.maple.birdhouse), true),
+					("Shelves".to_string(), format!("{}", self.furniture.maple.shelf), true),
+					("Side Tables".to_string(), format!("{}", self.furniture.maple.side_table), true),
+					("Coffee Tables".to_string(), format!("{}", self.furniture.maple.coffee_table), true),
+					("Dining Sets".to_string(), format!("{}", self.furniture.maple.dining_set), true),
+				]
+			},
+			Tree::Walnut(_) => {
+				vec![
+					("Logs".to_string(), format!("{}", self.logs.walnut), true),
+					("Lumber".to_string(), format!("{}", self.lumber.walnut), true),
+					("Bird Houses".to_string(), format!("{}", self.furniture.walnut.birdhouse), true),
+					("Shelves".to_string(), format!("{}", self.furniture.walnut.shelf), true),
+					("Side Tables".to_string(), format!("{}", self.furniture.walnut.side_table), true),
+					("Coffee Tables".to_string(), format!("{}", self.furniture.walnut.coffee_table), true),
+					("Dining Sets".to_string(), format!("{}", self.furniture.walnut.dining_set), true),
+				]
+			},
+			Tree::Cherry(_) => {
+				vec![
+					("Logs".to_string(), format!("{}", self.logs.cherry), true),
+					("Lumber".to_string(), format!("{}", self.lumber.cherry), true),
+					("Bird Houses".to_string(), format!("{}", self.furniture.cherry.birdhouse), true),
+					("Shelves".to_string(), format!("{}", self.furniture.cherry.shelf), true),
+					("Side Tables".to_string(), format!("{}", self.furniture.cherry.side_table), true),
+					("Coffee Tables".to_string(), format!("{}", self.furniture.cherry.coffee_table), true),
+					("Dining Sets".to_string(), format!("{}", self.furniture.cherry.dining_set), true),
+				]
+			},
+			Tree::PurpleHeart(_) => {
+				vec![
+					("Logs".to_string(), format!("{}", self.logs.purpleheart), true),
+					("Lumber".to_string(), format!("{}", self.lumber.purpleheart), true),
+					("Bird Houses".to_string(), format!("{}", self.furniture.purpleheart.birdhouse), true),
+					("Shelves".to_string(), format!("{}", self.furniture.purpleheart.shelf), true),
+					("Side Tables".to_string(), format!("{}", self.furniture.purpleheart.side_table), true),
+					("Coffee Tables".to_string(), format!("{}", self.furniture.purpleheart.coffee_table), true),
+					("Dining Sets".to_string(), format!("{}", self.furniture.purpleheart.dining_set), true),
+				]
+			},
+		}
 	}
 
 	pub fn queue_action(&mut self, a: Action) -> Action {
