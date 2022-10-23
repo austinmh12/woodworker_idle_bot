@@ -116,7 +116,7 @@ impl Player {
 			.unwrap();
 	}
 
-	pub async fn embed(&self, nickname: String, avatar: String) -> CreateEmbed {
+	pub fn embed(&self, nickname: String, avatar: String) -> CreateEmbed {
 		// let daily_reset_local: DateTime<Local> = DateTime::from(self.daily_reset);
 		let mut desc = format!("**Wallet:** ${:.2}\n", &self.cash);
 		desc.push_str(&format!("**Axe:** {}\n", &self.axe));

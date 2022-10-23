@@ -5,8 +5,9 @@ use mongodb::{
 		Document,
 	}, 
 };
+use serenity::builder::CreateEmbed;
 
-use crate::utils::ToDoc;
+use crate::utils::{ToDoc, default_colour};
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Stats {
@@ -74,6 +75,93 @@ pub struct Stats {
 	pub walnut_seeds_earned: i64,
 	pub cherry_seeds_earned: i64,
 	pub purpleheart_seeds_earned: i64,
+}
+
+impl Stats {
+	fn to_vec(&self) -> Vec<(String, i64)> {
+		let mut ret = vec![];
+		ret.push(("Pine Trees Chopped".to_string(), self.pine_trees_chopped));
+		ret.push(("Pine Logs Earned".to_string(), self.pine_logs_earned));
+		ret.push(("Pine Logs Dried".to_string(), self.pine_logs_dried));
+		ret.push(("Pine Lumber Earned".to_string(), self.pine_lumber_earned));
+		ret.push(("Pine Birdhouses Built".to_string(), self.pine_birdhouses_built));
+		ret.push(("Pine Shelves Built".to_string(), self.pine_shelves_built));
+		ret.push(("Pine Side Tables Built".to_string(), self.pine_side_tables_built));
+		ret.push(("Pine Coffee Tables Built".to_string(), self.pine_coffee_tables_built));
+		ret.push(("Pine Dining Sets Built".to_string(), self.pine_dining_sets_built));
+		ret.push(("Oak Trees Chopped".to_string(), self.oak_trees_chopped));
+		ret.push(("Oak Logs Earned".to_string(), self.oak_logs_earned));
+		ret.push(("Oak Logs Dried".to_string(), self.oak_logs_dried));
+		ret.push(("Oak Lumber Earned".to_string(), self.oak_lumber_earned));
+		ret.push(("Oak Birdhouses Built".to_string(), self.oak_birdhouses_built));
+		ret.push(("Oak Shelves Built".to_string(), self.oak_shelves_built));
+		ret.push(("Oak Side Tables Built".to_string(), self.oak_side_tables_built));
+		ret.push(("Oak Coffee Tables Built".to_string(), self.oak_coffee_tables_built));
+		ret.push(("Oak Dining Sets Built".to_string(), self.oak_dining_sets_built));
+		ret.push(("Maple Trees Chopped".to_string(), self.maple_trees_chopped));
+		ret.push(("Maple Logs Earned".to_string(), self.maple_logs_earned));
+		ret.push(("Maple Logs Dried".to_string(), self.maple_logs_dried));
+		ret.push(("Maple Lumber Earned".to_string(), self.maple_lumber_earned));
+		ret.push(("Maple Birdhouses Built".to_string(), self.maple_birdhouses_built));
+		ret.push(("Maple Shelves Built".to_string(), self.maple_shelves_built));
+		ret.push(("Maple Side Tables Built".to_string(), self.maple_side_tables_built));
+		ret.push(("Maple Coffee Tables Built".to_string(), self.maple_coffee_tables_built));
+		ret.push(("Maple Dining Sets Built".to_string(), self.maple_dining_sets_built));
+		ret.push(("Walnut Trees Chopped".to_string(), self.walnut_trees_chopped));
+		ret.push(("Walnut Logs Earned".to_string(), self.walnut_logs_earned));
+		ret.push(("Walnut Logs Dried".to_string(), self.walnut_logs_dried));
+		ret.push(("Walnut Lumber Earned".to_string(), self.walnut_lumber_earned));
+		ret.push(("Walnut Birdhouses Built".to_string(), self.walnut_birdhouses_built));
+		ret.push(("Walnut Shelves Built".to_string(), self.walnut_shelves_built));
+		ret.push(("Walnut Side Tables Built".to_string(), self.walnut_side_tables_built));
+		ret.push(("Walnut Coffee Tables Built".to_string(), self.walnut_coffee_tables_built));
+		ret.push(("Walnut Dining Sets Built".to_string(), self.walnut_dining_sets_built));
+		ret.push(("Cherry Trees Chopped".to_string(), self.cherry_trees_chopped));
+		ret.push(("Cherry Logs Earned".to_string(), self.cherry_logs_earned));
+		ret.push(("Cherry Logs Dried".to_string(), self.cherry_logs_dried));
+		ret.push(("Cherry Lumber Earned".to_string(), self.cherry_lumber_earned));
+		ret.push(("Cherry Birdhouses Built".to_string(), self.cherry_birdhouses_built));
+		ret.push(("Cherry Shelves Built".to_string(), self.cherry_shelves_built));
+		ret.push(("Cherry Side Tables Built".to_string(), self.cherry_side_tables_built));
+		ret.push(("Cherry Coffee Tables Built".to_string(), self.cherry_coffee_tables_built));
+		ret.push(("Cherry Dining Sets Built".to_string(), self.cherry_dining_sets_built));
+		ret.push(("Purpleheart Trees Chopped".to_string(), self.purpleheart_trees_chopped));
+		ret.push(("Purpleheart Logs Earned".to_string(), self.purpleheart_logs_earned));
+		ret.push(("Purpleheart Logs Dried".to_string(), self.purpleheart_logs_dried));
+		ret.push(("Purpleheart Lumber Earned".to_string(), self.purpleheart_lumber_earned));
+		ret.push(("Purpleheart Birdhouses Built".to_string(), self.purpleheart_birdhouses_built));
+		ret.push(("Purpleheart Shelves Built".to_string(), self.purpleheart_shelves_built));
+		ret.push(("Purpleheart Side Tables Built".to_string(), self.purpleheart_side_tables_built));
+		ret.push(("Purpleheart Coffee Tables Built".to_string(), self.purpleheart_coffee_tables_built));
+		ret.push(("Purpleheart Dining Sets Built".to_string(), self.purpleheart_dining_sets_built));
+		ret.push(("Times Sawdust Prestiged".to_string(), self.times_sawdust_prestiged));
+		ret.push(("Sawdust Earned".to_string(), self.sawdust_earned));
+		ret.push(("Times Seed Prestiged".to_string(), self.times_seed_prestiged));
+		ret.push(("Pine Seeds Earned".to_string(), self.pine_seeds_earned));
+		ret.push(("Oak Seeds Earned".to_string(), self.oak_seeds_earned));
+		ret.push(("Maple Seeds Earned".to_string(), self.maple_seeds_earned));
+		ret.push(("Walnut Seeds Earned".to_string(), self.walnut_seeds_earned));
+		ret.push(("Cherry Seeds Earned".to_string(), self.cherry_seeds_earned));
+		ret.push(("Purpleheart Seeds Earned".to_string(), self.purpleheart_seeds_earned));
+
+		ret
+	}
+
+	pub fn embed(&self, nickname: String, avatar: String) -> CreateEmbed {
+		// let daily_reset_local: DateTime<Local> = DateTime::from(self.daily_reset);
+		let mut desc = format!("**Cash Earned:** ${:.2}\n", &self.cash_earned);
+		for (stat, value) in self.to_vec() {
+			desc.push_str(&format!("**{}:** {}\n", stat, value));
+		}
+		let mut ret = CreateEmbed::default();
+		ret
+			.title(format!("{}'s profile", nickname))
+			.thumbnail(avatar)
+			.description(desc)
+			.colour(default_colour());
+
+		ret
+	}
 }
 
 impl ToDoc for Stats {

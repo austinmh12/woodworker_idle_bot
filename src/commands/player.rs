@@ -16,9 +16,9 @@ pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[Co
 	
 	let mut player = get_player(player_id).await;
 	match option.name.as_str() {
-		"profile" => ("".to_string(), Some(player.embed(nickname, avatar).await)),
-		"stats" => ("todo".to_string(), None),
-		"furniture" => ("todo".to_string(), None),
+		"profile" => ("".to_string(), Some(player.embed(nickname, avatar))),
+		"stats" => ("".to_string(), Some(player.stats.embed(nickname, avatar))),
+		"inventory" => ("todo".to_string(), None),
 		"blueprints" => ("todo".to_string(), None),
 		"colour" => {
 			let red = match option.options.get(0).expect("Expected an integer").resolved.as_ref().expect("Expected an integer") {
@@ -40,7 +40,7 @@ pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[Co
 
 			(format!("You updated your profile color to **{}, {}, {}**", red, green, blue), None)
 		}
-		_ => ("".to_string(), Some(player.embed(nickname, avatar).await))
+		_ => ("".to_string(), Some(player.embed(nickname, avatar)))
 	}
 }
 
@@ -60,8 +60,8 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 		})
 		.create_option(|option| {
 			option
-				.name("furniture")
-				.description("Your furniture")
+				.name("inventory")
+				.description("Your inventory")
 				.kind(CommandOptionType::SubCommand)
 		})
 		.create_option(|option| {
