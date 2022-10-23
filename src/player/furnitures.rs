@@ -20,22 +20,6 @@ pub struct Blueprints {
 }
 
 impl Blueprints {
-	pub fn latest_unlock(&self) -> Tree {
-		if self.purpleheart.latest_unlock() != BPUnlock::None {
-			Tree::PurpleHeart(self.purpleheart.latest_unlock())
-		} else if self.cherry.latest_unlock() != BPUnlock::None {
-			Tree::Cherry(self.cherry.latest_unlock())
-		} else if self.walnut.latest_unlock() != BPUnlock::None {
-			Tree::Walnut(self.walnut.latest_unlock())
-		} else if self.maple.latest_unlock() != BPUnlock::None {
-			Tree::Maple(self.maple.latest_unlock())
-		} else if self.oak.latest_unlock() != BPUnlock::None {
-			Tree::Oak(self.oak.latest_unlock())
-		} else {
-			Tree::Pine(self.pine.latest_unlock())
-		}
-	}
-
 	pub fn next_unlock(&self) -> Option<Tree> {
 		if self.pine.next_unlock() != BPUnlock::None {
 			Some(Tree::Pine(self.pine.next_unlock()))
