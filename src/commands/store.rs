@@ -56,7 +56,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 				CommandDataOptionValue::Integer(i) => i.to_owned(),
 				_ => 0,
 			};
-			if !(1..=6).contains(&slot) {
+			if !(1..=7).contains(&slot) {
 				return ("Invalid slot".to_string(), None);
 			}
 			let amount = if &action.options.len() == &1usize {
