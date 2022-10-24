@@ -7,7 +7,7 @@ use serenity::model::prelude::interaction::application_command::{
 	CommandDataOptionValue
 };
 
-use crate::player::{get_player, Tree, BPUnlock};
+use crate::player::get_player;
 use crate::utils::{Message, PaginatedEmbed};
 
 pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[CommandDataOption]) -> Message {
@@ -18,32 +18,13 @@ pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[Co
 	let mut player = get_player(player_id).await;
 	match option.name.as_str() {
 		"profile" => Message::Embed(player.embed(nickname, avatar)),
-		"stats" => Message::Embed(player.stats.embed(nickname, avatar)),
-		"inventory" => {
-			let p = PaginatedEmbed::new(
-				vec![
-					player.inventory(nickname.clone(), avatar.clone(), Tree::Pine(BPUnlock::None)),
-					player.inventory(nickname.clone(), avatar.clone(), Tree::Oak(BPUnlock::None)),
-					player.inventory(nickname.clone(), avatar.clone(), Tree::Maple(BPUnlock::None)),
-					player.inventory(nickname.clone(), avatar.clone(), Tree::Walnut(BPUnlock::None)),
-					player.inventory(nickname.clone(), avatar.clone(), Tree::Cherry(BPUnlock::None)),
-					player.inventory(nickname.clone(), avatar.clone(), Tree::PurpleHeart(BPUnlock::None)),
-				]
-			);
+		"stats" => {
+			let p = PaginatedEmbed::new(player.stats.embed(nickname, avatar));
 
 			Message::Pages(p)
 		},
-		"blueprints" => {
-			let p = PaginatedEmbed::new(
-				vec![
-					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::Pine(BPUnlock::None)),
-					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::Oak(BPUnlock::None)),
-					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::Maple(BPUnlock::None)),
-					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::Walnut(BPUnlock::None)),
-					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::Cherry(BPUnlock::None)),
-					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::PurpleHeart(BPUnlock::None)),
-				]
-			);
+		"inventory" => {
+			let p = PaginatedEmbed::new(player.inventory_pages(nickname, avatar));
 
 			Message::Pages(p)
 		},
@@ -89,12 +70,6 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 			option
 				.name("inventory")
 				.description("Your inventory")
-				.kind(CommandOptionType::SubCommand)
-		})
-		.create_option(|option| {
-			option
-				.name("blueprints")
-				.description("Your blueprints")
 				.kind(CommandOptionType::SubCommand)
 		})
 		.create_option(|option| {

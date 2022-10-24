@@ -137,200 +137,230 @@ impl Player {
 		ret
 	}
 
-	pub fn inventory(&self, nickname: String, avatar: String, tree: Tree) -> CreateEmbed {
-		let mut ret = CreateEmbed::default();
-		let desc = match tree {
-			Tree::Pine(_) => "**Pine**",
-			Tree::Oak(_) => "**Oak**",
-			Tree::Maple(_) => "**Maple**",
-			Tree::Walnut(_) => "**Walnut**",
-			Tree::Cherry(_) => "**Cherry**",
-			Tree::PurpleHeart(_) => "**Purple Heart**",
-		};
-		let (r, g, b) = match tree {
-			Tree::Pine(_) => (178, 147, 116),
-			Tree::Oak(_) => (211, 146, 90),
-			Tree::Maple(_) => (233, 186, 134),
-			Tree::Walnut(_) => (135, 93, 79),
-			Tree::Cherry(_) => (124, 46, 42),
-			Tree::PurpleHeart(_) => (138, 93, 100),
-		};
-		ret
-			.title(format!("{}'s Inventory", nickname))
-			.thumbnail(avatar)
-			.description(desc)
-			.colour(Colour::from_rgb(r, g, b))
-			.fields(self.inv_helper(tree));
+	pub fn inventory_pages(&self, nickname: String, avatar: String) -> Vec<CreateEmbed> {
+		
+		fn bool_to_emoji(b: bool) -> &'static str {
+			match b {
+				true => ":white_check_mark:",
+				false => ":x:"
+			}
+		}
+
+		let mut ret = vec![];
+		for i in 0..6 {
+			let (
+				desc,
+				(r, g, b),
+				logs,
+				loggers,
+				lumber,
+				lumberers,
+				birdhouse_bp,
+				birdhouses,
+				cnc_birdhouse,
+				shelf_bp,
+				shelfs,
+				cnc_shelf,
+				sidetable_bp,
+				sidetables,
+				cnc_sidetable,
+				coffeetable_bp,
+				coffeetables,
+				cnc_coffeetable,
+				diningset_bp,
+				diningsets,
+				cnc_diningset,
+			) = match i {
+				0 => {
+					(
+						"***Pine***",
+						(178, 147, 116),
+						self.logs.pine,
+						self.loggers_active.pine,
+						self.lumber.pine,
+						self.lumberers_active.pine,
+						self.blueprints.pine.birdhouse,
+						self.furniture.pine.birdhouse,
+						self.cncs_active.pine.birdhouse,
+						self.blueprints.pine.shelf,
+						self.furniture.pine.shelf,
+						self.cncs_active.pine.shelf,
+						self.blueprints.pine.side_table,
+						self.furniture.pine.side_table,
+						self.cncs_active.pine.side_table,
+						self.blueprints.pine.coffee_table,
+						self.furniture.pine.coffee_table,
+						self.cncs_active.pine.coffee_table,
+						self.blueprints.pine.dining_set,
+						self.furniture.pine.dining_set,
+						self.cncs_active.pine.dining_set,
+					)
+				},
+				1 => {
+					(
+						"***Oak***",
+						(211, 146, 90),
+						self.logs.oak,
+						self.loggers_active.oak,
+						self.lumber.oak,
+						self.lumberers_active.oak,
+						self.blueprints.oak.birdhouse,
+						self.furniture.oak.birdhouse,
+						self.cncs_active.oak.birdhouse,
+						self.blueprints.oak.shelf,
+						self.furniture.oak.shelf,
+						self.cncs_active.oak.shelf,
+						self.blueprints.oak.side_table,
+						self.furniture.oak.side_table,
+						self.cncs_active.oak.side_table,
+						self.blueprints.oak.coffee_table,
+						self.furniture.oak.coffee_table,
+						self.cncs_active.oak.coffee_table,
+						self.blueprints.oak.dining_set,
+						self.furniture.oak.dining_set,
+						self.cncs_active.oak.dining_set,
+					)
+				},
+				2 => {
+					(
+						"***Maple***",
+						(233, 186, 134),
+						self.logs.maple,
+						self.loggers_active.maple,
+						self.lumber.maple,
+						self.lumberers_active.maple,
+						self.blueprints.maple.birdhouse,
+						self.furniture.maple.birdhouse,
+						self.cncs_active.maple.birdhouse,
+						self.blueprints.maple.shelf,
+						self.furniture.maple.shelf,
+						self.cncs_active.maple.shelf,
+						self.blueprints.maple.side_table,
+						self.furniture.maple.side_table,
+						self.cncs_active.maple.side_table,
+						self.blueprints.maple.coffee_table,
+						self.furniture.maple.coffee_table,
+						self.cncs_active.maple.coffee_table,
+						self.blueprints.maple.dining_set,
+						self.furniture.maple.dining_set,
+						self.cncs_active.maple.dining_set,
+					)
+				},
+				3 => {
+					(
+						"***Walnut***",
+						(135, 93, 79),
+						self.logs.walnut,
+						self.loggers_active.walnut,
+						self.lumber.walnut,
+						self.lumberers_active.walnut,
+						self.blueprints.walnut.birdhouse,
+						self.furniture.walnut.birdhouse,
+						self.cncs_active.walnut.birdhouse,
+						self.blueprints.walnut.shelf,
+						self.furniture.walnut.shelf,
+						self.cncs_active.walnut.shelf,
+						self.blueprints.walnut.side_table,
+						self.furniture.walnut.side_table,
+						self.cncs_active.walnut.side_table,
+						self.blueprints.walnut.coffee_table,
+						self.furniture.walnut.coffee_table,
+						self.cncs_active.walnut.coffee_table,
+						self.blueprints.walnut.dining_set,
+						self.furniture.walnut.dining_set,
+						self.cncs_active.walnut.dining_set,
+					)
+				},
+				4 => {
+					(
+						"***Cherry***",
+						(124, 46, 42),
+						self.logs.cherry,
+						self.loggers_active.cherry,
+						self.lumber.cherry,
+						self.lumberers_active.cherry,
+						self.blueprints.cherry.birdhouse,
+						self.furniture.cherry.birdhouse,
+						self.cncs_active.cherry.birdhouse,
+						self.blueprints.cherry.shelf,
+						self.furniture.cherry.shelf,
+						self.cncs_active.cherry.shelf,
+						self.blueprints.cherry.side_table,
+						self.furniture.cherry.side_table,
+						self.cncs_active.cherry.side_table,
+						self.blueprints.cherry.coffee_table,
+						self.furniture.cherry.coffee_table,
+						self.cncs_active.cherry.coffee_table,
+						self.blueprints.cherry.dining_set,
+						self.furniture.cherry.dining_set,
+						self.cncs_active.cherry.dining_set,
+					)
+				},
+				5 => {
+					(
+						"***Purple Heart***",
+						(138, 93, 100),
+						self.logs.purpleheart,
+						self.loggers_active.purpleheart,
+						self.lumber.purpleheart,
+						self.lumberers_active.purpleheart,
+						self.blueprints.purpleheart.birdhouse,
+						self.furniture.purpleheart.birdhouse,
+						self.cncs_active.purpleheart.birdhouse,
+						self.blueprints.purpleheart.shelf,
+						self.furniture.purpleheart.shelf,
+						self.cncs_active.purpleheart.shelf,
+						self.blueprints.purpleheart.side_table,
+						self.furniture.purpleheart.side_table,
+						self.cncs_active.purpleheart.side_table,
+						self.blueprints.purpleheart.coffee_table,
+						self.furniture.purpleheart.coffee_table,
+						self.cncs_active.purpleheart.coffee_table,
+						self.blueprints.purpleheart.dining_set,
+						self.furniture.purpleheart.dining_set,
+						self.cncs_active.purpleheart.dining_set,
+					)
+				},
+				_ => todo!()
+			};
+			let mut emb = CreateEmbed::default();
+			emb
+				.title(format!("{}'s Inventory", nickname))
+				.thumbnail(avatar.clone())
+				.description(desc)
+				.colour(Colour::from_rgb(r, g, b))
+				.field("Logs", logs, true)
+				.field("Loggers Assigned", loggers, true)
+				.field("\u{200b}", "\u{200b}", false)
+				.field("Lumber", lumber, true)
+				.field("Lumberers Assigned", lumberers, true)
+				.field("\u{200b}", "\u{200b}", false)
+				.field("Bird House BP", bool_to_emoji(birdhouse_bp), true)
+				.field("Bird Houses", birdhouses, true)
+				.field("CNCs Assigned", cnc_birdhouse, true)
+				.field("\u{200b}", "\u{200b}", false)
+				.field("Shelf BP", bool_to_emoji(shelf_bp), true)
+				.field("Shelves", shelfs, true)
+				.field("CNCs Assigned", cnc_shelf, true)
+				.field("\u{200b}", "\u{200b}", false)
+				.field("Side Table BP", bool_to_emoji(sidetable_bp), true)
+				.field("Side Tables", sidetables, true)
+				.field("CNCs Assigned", cnc_sidetable, true)
+				.field("\u{200b}", "\u{200b}", false)
+				.field("Coffee Table BP", bool_to_emoji(coffeetable_bp), true)
+				.field("Coffee Tables", coffeetables, true)
+				.field("CNCs Assigned", cnc_coffeetable, true)
+				.field("\u{200b}", "\u{200b}", false)
+				.field("Dining Set BP", bool_to_emoji(diningset_bp), true)
+				.field("Dining Sets", diningsets, true)
+				.field("CNCs Assigned", cnc_diningset, true);
+
+			ret.push(emb);
+		}
 
 		ret
 	}
 	
-	fn inv_helper(&self, tree: Tree) -> Vec<(String, String, bool)> {
-		match tree {
-			Tree::Pine(_) => {
-				vec![
-					("Logs".to_string(), format!("{}", self.logs.pine), true),
-					("Lumber".to_string(), format!("{}", self.lumber.pine), true),
-					("Bird Houses".to_string(), format!("{}", self.furniture.pine.birdhouse), true),
-					("Shelves".to_string(), format!("{}", self.furniture.pine.shelf), true),
-					("Side Tables".to_string(), format!("{}", self.furniture.pine.side_table), true),
-					("Coffee Tables".to_string(), format!("{}", self.furniture.pine.coffee_table), true),
-					("Dining Sets".to_string(), format!("{}", self.furniture.pine.dining_set), true),
-				]
-			},
-			Tree::Oak(_) => {
-				vec![
-					("Logs".to_string(), format!("{}", self.logs.oak), true),
-					("Lumber".to_string(), format!("{}", self.lumber.oak), true),
-					("Bird Houses".to_string(), format!("{}", self.furniture.oak.birdhouse), true),
-					("Shelves".to_string(), format!("{}", self.furniture.oak.shelf), true),
-					("Side Tables".to_string(), format!("{}", self.furniture.oak.side_table), true),
-					("Coffee Tables".to_string(), format!("{}", self.furniture.oak.coffee_table), true),
-					("Dining Sets".to_string(), format!("{}", self.furniture.oak.dining_set), true),
-				]
-			},
-			Tree::Maple(_) => {
-				vec![
-					("Logs".to_string(), format!("{}", self.logs.maple), true),
-					("Lumber".to_string(), format!("{}", self.lumber.maple), true),
-					("Bird Houses".to_string(), format!("{}", self.furniture.maple.birdhouse), true),
-					("Shelves".to_string(), format!("{}", self.furniture.maple.shelf), true),
-					("Side Tables".to_string(), format!("{}", self.furniture.maple.side_table), true),
-					("Coffee Tables".to_string(), format!("{}", self.furniture.maple.coffee_table), true),
-					("Dining Sets".to_string(), format!("{}", self.furniture.maple.dining_set), true),
-				]
-			},
-			Tree::Walnut(_) => {
-				vec![
-					("Logs".to_string(), format!("{}", self.logs.walnut), true),
-					("Lumber".to_string(), format!("{}", self.lumber.walnut), true),
-					("Bird Houses".to_string(), format!("{}", self.furniture.walnut.birdhouse), true),
-					("Shelves".to_string(), format!("{}", self.furniture.walnut.shelf), true),
-					("Side Tables".to_string(), format!("{}", self.furniture.walnut.side_table), true),
-					("Coffee Tables".to_string(), format!("{}", self.furniture.walnut.coffee_table), true),
-					("Dining Sets".to_string(), format!("{}", self.furniture.walnut.dining_set), true),
-				]
-			},
-			Tree::Cherry(_) => {
-				vec![
-					("Logs".to_string(), format!("{}", self.logs.cherry), true),
-					("Lumber".to_string(), format!("{}", self.lumber.cherry), true),
-					("Bird Houses".to_string(), format!("{}", self.furniture.cherry.birdhouse), true),
-					("Shelves".to_string(), format!("{}", self.furniture.cherry.shelf), true),
-					("Side Tables".to_string(), format!("{}", self.furniture.cherry.side_table), true),
-					("Coffee Tables".to_string(), format!("{}", self.furniture.cherry.coffee_table), true),
-					("Dining Sets".to_string(), format!("{}", self.furniture.cherry.dining_set), true),
-				]
-			},
-			Tree::PurpleHeart(_) => {
-				vec![
-					("Logs".to_string(), format!("{}", self.logs.purpleheart), true),
-					("Lumber".to_string(), format!("{}", self.lumber.purpleheart), true),
-					("Bird Houses".to_string(), format!("{}", self.furniture.purpleheart.birdhouse), true),
-					("Shelves".to_string(), format!("{}", self.furniture.purpleheart.shelf), true),
-					("Side Tables".to_string(), format!("{}", self.furniture.purpleheart.side_table), true),
-					("Coffee Tables".to_string(), format!("{}", self.furniture.purpleheart.coffee_table), true),
-					("Dining Sets".to_string(), format!("{}", self.furniture.purpleheart.dining_set), true),
-				]
-			},
-		}
-	}
-
-	pub fn blueprint_embed(&self, nickname: String, avatar: String, tree: Tree) -> CreateEmbed {
-		let mut ret = CreateEmbed::default();
-		let desc = match tree {
-			Tree::Pine(_) => "**Pine**",
-			Tree::Oak(_) => "**Oak**",
-			Tree::Maple(_) => "**Maple**",
-			Tree::Walnut(_) => "**Walnut**",
-			Tree::Cherry(_) => "**Cherry**",
-			Tree::PurpleHeart(_) => "**Purple Heart**",
-		};
-		let (r, g, b) = match tree {
-			Tree::Pine(_) => (178, 147, 116),
-			Tree::Oak(_) => (211, 146, 90),
-			Tree::Maple(_) => (233, 186, 134),
-			Tree::Walnut(_) => (135, 93, 79),
-			Tree::Cherry(_) => (124, 46, 42),
-			Tree::PurpleHeart(_) => (138, 93, 100),
-		};
-		ret
-			.title(format!("{}'s Blueprints", nickname))
-			.thumbnail(avatar)
-			.description(desc)
-			.colour(Colour::from_rgb(r, g, b))
-			.fields(self.bp_helper(tree));
-
-		ret
-	}
-
-	fn bp_helper(&self, tree: Tree) -> Vec<(String, String, bool)> {
-		
-		fn bool_to_emoji(b: bool) -> String {
-			match b {
-				true => ":white_check_mark:".to_string(),
-				false => ":x:".to_string(),
-			}
-		}
-
-		match tree {
-			Tree::Pine(_) => {
-				vec![
-					("Bird House".to_string(), bool_to_emoji(self.blueprints.pine.birdhouse), false),
-					("Shelf".to_string(), bool_to_emoji(self.blueprints.pine.shelf), false),
-					("Side Table".to_string(), bool_to_emoji(self.blueprints.pine.side_table), false),
-					("Coffee Table".to_string(), bool_to_emoji(self.blueprints.pine.coffee_table), false),
-					("Dining Set".to_string(), bool_to_emoji(self.blueprints.pine.dining_set), false),
-				]
-			},
-			Tree::Oak(_) => {
-				vec![
-					("Bird Houses".to_string(), bool_to_emoji(self.blueprints.oak.birdhouse), false),
-					("Shelves".to_string(), bool_to_emoji(self.blueprints.oak.shelf), false),
-					("Side Tables".to_string(), bool_to_emoji(self.blueprints.oak.side_table), false),
-					("Coffee Tables".to_string(), bool_to_emoji(self.blueprints.oak.coffee_table), false),
-					("Dining Sets".to_string(), bool_to_emoji(self.blueprints.oak.dining_set), false),
-				]
-			},
-			Tree::Maple(_) => {
-				vec![
-					("Bird Houses".to_string(), bool_to_emoji(self.blueprints.maple.birdhouse), false),
-					("Shelves".to_string(), bool_to_emoji(self.blueprints.maple.shelf), false),
-					("Side Tables".to_string(), bool_to_emoji(self.blueprints.maple.side_table), false),
-					("Coffee Tables".to_string(), bool_to_emoji(self.blueprints.maple.coffee_table), false),
-					("Dining Sets".to_string(), bool_to_emoji(self.blueprints.maple.dining_set), false),
-				]
-			},
-			Tree::Walnut(_) => {
-				vec![
-					("Bird Houses".to_string(), bool_to_emoji(self.blueprints.walnut.birdhouse), false),
-					("Shelves".to_string(), bool_to_emoji(self.blueprints.walnut.shelf), false),
-					("Side Tables".to_string(), bool_to_emoji(self.blueprints.walnut.side_table), false),
-					("Coffee Tables".to_string(), bool_to_emoji(self.blueprints.walnut.coffee_table), false),
-					("Dining Sets".to_string(), bool_to_emoji(self.blueprints.walnut.dining_set), false),
-				]
-			},
-			Tree::Cherry(_) => {
-				vec![
-					("Bird Houses".to_string(), bool_to_emoji(self.blueprints.cherry.birdhouse), false),
-					("Shelves".to_string(), bool_to_emoji(self.blueprints.cherry.shelf), false),
-					("Side Tables".to_string(), bool_to_emoji(self.blueprints.cherry.side_table), false),
-					("Coffee Tables".to_string(), bool_to_emoji(self.blueprints.cherry.coffee_table), false),
-					("Dining Sets".to_string(), bool_to_emoji(self.blueprints.cherry.dining_set), false),
-				]
-			},
-			Tree::PurpleHeart(_) => {
-				vec![
-					("Bird Houses".to_string(), bool_to_emoji(self.blueprints.purpleheart.birdhouse), false),
-					("Shelves".to_string(), bool_to_emoji(self.blueprints.purpleheart.shelf), false),
-					("Side Tables".to_string(), bool_to_emoji(self.blueprints.purpleheart.side_table), false),
-					("Coffee Tables".to_string(), bool_to_emoji(self.blueprints.purpleheart.coffee_table), false),
-					("Dining Sets".to_string(), bool_to_emoji(self.blueprints.purpleheart.dining_set), false),
-				]
-			},
-		}
-	}
-
 	pub fn queue_action(&mut self, a: Action) -> Action {
 		// Pushes the action on the queued_actions and returns it with it's new start/end time
 		let mut action = a.clone();
