@@ -6,3 +6,4 @@ pub mod store;
 pub mod upgrade;
 pub mod build;
 pub mod assign;
+pub mod prestige;

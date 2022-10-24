@@ -65,6 +65,7 @@ impl EventHandler for Handler {
 				"store" => commands::store::run(player_id, &command.data.options).await,
 				"upgrade" => commands::upgrade::run(player_id, &command.data.options).await,
 				"assign" => commands::assign::run(player_id, &command.data.options).await,
+				"prestige" => commands::prestige::run(player_id, &command.data.options).await,
 				_ => Message::how()
 			};
 
@@ -92,6 +93,7 @@ impl EventHandler for Handler {
 				.create_application_command(|command| commands::build::register(command))
 				.create_application_command(|command| commands::upgrade::register(command))
 				.create_application_command(|command| commands::assign::register(command))
+				.create_application_command(|command| commands::prestige::register(command))
 		})
 		.await;
 
@@ -158,6 +160,7 @@ async fn main() {
 }
 
 async fn respond_to_command(ctx: &Context, command: ApplicationCommandInteraction, msg: Message) {
+	// TODO: Add some way to do a modal?
 	match msg {
 		Message::Content(c) => {
 			if let Err(why) = command
