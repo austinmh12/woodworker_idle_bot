@@ -65,7 +65,6 @@ impl EventHandler for Handler {
 				"store" => commands::store::run(player_id, &command.data.options).await,
 				"upgrade" => commands::upgrade::run(player_id, &command.data.options).await,
 				"assign" => commands::assign::run(player_id, &command.data.options).await,
-				"unassign" => commands::unassign::run(player_id, &command.data.options).await,
 				_ => Message::how()
 			};
 
@@ -93,7 +92,6 @@ impl EventHandler for Handler {
 				.create_application_command(|command| commands::build::register(command))
 				.create_application_command(|command| commands::upgrade::register(command))
 				.create_application_command(|command| commands::assign::register(command))
-				.create_application_command(|command| commands::unassign::register(command))
 		})
 		.await;
 
