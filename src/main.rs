@@ -190,21 +190,7 @@ async fn respond_to_command(ctx: &Context, command: ApplicationCommandInteractio
 			}
 		},
 		Message::Pages(p) => {
-			if let Err(why) = command.clone()
-				.defer(&ctx.http).await
-			{
-				println!("Cannot get to slash command: {}", why);
-			}
-
-			p.clone().scroll_through(&ctx, command.clone()).await;
-
-			if let Err(why) = command
-				.edit_original_interaction_response(&ctx.http, |m| {
-					m.set_embed(p.pages[0].clone())
-				}).await
-			{
-				println!("Idk {}", why);
-			}
+			p.scroll_through(&ctx, command).await;
 		},
 	}
 }

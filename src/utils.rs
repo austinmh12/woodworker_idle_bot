@@ -14,7 +14,7 @@ use serenity::{
 	prelude::Context,
 	model::prelude::{
 		ReactionType,
-		interaction::application_command::ApplicationCommandInteraction
+		interaction::{application_command::ApplicationCommandInteraction, InteractionResponseType}
 	}
 };
 use std::time::Duration as StdDuration;
@@ -134,33 +134,54 @@ impl PaginatedEmbed {
 	}
 
 	pub async fn scroll_through(self, ctx: &Context, command: ApplicationCommandInteraction) {
-		// TODO: Return last CreateEmbed as a stopper
 		let left_arrow = ReactionType::try_from("⬅️").expect("No left arrow");
 		let right_arrow = ReactionType::try_from("➡️").expect("No right arrow");
 		let mut idx: i16 = 0;
+		// let mut message = command
+		// 	.channel_id
+		// 	.send_message(&ctx.http, |m| {
+		// 		let mut cur_embed = self.pages[idx as usize].clone();
+		// 		if self.pages.len() > 1 {
+		// 			cur_embed.footer(|f| f.text(format!("{}/{}", idx + 1, self.pages.len())));
+		// 		}
+		// 		m.set_embed(cur_embed);
+
+		// 		if self.pages.len() > 1 {
+		// 			m.reactions([left_arrow.clone(), right_arrow.clone()]);
+		// 		}
+
+		// 		m
+		// }).await.unwrap();
+		command
+			.create_interaction_response(&ctx.http, |resp| {
+				resp
+					.kind(InteractionResponseType::ChannelMessageWithSource)
+					.interaction_response_data(|m| {
+						let mut cur_embed = self.pages[idx as usize].clone();
+						if self.pages.len() > 1 {
+							cur_embed.footer(|f| f.text(format!("{}/{}", idx + 1, self.pages.len())));
+						}
+						m.set_embed(cur_embed);
+
+						m
+					})
+			}).await.unwrap();
+
+		if self.pages.len() == 1 {
+			return;
+		}
+
 		let mut message = command
-			.channel_id
-			.send_message(&ctx.http, |m| {
-				let mut cur_embed = self.pages[idx as usize].clone();
-				if self.pages.len() > 1 {
-					cur_embed.footer(|f| f.text(format!("{}/{}", idx + 1, self.pages.len())));
-				}
-				m.set_embed(cur_embed);
-
-				if self.pages.len() > 1 {
-					m.reactions([left_arrow.clone(), right_arrow.clone()]);
-				}
-
-				m
-		}).await.unwrap();
+			.get_interaction_response(&ctx.http)
+			.await
+			.unwrap();
+		message.react(&ctx.http, left_arrow).await.unwrap();
+		message.react(&ctx.http, right_arrow).await.unwrap();
 
 		loop {
-			if self.pages.len() <= 1 {
-				break; // Exit before anything. Probably a way to do this before entering.
-			}
 			if let Some(reaction) = &message
 				.await_reaction(&ctx)
-				.timeout(StdDuration::from_secs(10))
+				.timeout(StdDuration::from_secs(60))
 				.author_id(command.user.id)
 				.removed(true)
 				.await
