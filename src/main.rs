@@ -170,6 +170,11 @@ async fn respond_to_command(ctx: &Context, command: ApplicationCommandInteractio
 			{
 				println!("Cannot respond to slash command: {}", why);
 			}
+			tokio::time::sleep(StdDuration::from_secs(30)).await;
+			command
+				.delete_original_interaction_response(&ctx.http)
+				.await
+				.unwrap();
 		},
 		Message::Embed(e) => {
 			if let Err(why) = command
@@ -182,6 +187,11 @@ async fn respond_to_command(ctx: &Context, command: ApplicationCommandInteractio
 			{
 				println!("Cannot respond to slash command: {}", why);
 			}
+			tokio::time::sleep(StdDuration::from_secs(30)).await;
+			command
+				.delete_original_interaction_response(&ctx.http)
+				.await
+				.unwrap();
 		},
 		Message::Pages(p) => {
 			p.scroll_through(&ctx, command).await;

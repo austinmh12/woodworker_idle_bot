@@ -153,47 +153,51 @@ impl PaginatedEmbed {
 			}).await.unwrap();
 
 		if self.pages.len() == 1 {
-			return;
-		}
+			tokio::time::sleep(StdDuration::from_secs(30)).await;
+		} else {
+			let mut message = command
+				.get_interaction_response(&ctx.http)
+				.await
+				.unwrap();
+			message.react(&ctx.http, left_arrow).await.unwrap();
+			message.react(&ctx.http, right_arrow).await.unwrap();
 
-		let mut message = command
-			.get_interaction_response(&ctx.http)
+			loop {
+				if let Some(reaction) = &message
+					.await_reaction(&ctx)
+					.timeout(StdDuration::from_secs(60))
+					.author_id(command.user.id)
+					.removed(true)
+					.await
+				{
+					let emoji = &reaction.as_inner_ref().emoji;
+					match emoji.as_data().as_str() {
+						"⬅️" => idx = (idx - 1).rem_euclid(self.pages.len() as i16),
+						"➡️" => idx = (idx + 1) % self.pages.len() as i16,
+						_ => {
+							println!("{}", &emoji.as_data().as_str());
+							continue
+						}
+					};
+				} else {
+					message.delete_reactions(&ctx).await.expect("Couldn't remove arrows");
+					break;
+				}
+				message.edit(&ctx, |m| {
+					let mut cur_embed = self.pages[idx as usize].clone();
+					if self.pages.len() > 1 {
+						cur_embed.footer(|f| f.text(format!("{}/{}", idx + 1, self.pages.len())));
+					}
+					m.set_embed(cur_embed);
+
+					m
+				}).await.unwrap();
+			}
+		}
+		command
+			.delete_original_interaction_response(&ctx.http)
 			.await
 			.unwrap();
-		message.react(&ctx.http, left_arrow).await.unwrap();
-		message.react(&ctx.http, right_arrow).await.unwrap();
-
-		loop {
-			if let Some(reaction) = &message
-				.await_reaction(&ctx)
-				.timeout(StdDuration::from_secs(60))
-				.author_id(command.user.id)
-				.removed(true)
-				.await
-			{
-				let emoji = &reaction.as_inner_ref().emoji;
-				match emoji.as_data().as_str() {
-					"⬅️" => idx = (idx - 1).rem_euclid(self.pages.len() as i16),
-					"➡️" => idx = (idx + 1) % self.pages.len() as i16,
-					_ => {
-						println!("{}", &emoji.as_data().as_str());
-						continue
-					}
-				};
-			} else {
-				message.delete_reactions(&ctx).await.expect("Couldn't remove arrows");
-				break;
-			}
-			message.edit(&ctx, |m| {
-				let mut cur_embed = self.pages[idx as usize].clone();
-				if self.pages.len() > 1 {
-					cur_embed.footer(|f| f.text(format!("{}/{}", idx + 1, self.pages.len())));
-				}
-				m.set_embed(cur_embed);
-
-				m
-			}).await.unwrap();
-		}
 	}
 }
 
