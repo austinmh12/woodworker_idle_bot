@@ -65,6 +65,7 @@ impl EventHandler for Handler {
 				"store" => commands::store::run(player_id, &command.data.options).await,
 				"upgrade" => commands::upgrade::run(player_id, &command.data.options).await,
 				"assign" => commands::assign::run(player_id, &command.data.options).await,
+				"unassign" => commands::unassign::run(player_id, &command.data.options).await,
 				_ => Message::how()
 			};
 
@@ -92,6 +93,7 @@ impl EventHandler for Handler {
 				.create_application_command(|command| commands::build::register(command))
 				.create_application_command(|command| commands::upgrade::register(command))
 				.create_application_command(|command| commands::assign::register(command))
+				.create_application_command(|command| commands::unassign::register(command))
 		})
 		.await;
 
@@ -105,7 +107,6 @@ impl EventHandler for Handler {
 					tokio::time::sleep(StdDuration::from_secs(1)).await;
 				}
 			});
-			// Keeping here for reference on how to do multiple bg tasks
 			let ctx2 = Arc::clone(&ctx);
 			tokio::spawn(async move {
 				loop {
@@ -113,13 +114,6 @@ impl EventHandler for Handler {
 					tokio::time::sleep(StdDuration::from_secs(1)).await;
 				}
 			});
-			// let ctx3 = Arc::clone(&ctx);
-			// tokio::spawn(async move {
-			// 	loop {
-			// 		commands::poketcg::check_daily_streaks(Arc::clone(&ctx3)).await;
-			// 		tokio::time::sleep(StdDuration::from_secs(1800)).await;
-			// 	}
-			// });
 		}
 
 		// println!("I now have the following guild slash commands: {:#?}", _commands);
