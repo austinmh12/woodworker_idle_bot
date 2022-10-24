@@ -405,8 +405,24 @@ impl Player {
 		self.lumberers_active.total()
 	}
 
+	pub fn available_lumberers(&self) -> i64 {
+		if self.lumberers - self.assigned_lumberers() < 0 {
+			0
+		} else {
+			self.lumberers - self.assigned_lumberers()
+		}
+	}
+
 	pub fn assigned_cncs(&self) -> i64 {
 		self.cncs_active.total()
+	}
+
+	pub fn available_cncs(&self) -> i64 {
+		if self.cncs - self.assigned_cncs() < 0 {
+			0
+		} else {
+			self.cncs - self.assigned_cncs()
+		}
 	}
 }
 
