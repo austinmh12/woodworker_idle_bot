@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error};
 use mongodb::{
 	Client,
 	options::{
@@ -8,7 +8,16 @@ use mongodb::{
 		Document,
 	}, 
 };
-use serenity::utils::Colour;
+use serenity::{
+	utils::Colour,
+	builder::CreateEmbed,
+	prelude::Context,
+	model::prelude::{
+		ReactionType,
+		interaction::application_command::ApplicationCommandInteraction
+	}
+};
+use std::time::Duration as StdDuration;
 
 use crate::player::{Player, Color};
 
@@ -110,4 +119,90 @@ pub fn get_max_buyable_amount_and_price(player: &Player, amount: i64, base: f64,
 	let amount = amounts.iter().min().unwrap().to_owned();
 	
 	(amount, get_price(amount, base, exp, owned))
+}
+
+#[derive(Clone)]
+pub struct PaginatedEmbed {
+	pub pages: Vec<CreateEmbed>,
+}
+
+impl PaginatedEmbed {
+	pub fn new(pages: Vec<CreateEmbed>) -> Self {
+		Self {
+			pages
+		}
+	}
+
+	pub async fn scroll_through(self, ctx: &Context, command: ApplicationCommandInteraction) {
+		// TODO: Return last CreateEmbed as a stopper
+		let left_arrow = ReactionType::try_from("⬅️").expect("No left arrow");
+		let right_arrow = ReactionType::try_from("➡️").expect("No right arrow");
+		let mut idx: i16 = 0;
+		let mut message = command
+			.channel_id
+			.send_message(&ctx.http, |m| {
+				let mut cur_embed = self.pages[idx as usize].clone();
+				if self.pages.len() > 1 {
+					cur_embed.footer(|f| f.text(format!("{}/{}", idx + 1, self.pages.len())));
+				}
+				m.set_embed(cur_embed);
+
+				if self.pages.len() > 1 {
+					m.reactions([left_arrow.clone(), right_arrow.clone()]);
+				}
+
+				m
+		}).await.unwrap();
+
+		loop {
+			if self.pages.len() <= 1 {
+				break; // Exit before anything. Probably a way to do this before entering.
+			}
+			if let Some(reaction) = &message
+				.await_reaction(&ctx)
+				.timeout(StdDuration::from_secs(10))
+				.author_id(command.user.id)
+				.removed(true)
+				.await
+			{
+				let emoji = &reaction.as_inner_ref().emoji;
+				match emoji.as_data().as_str() {
+					"⬅️" => idx = (idx - 1).rem_euclid(self.pages.len() as i16),
+					"➡️" => idx = (idx + 1) % self.pages.len() as i16,
+					_ => {
+						println!("{}", &emoji.as_data().as_str());
+						continue
+					}
+				};
+			} else {
+				message.delete_reactions(&ctx).await.expect("Couldn't remove arrows");
+				break;
+			}
+			message.edit(&ctx, |m| {
+				let mut cur_embed = self.pages[idx as usize].clone();
+				if self.pages.len() > 1 {
+					cur_embed.footer(|f| f.text(format!("{}/{}", idx + 1, self.pages.len())));
+				}
+				m.set_embed(cur_embed);
+
+				m
+			}).await.unwrap();
+		}
+	}
+}
+
+pub enum Message {
+	Content(String),
+	Embed(CreateEmbed),
+	Pages(PaginatedEmbed),
+}
+
+impl Message {
+	pub fn how() -> Self {
+		Message::Content("How did you get here?".to_string())
+	}
+
+	pub fn under_construction() -> Self {
+		Message::Content("Under construction!".to_string())
+	}
 }

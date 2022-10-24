@@ -8,7 +8,7 @@ use serenity::model::prelude::interaction::application_command::{
 };
 
 use crate::player::get_player;
-use crate::utils;
+use crate::utils::{self, Message};
 
 const CASH_SHARPER_AXES_BASE: f64 = 100.0;
 const CASH_SHARPER_AXES_EXP: f64 = 1.025;
@@ -36,7 +36,7 @@ const SAWDUST_FAST_DRYING_GLUE_EXP: f64 = 1.075;
 const SAWDUST_INDUSTRIAL_NAILS_BASE: f64 = 1800.0;
 const SAWDUST_INDUSTRIAL_NAILS_EXP: f64 = 1.095;
 
-pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Option<CreateEmbed>) {
+pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 	// store.view
 	// store.buy.slot amount
 	let action = &options
@@ -64,7 +64,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 					.description(&desc)
 					.colour(utils::default_colour());
 
-				("".to_string(), Some(ret))
+				Message::Embed(ret)
 			},
 			"buy" => {
 				let slot = match subaction.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
@@ -72,7 +72,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 					_ => 0,
 				};
 				if !(1..=6).contains(&slot) {
-					return ("Invalid slot".to_string(), None);
+					return Message::Content("Invalid slot".to_string());
 				}
 				let amount = if &subaction.options.len() == &1usize {
 					1
@@ -92,52 +92,52 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 					_ => (0, 0.0) // Can't get here
 				};
 				if player.cash < total_price || count == 0 {
-					return (format!("You need **${:.2}** more to buy that", total_price - player.cash), None);
+					return Message::Content(format!("You need **${:.2}** more to buy that", total_price - player.cash));
 				}
 				player.cash -= total_price;
 				let ret = match slot {
 					1 => {
 						player.upgrades.sharper_axes += count;
 	
-						(format!("You bought **{}** sharper axes!", &player.axe), None)
+						Message::Content(format!("You bought **{}** sharper axes!", &player.axe))
 					},
 					2 => {
 						player.upgrades.wider_axes += count;
 	
-						(format!("You bought **{}** wider axes!", player.kiln), None)
+						Message::Content(format!("You bought **{}** wider axes!", player.kiln))
 					},
 					3 => {
 						player.upgrades.hotter_kilns += count;
 	
-						(format!("You bought **{}** hotter kilns!", &player.hammer), None)
+						Message::Content(format!("You bought **{}** hotter kilns!", &player.hammer))
 					},
 					4 => {
 						player.upgrades.better_temperatures += count;
 	
-						(format!("You bought **{}** better temperatures!", count), None)
+						Message::Content(format!("You bought **{}** better temperatures!", count))
 					},
 					5 => {
 						player.upgrades.fast_drying_glue += count;
 	
-						(format!("You bought **{}** fast drying glues!", count), None)
+						Message::Content(format!("You bought **{}** fast drying glues!", count))
 					},
 					6 => {
 						player.upgrades.industrial_nails += count;
 	
-						(format!("You bought **{}** industrial nails!", count), None)
+						Message::Content(format!("You bought **{}** industrial nails!", count))
 					},
-					_ => ("How'd you get here?".to_string(), None)
+					_ => Message::how()
 				};
 				// Stats maybe?
 				player.update().await;
 	
 				ret
 			},
-			_ => ("Wtf?".to_string(), None)
+			_ => Message::how()
 		},
 		"sawdust" => match subaction.name.as_str() {
 			"view" => {
-				("todo".to_string(), None)
+				Message::under_construction()
 			},
 			"buy" => {
 				let slot = match subaction.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
@@ -145,7 +145,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 					_ => 0,
 				};
 				if !(1..=7).contains(&slot) {
-					return ("Invalid slot".to_string(), None);
+					return Message::Content("Invalid slot".to_string());
 				}
 				let amount = if &subaction.options.len() == &1usize {
 					1
@@ -156,13 +156,13 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 					}
 				};
 
-				("todo".to_string(), None)
+				Message::under_construction()
 			},
-			_ => ("Wtf?".to_string(), None)
+			_ => Message::how()
 		},
 		"seed" => match subaction.name.as_str() {
 			"view" => {
-				("todo".to_string(), None)
+				Message::under_construction()
 			},
 			"buy" => {
 				let slot = match subaction.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
@@ -170,7 +170,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 					_ => 0,
 				};
 				if !(1..=6).contains(&slot) {
-					return ("Invalid slot".to_string(), None);
+					return Message::Content("Invalid slot".to_string());
 				}
 				let amount = if &subaction.options.len() == &1usize {
 					1
@@ -181,11 +181,11 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 					}
 				};
 
-				("todo".to_string(), None)
+				Message::under_construction()
 			},
-			_ => ("Wtf?".to_string(), None)
+			_ => Message::how()
 		},
-		_ => ("How?".to_string(), None)
+		_ => Message::how()
 	}	
 }
 

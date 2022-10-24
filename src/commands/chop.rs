@@ -8,9 +8,9 @@ use serenity::model::prelude::interaction::application_command::{
 };
 
 use crate::player::{get_player, Axe, Player, Action, ActionEnum};
-use crate::utils;
+use crate::utils::{self, Message};
 
-pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
+pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 	let tree = &options
 		.get(0)
 		.expect("Expected a Subcommand");
@@ -30,45 +30,45 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			if player.queued_actions.len() < (player.sawdust_upgrades.multitasking + 2) as usize {
 				()
 			} else {
-				return format!("You're busy for another **{}s**!", player.current_action.time_to_complete());
+				return Message::Content(format!("You're busy for another **{}s**!", player.current_action.time_to_complete()));
 			}
 		},
 	}
 	match tree.name.as_str() {
 		"pine" => {
-			chop_player_update(&mut player, "pine", actions).await
+			Message::Content(chop_player_update(&mut player, "pine", actions).await)
 		},
 		"oak" => {
 			if player.axe < Axe::Iron {
-				return "You need an **Iron** axe to chop oak logs!".to_string();
+				return Message::Content("You need an **Iron** axe to chop oak logs!".to_string());
 			}
-			chop_player_update(&mut player, "oak", actions).await
+			Message::Content(chop_player_update(&mut player, "oak", actions).await)
 		},
 		"maple" => {
 			if player.axe < Axe::Steel {
-				return "You need a **Steel** axe to chop maple logs!".to_string();
+				return Message::Content("You need a **Steel** axe to chop maple logs!".to_string());
 			}
-			chop_player_update(&mut player, "maple", actions).await
+			Message::Content(chop_player_update(&mut player, "maple", actions).await)
 		},
 		"walnut" => {
 			if player.axe < Axe::Mithril {
-				return "You need a **Mithril** axe to chop walnut logs!".to_string();
+				return Message::Content("You need a **Mithril** axe to chop walnut logs!".to_string());
 			}
-			chop_player_update(&mut player, "walnut", actions).await
+			Message::Content(chop_player_update(&mut player, "walnut", actions).await)
 		},
 		"cherry" => {
 			if player.axe < Axe::Adamant {
-				return "You need an **Adamant** axe to chop cherry logs!".to_string();
+				return Message::Content("You need an **Adamant** axe to chop cherry logs!".to_string());
 			}
-			chop_player_update(&mut player, "cherry", actions).await
+			Message::Content(chop_player_update(&mut player, "cherry", actions).await)
 		},
 		"purpleheart" => {
 			if player.axe < Axe::Rune {
-				return "You need a **Rune** axe to chop purpleheart logs!".to_string();
+				return Message::Content("You need a **Rune** axe to chop purpleheart logs!".to_string());
 			}
-			chop_player_update(&mut player, "purpleheart", actions).await
+			Message::Content(chop_player_update(&mut player, "purpleheart", actions).await)
 		},
-		_ => "No such tree".to_string()
+		_ => Message::how()
 	}
 }
 

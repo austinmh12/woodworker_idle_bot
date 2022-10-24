@@ -8,9 +8,9 @@ use serenity::model::prelude::interaction::application_command::{
 };
 
 use crate::player::{get_player, Kiln, Player, Action, ActionEnum};
-use crate::utils;
+use crate::utils::{self, Message};
 
-pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
+pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 	let tree = &options
 		.get(0)
 		.expect("Expected a Subcommand");
@@ -30,67 +30,67 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 			if player.queued_actions.len() < (player.sawdust_upgrades.multitasking + 2) as usize {
 				()
 			} else {
-				return format!("You're busy for another **{}s**!", player.current_action.time_to_complete());
+				return Message::Content(format!("You're busy for another **{}s**!", player.current_action.time_to_complete()));
 			}
 		},
 	}
 	if player.kiln == Kiln::None {
-		return "You don't have a kiln! Buy one from the store!".to_string();
+		return Message::Content("You don't have a kiln! Buy one from the store!".to_string());
 	}
 	match tree.name.as_str() {
 		// Don't need to check kiln::none since we do it above.
 		"pine" => {
 			if player.logs.pine + player.queued_logs("pine") < actions {
-				return "You don't have enough pine logs!".to_string()
+				return Message::Content("You don't have enough pine logs!".to_string())
 			}
-			dry_player_update(&mut player, "pine", actions).await
+			Message::Content(dry_player_update(&mut player, "pine", actions).await)
 		},
 		"oak" => {
 			if player.logs.oak + player.queued_logs("oak") < actions {
-				return "You don't have enough oak logs!".to_string()
+				return Message::Content("You don't have enough oak logs!".to_string())
 			}
 			if player.kiln < Kiln::Firebrick {
-				return "You need a **Firebrick** kiln to dry oak logs!".to_string();
+				return Message::Content("You need a **Firebrick** kiln to dry oak logs!".to_string());
 			}
-			dry_player_update(&mut player, "oak", actions).await
+			Message::Content(dry_player_update(&mut player, "oak", actions).await)
 		},
 		"maple" => {
 			if player.logs.maple + player.queued_logs("maple") < actions {
-				return "You don't have enough maple logs!".to_string()
+				return Message::Content("You don't have enough maple logs!".to_string())
 			}
 			if player.kiln < Kiln::Hobby {
-				return "You need a **Hobby** kiln to dry maple logs!".to_string();
+				return Message::Content("You need a **Hobby** kiln to dry maple logs!".to_string());
 			}
-			dry_player_update(&mut player, "maple", actions).await
+			Message::Content(dry_player_update(&mut player, "maple", actions).await)
 		},
 		"walnut" => {
 			if player.logs.walnut + player.queued_logs("walnut") < actions {
-				return "You don't have enough walnut logs!".to_string()
+				return Message::Content("You don't have enough walnut logs!".to_string())
 			}
 			if player.kiln < Kiln::LabGrade {
-				return "You need a **Lab Grade** kiln to dry walnut logs!".to_string();
+				return Message::Content("You need a **Lab Grade** kiln to dry walnut logs!".to_string());
 			}
-			dry_player_update(&mut player, "walnut", actions).await
+			Message::Content(dry_player_update(&mut player, "walnut", actions).await)
 		},
 		"cherry" => {
 			if player.logs.cherry + player.queued_logs("cherry") < actions {
-				return "You don't have enough cherry logs!".to_string()
+				return Message::Content("You don't have enough cherry logs!".to_string())
 			}
 			if player.kiln < Kiln::Industrial {
-				return "You need an **Industrial** kiln to dry cherry logs!".to_string();
+				return Message::Content("You need an **Industrial** kiln to dry cherry logs!".to_string());
 			}
-			dry_player_update(&mut player, "cherry", actions).await
+			Message::Content(dry_player_update(&mut player, "cherry", actions).await)
 		},
 		"purpleheart" => {
 			if player.logs.purpleheart + player.queued_logs("purpleheart") < actions {
-				return "You don't have enough purpleheart logs!".to_string()
+				return Message::Content("You don't have enough purpleheart logs!".to_string())
 			}
 			if player.kiln < Kiln::WorldWide {
-				return "You need a **World Wide** kiln to dry purpleheart logs!".to_string();
+				return Message::Content("You need a **World Wide** kiln to dry purpleheart logs!".to_string());
 			}
-			dry_player_update(&mut player, "purpleheart", actions).await
+			Message::Content(dry_player_update(&mut player, "purpleheart", actions).await)
 		},
-		_ => "No such tree".to_string()
+		_ => Message::how()
 	}
 }
 

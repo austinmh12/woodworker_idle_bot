@@ -8,6 +8,7 @@ use serenity::model::prelude::interaction::application_command::{
 };
 
 use crate::player::get_player;
+use crate::utils::Message;
 
 const PINE_LOG_PRICE: f64 = 1.0;
 const PINE_LUMBER_PRICE: f64 = 2.5;
@@ -57,7 +58,7 @@ const PURPLEHEART_SIDE_TABLE_PRICE: f64 = 42324.0;
 const PURPLEHEART_COFFEE_TABLE_PRICE: f64 = 71690.0;
 const PURPLEHEART_DINING_SET_PRICE: f64 = 109000.0;
 
-pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
+pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 	// sell.logs.pine.amount
 	// sell.lumber.pine.amount
 	// sell.furniture.pine.birdhouse.amount
@@ -85,7 +86,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** pine logs for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** pine logs for **${:.2}**", amount, money))
 				},
 				"oak" => {
 					let amounts = vec![amount, player.logs.oak];
@@ -95,7 +96,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** oak logs for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** oak logs for **${:.2}**", amount, money))
 				},
 				"maple" => {
 					let amounts = vec![amount, player.logs.maple];
@@ -105,7 +106,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** maple logs for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** maple logs for **${:.2}**", amount, money))
 				},
 				"walnut" => {
 					let amounts = vec![amount, player.logs.walnut];
@@ -115,7 +116,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** walnut logs for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** walnut logs for **${:.2}**", amount, money))
 				},
 				"cherry" => {
 					let amounts = vec![amount, player.logs.cherry];
@@ -125,7 +126,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** cherry logs for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** cherry logs for **${:.2}**", amount, money))
 				},
 				"purpleheart" => {
 					let amounts = vec![amount, player.logs.purpleheart];
@@ -135,9 +136,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** purpleheart logs for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** purpleheart logs for **${:.2}**", amount, money))
 				},
-				_ => "No log exists".to_string()
+				_ => Message::Content("No log exists".to_string())
 			}
 		},
 		"lumber" => {
@@ -159,7 +160,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** pine lumber for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** pine lumber for **${:.2}**", amount, money))
 				},
 				"oak" => {
 					let amounts = vec![amount, player.lumber.oak];
@@ -169,7 +170,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** oak lumber for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** oak lumber for **${:.2}**", amount, money))
 				},
 				"maple" => {
 					let amounts = vec![amount, player.lumber.maple];
@@ -179,7 +180,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** maple lumber for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** maple lumber for **${:.2}**", amount, money))
 				},
 				"walnut" => {
 					let amounts = vec![amount, player.lumber.walnut];
@@ -189,7 +190,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** walnut lumber for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** walnut lumber for **${:.2}**", amount, money))
 				},
 				"cherry" => {
 					let amounts = vec![amount, player.lumber.cherry];
@@ -199,7 +200,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** cherry lumber for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** cherry lumber for **${:.2}**", amount, money))
 				},
 				"purpleheart" => {
 					let amounts = vec![amount, player.lumber.purpleheart];
@@ -209,9 +210,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 					player.cash += money;
 					player.update().await;
 
-					format!("You sold **{}** purpleheart lumber for **${:.2}**", amount, money)
+					Message::Content(format!("You sold **{}** purpleheart lumber for **${:.2}**", amount, money))
 				},
-				_ => "No log exists".to_string()
+				_ => Message::Content("No log exists".to_string())
 			}
 		},
 		"furniture" => {
@@ -244,7 +245,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"bird houses"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"shelf" => {
 						let amounts = vec![amount, player.furniture.pine.shelf];
@@ -260,7 +261,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"shelves"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"sidetable" | "side table" => {
 						let amounts = vec![amount, player.furniture.pine.side_table];
@@ -276,7 +277,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"side tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"coffeetable" | "coffee table" => {
 						let amounts = vec![amount, player.furniture.pine.coffee_table];
@@ -292,7 +293,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"coffee tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"diningset" | "dining set" => {
 						let amounts = vec![amount, player.furniture.pine.dining_set];
@@ -308,9 +309,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"dining sets"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
-					_ => "No such furniture".to_string()
+					_ => Message::Content("No such furniture".to_string())
 				},
 				"oak" => match furniture.to_lowercase().as_str() {
 					"birdhouse" | "bird house" => {
@@ -327,7 +328,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"bird houses"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"shelf" => {
 						let amounts = vec![amount, player.furniture.oak.shelf];
@@ -343,7 +344,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"shelves"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"sidetable" | "side table" => {
 						let amounts = vec![amount, player.furniture.oak.side_table];
@@ -359,7 +360,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"side tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"coffeetable" | "coffee table" => {
 						let amounts = vec![amount, player.furniture.oak.coffee_table];
@@ -375,7 +376,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"coffee tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"diningset" | "dining set" => {
 						let amounts = vec![amount, player.furniture.oak.dining_set];
@@ -391,9 +392,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"dining sets"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
-					_ => "No such furniture".to_string()
+					_ => Message::Content("No such furniture".to_string())
 				},
 				"maple" => match furniture.to_lowercase().as_str() {
 					"birdhouse" | "bird house" => {
@@ -410,7 +411,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"bird houses"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"shelf" => {
 						let amounts = vec![amount, player.furniture.maple.shelf];
@@ -426,7 +427,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"shelves"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"sidetable" | "side table" => {
 						let amounts = vec![amount, player.furniture.maple.side_table];
@@ -442,7 +443,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"side tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"coffeetable" | "coffee table" => {
 						let amounts = vec![amount, player.furniture.maple.coffee_table];
@@ -458,7 +459,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"coffee tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"diningset" | "dining set" => {
 						let amounts = vec![amount, player.furniture.maple.dining_set];
@@ -474,9 +475,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"dining sets"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
-					_ => "No such furniture".to_string()
+					_ => Message::Content("No such furniture".to_string())
 				},
 				"walnut" => match furniture.to_lowercase().as_str() {
 					"birdhouse" | "bird house" => {
@@ -493,7 +494,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"bird houses"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"shelf" => {
 						let amounts = vec![amount, player.furniture.walnut.shelf];
@@ -509,7 +510,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"shelves"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"sidetable" | "side table" => {
 						let amounts = vec![amount, player.furniture.walnut.side_table];
@@ -525,7 +526,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"side tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"coffeetable" | "coffee table" => {
 						let amounts = vec![amount, player.furniture.walnut.coffee_table];
@@ -541,7 +542,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"coffee tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"diningset" | "dining set" => {
 						let amounts = vec![amount, player.furniture.walnut.dining_set];
@@ -557,9 +558,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"dining sets"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
-					_ => "No such furniture".to_string()
+					_ => Message::Content("No such furniture".to_string())
 				},
 				"cherry" => match furniture.to_lowercase().as_str() {
 					"birdhouse" | "bird house" => {
@@ -576,7 +577,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"bird houses"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"shelf" => {
 						let amounts = vec![amount, player.furniture.cherry.shelf];
@@ -592,7 +593,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"shelves"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"sidetable" | "side table" => {
 						let amounts = vec![amount, player.furniture.cherry.side_table];
@@ -608,7 +609,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"side tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"coffeetable" | "coffee table" => {
 						let amounts = vec![amount, player.furniture.cherry.coffee_table];
@@ -624,7 +625,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"coffee tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"diningset" | "dining set" => {
 						let amounts = vec![amount, player.furniture.cherry.dining_set];
@@ -640,9 +641,9 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"dining sets"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
-					_ => "No such furniture".to_string()
+					_ => Message::Content("No such furniture".to_string())
 				},
 				"purpleheart" => match furniture.to_lowercase().as_str() {
 					"birdhouse" | "bird house" => {
@@ -659,7 +660,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"bird houses"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"shelf" => {
 						let amounts = vec![amount, player.furniture.purpleheart.shelf];
@@ -675,7 +676,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"shelves"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"sidetable" | "side table" => {
 						let amounts = vec![amount, player.furniture.purpleheart.side_table];
@@ -691,7 +692,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"side tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"coffeetable" | "coffee table" => {
 						let amounts = vec![amount, player.furniture.purpleheart.coffee_table];
@@ -707,7 +708,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"coffee tables"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
 					"diningset" | "dining set" => {
 						let amounts = vec![amount, player.furniture.purpleheart.dining_set];
@@ -723,14 +724,14 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> String {
 							"dining sets"
 						};
 
-						format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money)
+						Message::Content(format!("You sold **{}** {} {} for **${:.2}**", amount, log_type.name, s, money))
 					},
-					_ => "No such furniture".to_string()
+					_ => Message::Content("No such furniture".to_string())
 				},
-				_ => "No such wood".to_string()
+				_ => Message::how()
 			}
 		},
-		_ => "No such action".to_string()
+		_ => Message::how()
 	}
 }
 

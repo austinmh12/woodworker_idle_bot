@@ -14,8 +14,8 @@ use serenity::{
 			GuildId, 
 			interaction::{
 				Interaction, 
-				InteractionResponseType
-			}
+				InteractionResponseType, application_command::ApplicationCommandInteraction
+			},
 		}
 	}, 
 };
@@ -29,6 +29,7 @@ use serenity::model::{
 use serenity::framework::standard::{
     StandardFramework,
 };
+use utils::Message;
 
 mod commands;
 mod player;
@@ -47,11 +48,11 @@ impl EventHandler for Handler {
 			// println!("Received command interaction: {:#?}", command);
 
 			let player_id = command.member.as_ref().unwrap().user.id.0.clone();
-			let (content, embed) = match command.data.name.as_str() {
-				"chop" => (commands::chop::run(player_id, &command.data.options).await, None),
-				"dry" => (commands::dry::run(player_id, &command.data.options).await, None),
-				"build" => (commands::build::run(player_id, &command.data.options).await, None),
-				"sell" => (commands::sell::run(player_id, &command.data.options).await, None),
+			let msg = match command.data.name.as_str() {
+				"chop" => commands::chop::run(player_id, &command.data.options).await,
+				"dry" => commands::dry::run(player_id, &command.data.options).await,
+				"build" => commands::build::run(player_id, &command.data.options).await,
+				"sell" => commands::sell::run(player_id, &command.data.options).await,
 				"my" => {
 					let p = command.member.as_ref().unwrap();
 					let player_nick = match p.user.nick_in(&ctx.http, command.guild_id.unwrap()).await {
@@ -63,29 +64,10 @@ impl EventHandler for Handler {
 				},
 				"store" => commands::store::run(player_id, &command.data.options).await,
 				"upgrade" => commands::upgrade::run(player_id, &command.data.options).await,
-				_ => ("not implemented :(".to_string(), None)
+				_ => Message::how()
 			};
 
-			if let Err(why) = command
-				.create_interaction_response(&ctx.http, |response| {
-					response
-						.kind(InteractionResponseType::ChannelMessageWithSource)
-						.interaction_response_data(|message| {
-							message.content(content);
-							match embed {
-								Some(e) => {
-									message.set_embed(e);
-								},
-								None => ()
-							};
-
-							message
-						})
-				})
-				.await
-			{
-				println!("Cannot respond to slash command: {}", why);
-			}
+			respond_to_command(&ctx, command, msg).await;
 		}
 	}
 	
@@ -178,5 +160,51 @@ async fn main() {
 	// Finally start a shard and listen for events.
 	if let Err(why) = client.start().await {
 		println!("Client error: {:?}", why);
+	}
+}
+
+async fn respond_to_command(ctx: &Context, command: ApplicationCommandInteraction, msg: Message) {
+	match msg {
+		Message::Content(c) => {
+			if let Err(why) = command
+				.create_interaction_response(&ctx.http, |response| {
+					response
+						.kind(InteractionResponseType::ChannelMessageWithSource)
+						.interaction_response_data(|message| message.content(c))
+				})
+				.await
+			{
+				println!("Cannot respond to slash command: {}", why);
+			}
+		},
+		Message::Embed(e) => {
+			if let Err(why) = command
+				.create_interaction_response(&ctx.http, |response| {
+					response
+						.kind(InteractionResponseType::ChannelMessageWithSource)
+						.interaction_response_data(|message| message.set_embed(e))
+				})
+				.await
+			{
+				println!("Cannot respond to slash command: {}", why);
+			}
+		},
+		Message::Pages(p) => {
+			if let Err(why) = command.clone()
+				.defer(&ctx.http).await
+			{
+				println!("Cannot get to slash command: {}", why);
+			}
+
+			p.clone().scroll_through(&ctx, command.clone()).await;
+
+			if let Err(why) = command
+				.edit_original_interaction_response(&ctx.http, |m| {
+					m.set_embed(p.pages[0].clone())
+				}).await
+			{
+				println!("Idk {}", why);
+			}
+		},
 	}
 }

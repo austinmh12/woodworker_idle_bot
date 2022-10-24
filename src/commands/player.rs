@@ -1,4 +1,4 @@
-use serenity::builder::{CreateApplicationCommand, CreateEmbed};
+use serenity::builder::CreateApplicationCommand;
 use serenity::model::prelude::command::{
 	CommandOptionType
 };
@@ -8,37 +8,44 @@ use serenity::model::prelude::interaction::application_command::{
 };
 
 use crate::player::{get_player, Tree, BPUnlock};
+use crate::utils::{Message, PaginatedEmbed};
 
-pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[CommandDataOption]) -> (String, Option<CreateEmbed>) {
+pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[CommandDataOption]) -> Message {
 	let option = &options
 		.get(0)
 		.expect("Expected a Subcommand");
 	
 	let mut player = get_player(player_id).await;
 	match option.name.as_str() {
-		"profile" => ("".to_string(), Some(player.embed(nickname, avatar))),
-		"stats" => ("".to_string(), Some(player.stats.embed(nickname, avatar))),
+		"profile" => Message::Embed(player.embed(nickname, avatar)),
+		"stats" => Message::Embed(player.stats.embed(nickname, avatar)),
 		"inventory" => {
-			match option.options.get(0).expect("Subcommand").name.as_str() {
-				"pine" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::Pine(BPUnlock::None)))),
-				"oak" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::Oak(BPUnlock::None)))),
-				"maple" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::Maple(BPUnlock::None)))),
-				"walnut" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::Walnut(BPUnlock::None)))),
-				"cherry" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::Cherry(BPUnlock::None)))),
-				"purpleheart" => ("".to_string(), Some(player.inventory(nickname, avatar, Tree::PurpleHeart(BPUnlock::None)))),
-				_ => ("How did you get here?".to_string(), None)
-			}
+			let p = PaginatedEmbed::new(
+				vec![
+					player.inventory(nickname.clone(), avatar.clone(), Tree::Pine(BPUnlock::None)),
+					player.inventory(nickname.clone(), avatar.clone(), Tree::Oak(BPUnlock::None)),
+					player.inventory(nickname.clone(), avatar.clone(), Tree::Maple(BPUnlock::None)),
+					player.inventory(nickname.clone(), avatar.clone(), Tree::Walnut(BPUnlock::None)),
+					player.inventory(nickname.clone(), avatar.clone(), Tree::Cherry(BPUnlock::None)),
+					player.inventory(nickname.clone(), avatar.clone(), Tree::PurpleHeart(BPUnlock::None)),
+				]
+			);
+
+			Message::Pages(p)
 		},
 		"blueprints" => {
-			match option.options.get(0).expect("Subcommand").name.as_str() {
-				"pine" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::Pine(BPUnlock::None)))),
-				"oak" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::Oak(BPUnlock::None)))),
-				"maple" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::Maple(BPUnlock::None)))),
-				"walnut" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::Walnut(BPUnlock::None)))),
-				"cherry" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::Cherry(BPUnlock::None)))),
-				"purpleheart" => ("".to_string(), Some(player.blueprint_embed(nickname, avatar, Tree::PurpleHeart(BPUnlock::None)))),
-				_ => ("How did you get here?".to_string(), None)
-			}
+			let p = PaginatedEmbed::new(
+				vec![
+					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::Pine(BPUnlock::None)),
+					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::Oak(BPUnlock::None)),
+					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::Maple(BPUnlock::None)),
+					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::Walnut(BPUnlock::None)),
+					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::Cherry(BPUnlock::None)),
+					player.blueprint_embed(nickname.clone(), avatar.clone(), Tree::PurpleHeart(BPUnlock::None)),
+				]
+			);
+
+			Message::Pages(p)
 		},
 		"colour" => {
 			let red = match option.options.get(0).expect("Expected an integer").resolved.as_ref().expect("Expected an integer") {
@@ -58,9 +65,9 @@ pub async fn run(player_id: u64, nickname: String, avatar: String, options: &[Co
 			player.color.blue = blue;
 			player.update().await;
 
-			(format!("You updated your profile color to **{}, {}, {}**", red, green, blue), None)
+			Message::Content(format!("You updated your profile color to **{}, {}, {}**", red, green, blue))
 		}
-		_ => ("".to_string(), Some(player.embed(nickname, avatar)))
+		_ => Message::how()
 	}
 }
 
@@ -82,85 +89,13 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 			option
 				.name("inventory")
 				.description("Your inventory")
-				.kind(CommandOptionType::SubCommandGroup)
-				.create_sub_option(|sub| {
-					sub
-						.name("pine")
-						.description("Your pine inventory")
-						.kind(CommandOptionType::SubCommand)
-				})
-				.create_sub_option(|sub| {
-					sub
-						.name("oak")
-						.description("Your oak inventory")
-						.kind(CommandOptionType::SubCommand)
-				})
-				.create_sub_option(|sub| {
-					sub
-						.name("maple")
-						.description("Your maple inventory")
-						.kind(CommandOptionType::SubCommand)
-				})
-				.create_sub_option(|sub| {
-					sub
-						.name("walnut")
-						.description("Your walnut inventory")
-						.kind(CommandOptionType::SubCommand)
-				})
-				.create_sub_option(|sub| {
-					sub
-						.name("cherry")
-						.description("Your cherry inventory")
-						.kind(CommandOptionType::SubCommand)
-				})
-				.create_sub_option(|sub| {
-					sub
-						.name("purpleheart")
-						.description("Your purpleheart inventory")
-						.kind(CommandOptionType::SubCommand)
-				})
+				.kind(CommandOptionType::SubCommand)
 		})
 		.create_option(|option| {
 			option
 				.name("blueprints")
 				.description("Your blueprints")
-				.kind(CommandOptionType::SubCommandGroup)
-				.create_sub_option(|sub| {
-					sub
-						.name("pine")
-						.description("Your pine blueprints")
-						.kind(CommandOptionType::SubCommand)
-				})
-				.create_sub_option(|sub| {
-					sub
-						.name("oak")
-						.description("Your oak blueprints")
-						.kind(CommandOptionType::SubCommand)
-				})
-				.create_sub_option(|sub| {
-					sub
-						.name("maple")
-						.description("Your maple blueprints")
-						.kind(CommandOptionType::SubCommand)
-				})
-				.create_sub_option(|sub| {
-					sub
-						.name("walnut")
-						.description("Your walnut blueprints")
-						.kind(CommandOptionType::SubCommand)
-				})
-				.create_sub_option(|sub| {
-					sub
-						.name("cherry")
-						.description("Your cherry blueprints")
-						.kind(CommandOptionType::SubCommand)
-				})
-				.create_sub_option(|sub| {
-					sub
-						.name("purpleheart")
-						.description("Your purpleheart blueprints")
-						.kind(CommandOptionType::SubCommand)
-				})
+				.kind(CommandOptionType::SubCommand)
 		})
 		.create_option(|option| {
 			option

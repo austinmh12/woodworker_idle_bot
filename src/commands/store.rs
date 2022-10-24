@@ -8,7 +8,7 @@ use serenity::model::prelude::interaction::application_command::{
 };
 
 use crate::player::{get_player, Player, Axe, Kiln, Hammer, Tree, BPUnlock};
-use crate::utils;
+use crate::utils::{self, Message};
 
 const LOGGER_BASE: f64 = 25.0;
 const LOGGER_EXP: f64 = 1.01;
@@ -17,7 +17,7 @@ const LUMBERER_EXP: f64 = 1.03;
 const CNC_BASE: f64 = 1000.0;
 const CNC_EXP: f64 = 1.07;
 
-pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Option<CreateEmbed>) {
+pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 	// store.view
 	// store.buy.slot amount
 	let action = &options
@@ -49,7 +49,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 				.description(&desc)
 				.colour(utils::default_colour());
 
-			("".to_string(), Some(ret))
+			Message::Embed(ret)
 		},
 		"buy" => {
 			let slot = match action.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
@@ -57,7 +57,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 				_ => 0,
 			};
 			if !(1..=7).contains(&slot) {
-				return ("Invalid slot".to_string(), None);
+				return Message::Content("Invalid slot".to_string());
 			}
 			let amount = if &action.options.len() == &1usize {
 				1
@@ -78,55 +78,55 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> (String, Opti
 				_ => (0, 0.0) // Can't get here
 			};
 			if player.cash < total_price || count == 0 {
-				return (format!("You need **${:.2}** more to buy that", total_price - player.cash), None);
+				return Message::Content(format!("You need **${:.2}** more to buy that", total_price - player.cash));
 			}
 			player.cash -= total_price;
 			let ret = match slot {
 				1 => {
 					player.loggers += count;
 					
-					(format!("You bought **{}** loggers!", count), None)
+					Message::Content(format!("You bought **{}** loggers!", count))
 				},
 				2 => {
 					player.lumberers += count;
 					
-					(format!("You bought **{}** lumberers!", count), None)
+					Message::Content(format!("You bought **{}** lumberers!", count))
 				},
 				3 => {
 					player.cncs += count;
 					
-					(format!("You bought **{}** CNCs!", count), None)
+					Message::Content(format!("You bought **{}** CNCs!", count))
 				},
 				4 => {
 					player.axe = get_next_axe(&player);
 
-					(format!("You bought the **{}** axe!", &player.axe), None)
+					Message::Content(format!("You bought the **{}** axe!", &player.axe))
 				},
 				5 => {
 					player.kiln = get_next_kiln(&player);
 
-					(format!("You bought the **{}** kiln!", player.kiln), None)
+					Message::Content(format!("You bought the **{}** kiln!", player.kiln))
 				},
 				6 => {
 					player.hammer = get_next_hammer(&player);
 
-					(format!("You bought the **{}** hammer!", &player.hammer), None)
+					Message::Content(format!("You bought the **{}** hammer!", &player.hammer))
 				},
 				7 => {
 					let bp = player.unlock_next_blueprint();
 					match bp {
-						Some(t) => (format!("You bought the **{}** blueprint!", t), None),
-						None => ("How'd you get here?".to_string(), None)
+						Some(t) => Message::Content(format!("You bought the **{}** blueprint!", t)),
+						None => Message::how()
 					}
 				},
-				_ => ("How'd you get here?".to_string(), None)
+				_ => Message::how()
 			};
 			// Stats maybe?
 			player.update().await;
 
 			ret
 		},
-		_ => ("todo".to_string(), None),
+		_ => Message::how()
 	}
 	
 	// ("todo".to_string(), None)
