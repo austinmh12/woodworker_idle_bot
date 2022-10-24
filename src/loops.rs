@@ -1,6 +1,6 @@
 mod action;
-mod assignment;
+mod offline;
 
 pub use self::action::check_actions;
 
-pub use self::assignment::update_assignments;
+pub use self::offline::offline_progression;

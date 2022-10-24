@@ -109,8 +109,8 @@ impl EventHandler for Handler {
 			let ctx2 = Arc::clone(&ctx);
 			tokio::spawn(async move {
 				loop {
-					loops::update_assignments(Arc::clone(&ctx2)).await;
-					tokio::time::sleep(StdDuration::from_secs(300)).await;
+					loops::offline_progression(Arc::clone(&ctx2)).await;
+					tokio::time::sleep(StdDuration::from_secs(1)).await;
 				}
 			});
 			// let ctx3 = Arc::clone(&ctx);

@@ -6,6 +6,9 @@ use serenity::model::prelude::interaction::application_command::{
 	CommandDataOption,
 	CommandDataOptionValue
 };
+use chrono::{
+	Utc,
+};
 
 use crate::player::{get_player, Axe, Kiln, Hammer};
 use crate::utils::Message;
@@ -37,6 +40,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 				let amounts = vec![amount, player.available_loggers()];
 				let amount = *amounts.iter().min().unwrap();
 				player.loggers_active.pine += amount;
+				player.offline_timer.pine_log = Utc::now();
 				player.update().await;
 
 				Message::Content(format!{"You assigned **{}** loggers to chop **{}** trees", amount, tree.name})
@@ -48,6 +52,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 				let amounts = vec![amount, player.available_loggers()];
 				let amount = *amounts.iter().min().unwrap();
 				player.loggers_active.oak += amount;
+				player.offline_timer.oak_log = Utc::now();
 				player.update().await;
 
 				Message::Content(format!{"You assigned **{}** loggers to chop **{}** trees", amount, tree.name})
@@ -59,6 +64,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 				let amounts = vec![amount, player.available_loggers()];
 				let amount = *amounts.iter().min().unwrap();
 				player.loggers_active.maple += amount;
+				player.offline_timer.maple_log = Utc::now();
 				player.update().await;
 
 				Message::Content(format!{"You assigned **{}** loggers to chop **{}** trees", amount, tree.name})
@@ -70,6 +76,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 				let amounts = vec![amount, player.available_loggers()];
 				let amount = *amounts.iter().min().unwrap();
 				player.loggers_active.walnut += amount;
+				player.offline_timer.walnut_log = Utc::now();
 				player.update().await;
 
 				Message::Content(format!{"You assigned **{}** loggers to chop **{}** trees", amount, tree.name})
@@ -81,6 +88,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 				let amounts = vec![amount, player.available_loggers()];
 				let amount = *amounts.iter().min().unwrap();
 				player.loggers_active.cherry += amount;
+				player.offline_timer.cherry_log = Utc::now();
 				player.update().await;
 
 				Message::Content(format!{"You assigned **{}** loggers to chop **{}** trees", amount, tree.name})
@@ -92,6 +100,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 				let amounts = vec![amount, player.available_loggers()];
 				let amount = *amounts.iter().min().unwrap();
 				player.loggers_active.purpleheart += amount;
+				player.offline_timer.purpleheart_log = Utc::now();
 				player.update().await;
 
 				Message::Content(format!{"You assigned **{}** loggers to chop **{}** trees", amount, tree.name})

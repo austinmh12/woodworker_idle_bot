@@ -12,10 +12,6 @@ use serenity::{
 	builder::CreateEmbed,
 	utils::Colour
 };
-use chrono::{
-	DateTime, 
-	Utc,
-};
 
 use crate::utils::{get_client, ToDoc};
 use crate::player::{
@@ -34,6 +30,7 @@ use crate::player::{
 	Kiln,
 	Hammer,
 	Tree,
+	OfflineTimer,
 };
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -66,8 +63,7 @@ pub struct Player {
 	pub color: Color,
 	pub sawdust_prestige: SawdustPrestige,
 	pub seed_prestige: SeedPrestige,
-	#[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
-	pub last_updated: DateTime<Utc>,
+	pub offline_timer: OfflineTimer,
 }
 
 impl Player {
@@ -100,7 +96,7 @@ impl Player {
 			color: Color::default(),
 			sawdust_prestige: SawdustPrestige::default(),
 			seed_prestige: SeedPrestige::default(),
-			last_updated: Utc::now(),
+			offline_timer: OfflineTimer::default(),
 		}
 	}
 
@@ -443,6 +439,7 @@ impl ToDoc for Player {
 				"color": &self.color.to_doc(),
 				"sawdust_prestige": &self.sawdust_prestige.to_doc(),
 				"seed_prestige": &self.seed_prestige.to_doc(),
+				"offline_timer": &self.offline_timer.to_doc(),
 			}
 		}
 	}

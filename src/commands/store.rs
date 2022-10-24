@@ -62,7 +62,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 			let amount = if &action.options.len() == &1usize {
 				1
 			} else {
-				match action.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
+				match action.options.get(1).expect("expected int").resolved.as_ref().expect("int") {
 					CommandDataOptionValue::Integer(i) => i.to_owned(),
 					_ => 1
 				}

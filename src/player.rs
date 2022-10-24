@@ -7,6 +7,7 @@ mod player;
 mod action;
 mod color;
 mod prestige;
+mod offline;
 
 pub use self::enums::Tree;
 pub use self::enums::Axe;
@@ -37,3 +38,5 @@ pub use self::color::Color;
 
 pub use self::prestige::SawdustPrestige;
 pub use self::prestige::SeedPrestige;
+
+pub use self::offline::OfflineTimer;
