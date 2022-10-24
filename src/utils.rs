@@ -116,7 +116,6 @@ pub fn get_price(amount: i64, base: f64, exp: f64, owned: i64) -> f64 {
 pub fn get_max_buyable_amount_and_price(player: &Player, amount: i64, base: f64, exp: f64, owned: i64) -> (i64, f64) {
 	let max_amount = get_max_buyable(&player, base, exp, owned);
 	let amounts = vec![amount, max_amount];
-	println!("{:?}", &amounts);
 	let amount = amounts.iter().min().unwrap().to_owned();
 	
 	(amount, get_price(amount, base, exp, owned))
