@@ -118,14 +118,11 @@ impl Player {
 		desc.push_str(&format!("**Axe:** {}\n", &self.axe));
 		desc.push_str(&format!("**Kiln:** {}\n", &self.kiln));
 		desc.push_str(&format!("**Hammer:** {}\n\n", &self.hammer));
-		desc.push_str(&format!("**Current Action:** {}\n\n", &self.current_action));
-		desc.push_str("__**Total Logs and Lumber:**__\n");
-		desc.push_str(&format!("<:GameCornerBlank:1030960408145698816> **Pine:** {} | {}\n", self.logs.pine, self.lumber.pine));
-		desc.push_str(&format!("<:GameCornerBlank:1030960408145698816> **Oak:** {} | {}\n", self.logs.oak, self.lumber.oak));
-		desc.push_str(&format!("<:GameCornerBlank:1030960408145698816> **Maple:** {} | {}\n", self.logs.maple, self.lumber.maple));
-		desc.push_str(&format!("<:GameCornerBlank:1030960408145698816> **Walnut:** {} | {}\n", self.logs.walnut, self.lumber.walnut));
-		desc.push_str(&format!("<:GameCornerBlank:1030960408145698816> **Cherry:** {} | {}\n", self.logs.cherry, self.lumber.cherry));
-		desc.push_str(&format!("<:GameCornerBlank:1030960408145698816> **Purpleheart:** {} | {}", self.logs.purpleheart, self.lumber.purpleheart));
+		desc.push_str(&format!("**Current Action:** {}\n", &self.current_action));
+		desc.push_str("**Queued Actions**\n");
+		for queued_action in &self.queued_actions {
+			desc.push_str(&format!("{}\n", queued_action));
+		}
 
 		let mut ret = CreateEmbed::default();
 		ret

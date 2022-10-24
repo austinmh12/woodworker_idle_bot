@@ -195,7 +195,7 @@ impl SeedPrestige {
 		purpleheart += self.furniture.purpleheart.dining_set * 240;
 		points += purpleheart * 60;
 
-		(points as f64 / 10.0_f64.powi(6)).powf(0.14) as i64
+		(points as f64 / 10.0_f64.powi(7)).powf(0.14) as i64
 	}
 }
 
