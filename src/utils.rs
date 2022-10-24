@@ -116,6 +116,7 @@ pub fn get_price(amount: i64, base: f64, exp: f64, owned: i64) -> f64 {
 pub fn get_max_buyable_amount_and_price(player: &Player, amount: i64, base: f64, exp: f64, owned: i64) -> (i64, f64) {
 	let max_amount = get_max_buyable(&player, base, exp, owned);
 	let amounts = vec![amount, max_amount];
+	println!("{:?}", &amounts);
 	let amount = amounts.iter().min().unwrap().to_owned();
 	
 	(amount, get_price(amount, base, exp, owned))
@@ -137,21 +138,6 @@ impl PaginatedEmbed {
 		let left_arrow = ReactionType::try_from("⬅️").expect("No left arrow");
 		let right_arrow = ReactionType::try_from("➡️").expect("No right arrow");
 		let mut idx: i16 = 0;
-		// let mut message = command
-		// 	.channel_id
-		// 	.send_message(&ctx.http, |m| {
-		// 		let mut cur_embed = self.pages[idx as usize].clone();
-		// 		if self.pages.len() > 1 {
-		// 			cur_embed.footer(|f| f.text(format!("{}/{}", idx + 1, self.pages.len())));
-		// 		}
-		// 		m.set_embed(cur_embed);
-
-		// 		if self.pages.len() > 1 {
-		// 			m.reactions([left_arrow.clone(), right_arrow.clone()]);
-		// 		}
-
-		// 		m
-		// }).await.unwrap();
 		command
 			.create_interaction_response(&ctx.http, |resp| {
 				resp

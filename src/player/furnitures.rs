@@ -128,6 +128,12 @@ pub struct Furniture {
 	pub purpleheart: FurnitureItems,
 }
 
+impl Furniture {
+	pub fn total(&self) -> i64 {
+		self.pine.total() + self.oak.total() + self.maple.total() + self.walnut.total() + self.cherry.total() + self.purpleheart.total()
+	}
+}
+
 impl Default for Furniture {
 	fn default() -> Self {
 		Self {
@@ -161,6 +167,12 @@ pub struct FurnitureItems {
 	pub side_table: i64,
 	pub coffee_table: i64,
 	pub dining_set: i64,
+}
+
+impl FurnitureItems {
+	pub fn total(&self) -> i64 {
+		self.birdhouse + self.shelf + self.side_table + self.coffee_table + self.dining_set
+	}
 }
 
 impl Default for FurnitureItems {

@@ -18,6 +18,12 @@ pub struct WoodsInt {
 	pub purpleheart: i64,
 }
 
+impl WoodsInt {
+	pub fn total(&self) -> i64 {
+		self.pine + self.oak + self.maple + self.walnut + self.cherry + self.purpleheart
+	}
+}
+
 impl Default for WoodsInt {
 	fn default() -> Self {
 		Self {

@@ -392,6 +392,26 @@ impl Player {
 			None => None
 		}
 	}
+
+	pub fn assigned_loggers(&self) -> i64 {
+		self.loggers_active.total()
+	}
+
+	pub fn available_loggers(&self) -> i64 {
+		if self.loggers - self.assigned_loggers() < 0 {
+			0
+		} else {
+			self.loggers - self.assigned_loggers()
+		}
+	}
+
+	pub fn assigned_lumberers(&self) -> i64 {
+		self.lumberers_active.total()
+	}
+
+	pub fn assigned_cncs(&self) -> i64 {
+		self.cncs_active.total()
+	}
 }
 
 impl ToDoc for Player {
