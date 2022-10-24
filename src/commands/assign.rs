@@ -141,8 +141,8 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 					}
 					let amounts = vec![amount, player.available_lumberers()];
 					let amount = *amounts.iter().min().unwrap();
-					player.lumberers_active.pine += amount;
-					player.offline_timer.pine_lumber = Utc::now();
+					player.lumberers_active.oak += amount;
+					player.offline_timer.oak_lumber = Utc::now();
 					player.update().await;
 	
 					Message::Content(format!("You assigned **{}** lumberers to dry **{}** logs", amount, tree.name))
@@ -153,8 +153,8 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 					}
 					let amounts = vec![amount, player.available_lumberers()];
 					let amount = *amounts.iter().min().unwrap();
-					player.lumberers_active.pine += amount;
-					player.offline_timer.pine_lumber = Utc::now();
+					player.lumberers_active.maple += amount;
+					player.offline_timer.maple_lumber = Utc::now();
 					player.update().await;
 	
 					Message::Content(format!("You assigned **{}** lumberers to dry **{}** logs", amount, tree.name))
@@ -165,8 +165,8 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 					}
 					let amounts = vec![amount, player.available_lumberers()];
 					let amount = *amounts.iter().min().unwrap();
-					player.lumberers_active.pine += amount;
-					player.offline_timer.pine_lumber = Utc::now();
+					player.lumberers_active.walnut += amount;
+					player.offline_timer.walnut_lumber = Utc::now();
 					player.update().await;
 	
 					Message::Content(format!("You assigned **{}** lumberers to dry **{}** logs", amount, tree.name))
@@ -177,8 +177,8 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 					}
 					let amounts = vec![amount, player.available_lumberers()];
 					let amount = *amounts.iter().min().unwrap();
-					player.lumberers_active.pine += amount;
-					player.offline_timer.pine_lumber = Utc::now();
+					player.lumberers_active.cherry += amount;
+					player.offline_timer.cherry_lumber = Utc::now();
 					player.update().await;
 	
 					Message::Content(format!("You assigned **{}** lumberers to dry **{}** logs", amount, tree.name))
@@ -189,8 +189,8 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 					}
 					let amounts = vec![amount, player.available_lumberers()];
 					let amount = *amounts.iter().min().unwrap();
-					player.lumberers_active.pine += amount;
-					player.offline_timer.pine_lumber = Utc::now();
+					player.lumberers_active.purpleheart += amount;
+					player.offline_timer.purpleheart_lumber = Utc::now();
 					player.update().await;
 	
 					Message::Content(format!("You assigned **{}** lumberers to dry **{}** logs", amount, tree.name))
