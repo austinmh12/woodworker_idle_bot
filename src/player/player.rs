@@ -451,6 +451,34 @@ impl Player {
 			self.cncs - self.assigned_cncs()
 		}
 	}
+
+	pub fn perform_sawdust_prestige(&mut self, sawdust_earned: i64) {
+		self.cash = 0.0;
+		self.axe = Axe::Stone;
+		self.kiln = Kiln::None;
+		self.hammer = Hammer::None;
+		self.current_action = Action::none();
+		self.queued_actions = vec![];
+		self.logs = WoodsInt::default();
+		self.loggers = 0;
+		self.loggers_active = WoodsInt::default();
+		self.lumber = WoodsInt::default();
+		self.lumberers = 0;
+		self.lumberers_active = WoodsInt::default();
+		self.furniture = Furniture::default();
+		self.cncs = 0;
+		self.cncs_active = Furniture::default();
+		self.upgrades = Upgrades::default();
+		self.sawdust += sawdust_earned;
+		self.seed_prestige.sawdust += sawdust_earned;
+		self.stats.sawdust_earned += sawdust_earned;
+		self.sawdust_total += sawdust_earned;
+		self.sawdust_prestige = SawdustPrestige::default();
+	}
+
+	pub fn perform_seed_prestige(&mut self) {
+
+	}
 }
 
 impl ToDoc for Player {

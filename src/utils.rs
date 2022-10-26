@@ -10,7 +10,7 @@ use mongodb::{
 };
 use serenity::{
 	utils::Colour,
-	builder::CreateEmbed,
+	builder::{CreateEmbed},
 	prelude::Context,
 	model::prelude::{
 		ReactionType,
@@ -201,10 +201,24 @@ impl PaginatedEmbed {
 	}
 }
 
+pub struct Button {
+	pub id: String,
+	pub label: String,
+	pub func: dyn Fn(&mut Player) -> &mut Player
+}
+
+impl <'a>Button {
+	pub fn run(&'a self, player: &'a mut Player) -> &mut Player {
+		(&self.func)(player)
+	}
+}
+
 pub enum Message {
 	Content(String),
 	Embed(CreateEmbed),
 	Pages(PaginatedEmbed),
+	SawdustPrestige(u64), // Special messages to trigger prestiges
+	SeedPrestige(u64),
 }
 
 impl Message {
