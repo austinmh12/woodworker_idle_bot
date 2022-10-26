@@ -115,7 +115,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 				7 => {
 					let bp = player.unlock_next_blueprint();
 					match bp {
-						Some(t) => Message::Content(format!("You bought the **{}** blueprint!", t)),
+						Some(t) => Message::Content(format!("You bought the **{}**!", t)),
 						None => Message::how()
 					}
 				},

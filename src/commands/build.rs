@@ -907,13 +907,13 @@ pub async fn build_player_update(player: &mut Player, tree: &str, furniture: &st
 					player.current_action = a.clone();
 					player.update().await;
 
-					format!("You started build a **{} {}**! You'll be done in **{}s**", tree, furniture, a.time_to_complete())
+					format!("You started to build a **{} {}**! You'll be done in **{}s**", tree, furniture, a.time_to_complete())
 				},
 				_ => {
 					let queued_action = player.queue_action(a);
 					player.update().await;
 
-					format!("You started build a **{} {}**! You'll be done in **{}s**", tree, furniture, queued_action.time_to_complete())
+					format!("You started to build a **{} {}**! You'll be done in **{}s**", tree, furniture, queued_action.time_to_complete())
 				},
 			}
 		}
