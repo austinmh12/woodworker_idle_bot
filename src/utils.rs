@@ -206,7 +206,7 @@ pub enum Message {
 	Embed(CreateEmbed),
 	Pages(PaginatedEmbed),
 	SawdustPrestige(u64), // Special messages to trigger prestiges
-	SeedPrestige(u64),
+	// SeedPrestige(u64),
 }
 
 impl Message {

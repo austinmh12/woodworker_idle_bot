@@ -200,6 +200,6 @@ async fn respond_to_command(ctx: &Context, command: ApplicationCommandInteractio
 			p.scroll_through(&ctx, command).await;
 		},
 		Message::SawdustPrestige(player_id) => commands::prestige::sawdust_prestige_player(ctx, &command, player_id).await,
-		Message::SeedPrestige(player_id) => commands::prestige::seed_prestige_player(ctx, &command, player_id).await,
+		// Message::SeedPrestige(player_id) => commands::prestige::seed_prestige_player(ctx, &command, player_id).await,
 	}
 }

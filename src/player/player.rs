@@ -476,9 +476,9 @@ impl Player {
 		self.sawdust_prestige = SawdustPrestige::default();
 	}
 
-	pub fn perform_seed_prestige(&mut self) {
+	// pub fn perform_seed_prestige(&mut self) {
 
-	}
+	// }
 }
 
 impl ToDoc for Player {
