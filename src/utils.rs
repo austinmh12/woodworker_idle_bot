@@ -201,18 +201,6 @@ impl PaginatedEmbed {
 	}
 }
 
-pub struct Button {
-	pub id: String,
-	pub label: String,
-	pub func: dyn Fn(&mut Player) -> &mut Player
-}
-
-impl <'a>Button {
-	pub fn run(&'a self, player: &'a mut Player) -> &mut Player {
-		(&self.func)(player)
-	}
-}
-
 pub enum Message {
 	Content(String),
 	Embed(CreateEmbed),
