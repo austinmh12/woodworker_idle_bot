@@ -194,10 +194,10 @@ impl PaginatedEmbed {
 				}).await.unwrap();
 			}
 		}
-		command
-			.delete_original_interaction_response(&ctx.http)
-			.await
-			.unwrap();
+		// command
+		// 	.delete_original_interaction_response(&ctx.http)
+		// 	.await
+		// 	.unwrap();
 	}
 }
 
