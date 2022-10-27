@@ -295,13 +295,13 @@ pub fn get_player_chop_time(player: &Player, tree: &str, actions: i64) -> i64 {
 
 pub fn get_logger_chop_time(player: &Player, tree: &str, actions: i64) -> i64 {
 	let base_time = match tree {
-		"pine" => 10.0,
-		"oak" => 15.0,
-		"maple" => 25.0,
-		"walnut" => 35.0,
-		"cherry" => 50.0,
-		"purpleheart" => 80.0,
-		_ => 10.0
+		"pine" => 100.0,
+		"oak" => 150.0,
+		"maple" => 250.0,
+		"walnut" => 350.0,
+		"cherry" => 500.0,
+		"purpleheart" => 800.0,
+		_ => 100.0
 	};
 	let upgrade_mult = 1.0 + (player.upgrades.sharper_axes as f64 * 0.1);
 	let sawdust_mult = 1.0 + (player.sawdust_upgrades.double_swings as f64 * 0.1);

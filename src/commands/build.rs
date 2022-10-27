@@ -1175,13 +1175,13 @@ pub fn get_player_build_time(player: &Player, tree: &str, furniture: &str, actio
 
 pub fn get_cnc_build_time(player: &Player, tree: &str, furniture: &str, actions: i64) -> i64 {
 	let base_time = match tree {
-		"pine" => 10.0,
-		"oak" => 15.0,
-		"maple" => 25.0,
-		"walnut" => 35.0,
-		"cherry" => 50.0,
-		"purpleheart" => 80.0,
-		_ => 10.0
+		"pine" => 100.0,
+		"oak" => 150.0,
+		"maple" => 250.0,
+		"walnut" => 350.0,
+		"cherry" => 500.0,
+		"purpleheart" => 800.0,
+		_ => 100.0
 	};
 	let furniture_mult = match furniture {
 		"birdhouse" => 1.0,
