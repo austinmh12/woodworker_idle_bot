@@ -157,6 +157,7 @@ impl Message {
 		Message::Content("How did you get here?".to_string())
 	}
 
+	#[allow(dead_code)]
 	pub fn under_construction() -> Self {
 		Message::Content("Under construction!".to_string())
 	}

@@ -213,24 +213,24 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 				let mut ret = CreateEmbed::default();
 				let mut desc = "Welcome to the sawdust upgrades! See something you like, buy it with **/upgrade sawdust buy**\n".to_string();
 				desc.push_str(&format!("You have **{}** sawdust\n\n", player.sawdust));
-				desc.push_str(&format!("**1:** Tree Fertilizer - {}SD", utils::get_price(1, TREE_FERTILIZER_BASE, TREE_FERTILIZER_EXP, player.sawdust_upgrades.tree_fertilizer)));
-				desc.push_str(&format!("**2:** Less Bark - {}SD", utils::get_price(1, LESS_BARK_BASE, LESS_BARK_EXP, player.sawdust_upgrades.less_bark)));
-				desc.push_str(&format!("**3:** Double Swings - {}SD", utils::get_price(1, DOUBLE_SWINGS_BASE, DOUBLE_SWINGS_EXP, player.sawdust_upgrades.double_swings)));
-				desc.push_str(&format!("**4:** Dual Wielding - {}SD", utils::get_price(1, DUAL_WIELDING_BASE, DUAL_WIELDING_EXP, player.sawdust_upgrades.dual_wielding)));
-				desc.push_str(&format!("**5:** Preheating - {}SD", utils::get_price(1, PREHEATING_BASE, PREHEATING_EXP, player.sawdust_upgrades.preheating)));
-				desc.push_str(&format!("**6:** Efficient Packing - {}SD", utils::get_price(1, EFFICIENT_PACKING_BASE, EFFICIENT_PACKING_EXP, player.sawdust_upgrades.efficient_packing)));
-				desc.push_str(&format!("**7:** Electric Heaters - {}SD", utils::get_price(1, ELECTRIC_HEATERS_BASE, ELECTRIC_HEATERS_EXP, player.sawdust_upgrades.electric_heaters)));
-				desc.push_str(&format!("**8:** Reading Glasses - {}SD", utils::get_price(1, READING_GLASSES_BASE, READING_GLASSES_EXP, player.sawdust_upgrades.reading_glasses)));
-				desc.push_str(&format!("**9:** Longer Clamps - {}SD", utils::get_price(1, LONGER_CLAMPS_BASE, LONGER_CLAMPS_EXP, player.sawdust_upgrades.longer_clamps)));
-				desc.push_str(&format!("**10:** Self Tapping Screws - {}SD", utils::get_price(1, SELF_TAPPING_SCREWS_BASE, SELF_TAPPING_SCREWS_EXP, player.sawdust_upgrades.self_tapping_screws)));
-				desc.push_str(&format!("**11:** Saved GCode - {}SD", utils::get_price(1, SAVED_GCODE_BASE, SAVED_GCODE_EXP, player.sawdust_upgrades.saved_gcode)));
-				desc.push_str(&format!("**12:** Stronger Motors - {}SD", utils::get_price(1, STRONGER_MOTORS_BASE, STRONGER_MOTORS_EXP, player.sawdust_upgrades.stronger_motors)));
-				desc.push_str(&format!("**13:** Dust Collection - {}SD", utils::get_price(1, DUST_COLLECTION_BASE, DUST_COLLECTION_EXP, player.sawdust_upgrades.dust_collection)));
-				desc.push_str(&format!("**14:** Fire Starter - {}SD", utils::get_price(1, FIRE_STARTER_BASE, FIRE_STARTER_EXP, player.sawdust_upgrades.fire_starter)));
-				desc.push_str(&format!("**15:** Multitasking - {}SD", utils::get_price(1, MULTITASKING_BASE, MULTITASKING_EXP, player.sawdust_upgrades.multitasking)));
-				desc.push_str(&format!("**16:** Endurance Training - {}SD", utils::get_price(1, ENDURANCE_TRAINING_BASE, ENDURANCE_TRAINING_EXP, player.sawdust_upgrades.endurance_training)));
+				desc.push_str(&format!("**1:** Tree Fertilizer - {}SD\n", utils::get_price(1, TREE_FERTILIZER_BASE, TREE_FERTILIZER_EXP, player.sawdust_upgrades.tree_fertilizer)));
+				desc.push_str(&format!("**2:** Less Bark - {}SD\n", utils::get_price(1, LESS_BARK_BASE, LESS_BARK_EXP, player.sawdust_upgrades.less_bark)));
+				desc.push_str(&format!("**3:** Double Swings - {}SD\n", utils::get_price(1, DOUBLE_SWINGS_BASE, DOUBLE_SWINGS_EXP, player.sawdust_upgrades.double_swings)));
+				desc.push_str(&format!("**4:** Dual Wielding - {}SD\n", utils::get_price(1, DUAL_WIELDING_BASE, DUAL_WIELDING_EXP, player.sawdust_upgrades.dual_wielding)));
+				desc.push_str(&format!("**5:** Preheating - {}SD\n", utils::get_price(1, PREHEATING_BASE, PREHEATING_EXP, player.sawdust_upgrades.preheating)));
+				desc.push_str(&format!("**6:** Efficient Packing - {}SD\n", utils::get_price(1, EFFICIENT_PACKING_BASE, EFFICIENT_PACKING_EXP, player.sawdust_upgrades.efficient_packing)));
+				desc.push_str(&format!("**7:** Electric Heaters - {}SD\n", utils::get_price(1, ELECTRIC_HEATERS_BASE, ELECTRIC_HEATERS_EXP, player.sawdust_upgrades.electric_heaters)));
+				desc.push_str(&format!("**8:** Reading Glasses - {}SD\n", utils::get_price(1, READING_GLASSES_BASE, READING_GLASSES_EXP, player.sawdust_upgrades.reading_glasses)));
+				desc.push_str(&format!("**9:** Longer Clamps - {}SD\n", utils::get_price(1, LONGER_CLAMPS_BASE, LONGER_CLAMPS_EXP, player.sawdust_upgrades.longer_clamps)));
+				desc.push_str(&format!("**10:** Self Tapping Screws - {}SD\n", utils::get_price(1, SELF_TAPPING_SCREWS_BASE, SELF_TAPPING_SCREWS_EXP, player.sawdust_upgrades.self_tapping_screws)));
+				desc.push_str(&format!("**11:** Saved GCode - {}SD\n", utils::get_price(1, SAVED_GCODE_BASE, SAVED_GCODE_EXP, player.sawdust_upgrades.saved_gcode)));
+				desc.push_str(&format!("**12:** Stronger Motors - {}SD\n", utils::get_price(1, STRONGER_MOTORS_BASE, STRONGER_MOTORS_EXP, player.sawdust_upgrades.stronger_motors)));
+				desc.push_str(&format!("**13:** Dust Collection - {}SD\n", utils::get_price(1, DUST_COLLECTION_BASE, DUST_COLLECTION_EXP, player.sawdust_upgrades.dust_collection)));
+				desc.push_str(&format!("**14:** Fire Starter - {}SD\n", utils::get_price(1, FIRE_STARTER_BASE, FIRE_STARTER_EXP, player.sawdust_upgrades.fire_starter)));
+				desc.push_str(&format!("**15:** Multitasking - {}SD\n", utils::get_price(1, MULTITASKING_BASE, MULTITASKING_EXP, player.sawdust_upgrades.multitasking)));
+				desc.push_str(&format!("**16:** Endurance Training - {}SD\n", utils::get_price(1, ENDURANCE_TRAINING_BASE, ENDURANCE_TRAINING_EXP, player.sawdust_upgrades.endurance_training)));
 				ret
-					.title("Normal Upgrades")
+					.title("Sawdust Upgrades")
 					.description(&desc)
 					.colour(utils::default_colour());
 
