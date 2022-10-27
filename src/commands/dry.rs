@@ -8,13 +8,13 @@ use serenity::model::prelude::interaction::application_command::{
 };
 
 use crate::player::{get_player, Kiln, Player, Action, ActionEnum};
-use crate::utils::{self, Message};
+use crate::utils::Message;
 
 pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 	let tree = &options
 		.get(0)
 		.expect("Expected a Subcommand");
-	let actions = if &tree.options.len() == &0usize {
+	let mut actions = if &tree.options.len() == &0usize {
 		1
 	} else {
 		match tree.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
@@ -22,8 +22,11 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 			_ => 1
 		}
 	};
-
 	let mut player = get_player(player_id).await;
+	if actions > 5 + player.sawdust_upgrades.endurance_training {
+		actions = 5 + player.sawdust_upgrades.endurance_training;
+	}
+	
 	match player.current_action.action {
 		ActionEnum::None => (),
 		_ => {
@@ -103,11 +106,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
 					sub
 						.name("amount")
-						.description("amount to chop (1-5)")
+						.description("amount to chop")
 						.kind(CommandOptionType::Integer)
 						.required(false)
 						.min_int_value(1)
-						.max_int_value(5)
 				})
 		})
 		.create_option(|option| {
@@ -117,11 +119,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
 					sub
 						.name("amount")
-						.description("amount to chop (1-5)")
+						.description("amount to chop")
 						.kind(CommandOptionType::Integer)
 						.required(false)
 						.min_int_value(1)
-						.max_int_value(5)
 				})	
 		})
 		.create_option(|option| {
@@ -131,11 +132,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
 					sub
 						.name("amount")
-						.description("amount to chop (1-5)")
+						.description("amount to chop")
 						.kind(CommandOptionType::Integer)
 						.required(false)
 						.min_int_value(1)
-						.max_int_value(5)
 				})	
 		})
 		.create_option(|option| {
@@ -145,11 +145,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
 					sub
 						.name("amount")
-						.description("amount to chop (1-5)")
+						.description("amount to chop")
 						.kind(CommandOptionType::Integer)
 						.required(false)
 						.min_int_value(1)
-						.max_int_value(5)
 				})	
 		})
 		.create_option(|option| {
@@ -159,11 +158,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
 					sub
 						.name("amount")
-						.description("amount to chop (1-5)")
+						.description("amount to chop")
 						.kind(CommandOptionType::Integer)
 						.required(false)
 						.min_int_value(1)
-						.max_int_value(5)
 				})	
 		})
 		.create_option(|option| {
@@ -173,18 +171,17 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 				.kind(CommandOptionType::SubCommand).create_sub_option(|sub| {
 					sub
 						.name("amount")
-						.description("amount to chop (1-5)")
+						.description("amount to chop")
 						.kind(CommandOptionType::Integer)
 						.required(false)
 						.min_int_value(1)
-						.max_int_value(5)
 				})	
 		})
 }
 
 fn dry_log(player: &Player, tree: &str, actions: i64) -> Option<Action> {
 	// returns None if insta-dried.
-	let dry_time = utils::get_dry_time(player, tree, actions);
+	let dry_time = get_player_dry_time(player, tree, actions);
 	if dry_time == 0 {
 		return None;
 	} else {
@@ -192,10 +189,18 @@ fn dry_log(player: &Player, tree: &str, actions: i64) -> Option<Action> {
 	}
 }
 
-pub fn determine_lumber_earned(player: &Player) -> i64 {
+pub fn determine_player_lumber_earned(player: &Player) -> i64 {
+	let base_lumber = 1;
+	let upgrade = player.upgrades.pull_carts;
+	let sawdust_upgrade = player.sawdust_upgrades.efficient_packing;
+	
+	(base_lumber + upgrade) * (1 + sawdust_upgrade)
+}
+
+pub fn determine_lumberer_lumber_earned(player: &Player) -> i64 {
 	let base_lumber = 1;
 	let upgrade = player.upgrades.better_temperatures;
-	let sawdust_upgrade = player.sawdust_upgrades.better_temperatures;
+	let sawdust_upgrade = player.sawdust_upgrades.reading_glasses;
 	
 	(base_lumber + upgrade) * (1 + sawdust_upgrade)
 }
@@ -229,7 +234,7 @@ pub async fn dry_player_update(player: &mut Player, tree: &str, actions: i64) ->
 
 pub fn update_player_dry(player: &mut Player) -> i64 {
 	let times = player.current_action.amount;
-	let amount = times * determine_lumber_earned(&player);
+	let amount = times * determine_player_lumber_earned(&player);
 	let tree = player.current_action.tree.clone();
 	player.current_action = Action::none();
 	match tree.as_str() {
@@ -285,4 +290,36 @@ pub fn update_player_dry(player: &mut Player) -> i64 {
 	}
 
 	amount
+}
+
+pub fn get_player_dry_time(player: &Player, tree: &str, actions: i64) -> i64 {
+	let base_time = match tree {
+		"pine" => 10.0,
+		"oak" => 15.0,
+		"maple" => 25.0,
+		"walnut" => 35.0,
+		"cherry" => 50.0,
+		"purpleheart" => 80.0,
+		_ => 10.0
+	};
+	let upgrade_mult = 1.0 + (player.upgrades.thermodynamics as f64 * 0.1);
+	let sawdust_mult = 1.0 + (player.sawdust_upgrades.preheating as f64 * 0.1);
+
+	((base_time / upgrade_mult) / sawdust_mult).round() as i64 * actions
+}
+
+pub fn get_lumberer_dry_time(player: &Player, tree: &str, actions: i64) -> i64 {
+	let base_time = match tree {
+		"pine" => 10.0,
+		"oak" => 15.0,
+		"maple" => 25.0,
+		"walnut" => 35.0,
+		"cherry" => 50.0,
+		"purpleheart" => 80.0,
+		_ => 10.0
+	};
+	let upgrade_mult = 1.0 + (player.upgrades.hotter_kilns as f64 * 0.1);
+	let sawdust_mult = 1.0 + (player.sawdust_upgrades.electric_heaters as f64 * 0.1);
+
+	((base_time / upgrade_mult) / sawdust_mult).round() as i64 * actions
 }

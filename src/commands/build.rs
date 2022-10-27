@@ -8,7 +8,7 @@ use serenity::model::prelude::interaction::application_command::{
 };
 
 use crate::player::{get_player, Hammer, Player, Action, ActionEnum};
-use crate::utils::{self, Message};
+use crate::utils::Message;
 
 pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 	let tree = &options
@@ -18,7 +18,7 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 		.options
 		.get(0)
 		.expect("Expected subcommand");
-	let actions = if &furniture.options.len() == &0usize {
+	let mut actions = if &furniture.options.len() == &0usize {
 		1
 	} else {
 		match furniture.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
@@ -26,8 +26,11 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 			_ => 1
 		}
 	};
-
 	let mut player = get_player(player_id).await;
+	if actions > 5 + player.sawdust_upgrades.endurance_training {
+		actions = 5 + player.sawdust_upgrades.endurance_training;
+	}
+
 	match player.current_action.action {
 		ActionEnum::None => (),
 		_ => {
@@ -405,11 +408,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -420,11 +422,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -435,11 +436,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -450,11 +450,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -465,11 +464,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 		})
@@ -486,11 +484,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -501,11 +498,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -516,11 +512,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -531,11 +526,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -546,11 +540,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})	
 		})
@@ -567,11 +560,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -582,11 +574,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -597,11 +588,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -612,11 +602,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -627,11 +616,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})	
 		})
@@ -648,11 +636,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -663,11 +650,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -678,11 +664,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -693,11 +678,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -708,11 +692,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})	
 		})
@@ -729,11 +712,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -744,11 +726,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -759,11 +740,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -774,11 +754,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -789,11 +768,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})	
 		})
@@ -810,11 +788,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -825,11 +802,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -840,11 +816,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -855,11 +830,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})
 				.create_sub_option(|sub| {
@@ -870,11 +844,10 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 						.create_sub_option(|sub| {
 							sub
 								.name("amount")
-								.description("amount to chop (1-5)")
+								.description("amount to chop")
 								.kind(CommandOptionType::Integer)
 								.required(false)
 								.min_int_value(1)
-								.max_int_value(5)
 						})
 				})	
 		})
@@ -882,7 +855,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 
 fn build_furniture(player: &Player, tree: &str, furniture: &str, actions: i64) -> Option<Action> {
 	// returns None if insta-dried.
-	let build_time = utils::get_build_time(player, tree, furniture, actions);
+	let build_time = get_player_build_time(player, tree, furniture, actions);
 	if build_time == 0 {
 		return None;
 	} else {
@@ -890,10 +863,18 @@ fn build_furniture(player: &Player, tree: &str, furniture: &str, actions: i64) -
 	}
 }
 
-pub fn determine_furniture_earned(player: &Player) -> i64 {
+pub fn determine_player_furniture_earned(player: &Player) -> i64 {
 	let base_furniture = 1;
 	let upgrade = player.upgrades.industrial_nails;
-	let sawdust_upgrade = player.sawdust_upgrades.industrial_nails;
+	let sawdust_upgrade = player.sawdust_upgrades.self_tapping_screws;
+	
+	(base_furniture + upgrade) * (1 + sawdust_upgrade)
+}
+
+pub fn determine_cnc_furniture_earned(player: &Player) -> i64 {
+	let base_furniture = 1;
+	let upgrade = player.upgrades.high_quality_bits;
+	let sawdust_upgrade = player.sawdust_upgrades.stronger_motors;
 	
 	(base_furniture + upgrade) * (1 + sawdust_upgrade)
 }
@@ -928,7 +909,7 @@ pub async fn build_player_update(player: &mut Player, tree: &str, furniture: &st
 
 pub fn update_player_build(player: &mut Player) -> i64 {
 	let times = player.current_action.amount;
-	let amount = times * determine_furniture_earned(&player);
+	let amount = times * determine_player_furniture_earned(&player);
 	let tree = player.current_action.tree.clone();
 	let furniture = player.current_action.furniture.as_ref().unwrap().clone();
 	player.current_action = Action::none();
@@ -1165,4 +1146,54 @@ pub fn update_player_build(player: &mut Player) -> i64 {
 	}
 
 	amount
+}
+
+pub fn get_player_build_time(player: &Player, tree: &str, furniture: &str, actions: i64) -> i64 {
+	let base_time = match tree {
+		"pine" => 10.0,
+		"oak" => 15.0,
+		"maple" => 25.0,
+		"walnut" => 35.0,
+		"cherry" => 50.0,
+		"purpleheart" => 80.0,
+		_ => 10.0
+	};
+	let furniture_mult = match furniture {
+		"birdhouse" => 1.0,
+		"shelf" => 1.5,
+		"side table" => 2.0,
+		"coffee table" => 2.5,
+		"dining set" => 3.0,
+		_ => 1.0
+	};
+	let base_time = base_time * furniture_mult;
+	let upgrade_mult = 1.0 + (player.upgrades.fast_drying_glue as f64 * 0.1);
+	let sawdust_mult = 1.0 + (player.sawdust_upgrades.longer_clamps as f64 * 0.1);
+
+	((base_time / upgrade_mult) / sawdust_mult).round() as i64 * actions
+}
+
+pub fn get_cnc_build_time(player: &Player, tree: &str, furniture: &str, actions: i64) -> i64 {
+	let base_time = match tree {
+		"pine" => 10.0,
+		"oak" => 15.0,
+		"maple" => 25.0,
+		"walnut" => 35.0,
+		"cherry" => 50.0,
+		"purpleheart" => 80.0,
+		_ => 10.0
+	};
+	let furniture_mult = match furniture {
+		"birdhouse" => 1.0,
+		"shelf" => 1.5,
+		"side table" => 2.0,
+		"coffee table" => 2.5,
+		"dining set" => 3.0,
+		_ => 1.0
+	};
+	let base_time = base_time * furniture_mult;
+	let upgrade_mult = 1.0 + (player.upgrades.wd_40 as f64 * 0.1);
+	let sawdust_mult = 1.0 + (player.sawdust_upgrades.saved_gcode as f64 * 0.1);
+
+	((base_time / upgrade_mult) / sawdust_mult).round() as i64 * actions
 }

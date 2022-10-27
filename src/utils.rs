@@ -25,63 +25,6 @@ pub trait ToDoc {
 	fn to_doc(&self) -> Document;
 }
 
-pub fn get_tree_time(player: &Player, tree: &str, actions: i64) -> i64 {
-	let base_time = match tree {
-		"pine" => 10.0,
-		"oak" => 15.0,
-		"maple" => 25.0,
-		"walnut" => 35.0,
-		"cherry" => 50.0,
-		"purpleheart" => 80.0,
-		_ => 10.0
-	};
-	let upgrade_mult = 1.0 + (player.upgrades.sharper_axes as f64 * 0.1);
-	let sawdust_mult = 1.0 + (player.sawdust_upgrades.sharper_axes as f64 * 0.1);
-
-	((base_time / upgrade_mult) / sawdust_mult) as i64 * actions
-}
-
-pub fn get_dry_time(player: &Player, tree: &str, actions: i64) -> i64 {
-	let base_time = match tree {
-		"pine" => 10.0,
-		"oak" => 15.0,
-		"maple" => 25.0,
-		"walnut" => 35.0,
-		"cherry" => 50.0,
-		"purpleheart" => 80.0,
-		_ => 10.0
-	};
-	let upgrade_mult = 1.0 + (player.upgrades.hotter_kilns as f64 * 0.1);
-	let sawdust_mult = 1.0 + (player.sawdust_upgrades.hotter_kilns as f64 * 0.1);
-
-	((base_time / upgrade_mult) / sawdust_mult) as i64 * actions
-}
-
-pub fn get_build_time(player: &Player, tree: &str, furniture: &str, actions: i64) -> i64 {
-	let base_time = match tree {
-		"pine" => 10.0,
-		"oak" => 15.0,
-		"maple" => 25.0,
-		"walnut" => 35.0,
-		"cherry" => 50.0,
-		"purpleheart" => 80.0,
-		_ => 10.0
-	};
-	let furniture_mult = match furniture {
-		"birdhouse" => 1.0,
-		"shelf" => 1.5,
-		"side table" => 2.0,
-		"coffee table" => 2.5,
-		"dining set" => 3.0,
-		_ => 1.0
-	};
-	let base_time = base_time * furniture_mult;
-	let upgrade_mult = 1.0 + (player.upgrades.fast_drying_glue as f64 * 0.1);
-	let sawdust_mult = 1.0 + (player.sawdust_upgrades.fast_drying_glue as f64 * 0.1);
-
-	((base_time / upgrade_mult) / sawdust_mult) as i64 * actions
-}
-
 pub async fn get_client() -> Result<Client, Box<dyn Error>> {
 	let mon_client_uri = dotenv::var("MONGODB_URI").expect("No mongodb uri");
 	let options = ClientOptions::parse(&mon_client_uri).await?;
