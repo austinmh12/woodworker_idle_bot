@@ -9,6 +9,7 @@ use crate::player::{get_players, Player};
 use crate::commands::chop::{get_logger_chop_time, determine_logger_logs_earned};
 use crate::commands::dry::{get_lumberer_dry_time, determine_lumberer_lumber_earned};
 use crate::commands::build::{get_cnc_build_time, determine_cnc_furniture_earned};
+use crate::enums::{Tree, Furniture};
 
 pub async fn offline_progression(_ctx: Arc<Context>) {
 	let players = get_players().await;
@@ -39,7 +40,7 @@ fn update_logging(player: &mut Player) {
 	if player.loggers_active.pine > 0 {
 		// Use the time for one chop
 		let time = time_from(player.offline_timer.pine_log);
-		let interval = get_logger_chop_time(player, "pine", 1);
+		let interval = get_logger_chop_time(player, Tree::Pine, 1);
 		let loops = loops_in_time(time, interval);
 		if loops > 0 {
 			let amount = determine_logger_logs_earned(player) * loops;
@@ -52,7 +53,7 @@ fn update_logging(player: &mut Player) {
 	}
 	if player.loggers_active.oak > 0 {
 		let time = time_from(player.offline_timer.oak_log);
-		let interval = get_logger_chop_time(player, "oak", 1);
+		let interval = get_logger_chop_time(player, Tree::Oak, 1);
 		let loops = loops_in_time(time, interval);
 		if loops > 0 {
 			let amount = determine_logger_logs_earned(player) * loops;
@@ -65,7 +66,7 @@ fn update_logging(player: &mut Player) {
 	}
 	if player.loggers_active.maple > 0 {
 		let time = time_from(player.offline_timer.maple_log);
-		let interval = get_logger_chop_time(player, "maple", 1);
+		let interval = get_logger_chop_time(player, Tree::Maple, 1);
 		let loops = loops_in_time(time, interval);
 		if loops > 0 {
 			let amount = determine_logger_logs_earned(player) * loops;
@@ -78,7 +79,7 @@ fn update_logging(player: &mut Player) {
 	}
 	if player.loggers_active.walnut > 0 {
 		let time = time_from(player.offline_timer.walnut_log);
-		let interval = get_logger_chop_time(player, "walnut", 1);
+		let interval = get_logger_chop_time(player, Tree::Walnut, 1);
 		let loops = loops_in_time(time, interval);
 		if loops > 0 {
 			let amount = determine_logger_logs_earned(player) * loops;
@@ -91,7 +92,7 @@ fn update_logging(player: &mut Player) {
 	}
 	if player.loggers_active.cherry > 0 {
 		let time = time_from(player.offline_timer.cherry_log);
-		let interval = get_logger_chop_time(player, "cherry", 1);
+		let interval = get_logger_chop_time(player, Tree::Cherry, 1);
 		let loops = loops_in_time(time, interval);
 		if loops > 0 {
 			let amount = determine_logger_logs_earned(player) * loops;
@@ -104,7 +105,7 @@ fn update_logging(player: &mut Player) {
 	}
 	if player.loggers_active.purpleheart > 0 {
 		let time = time_from(player.offline_timer.purpleheart_log);
-		let interval = get_logger_chop_time(player, "purpleheart", 1);
+		let interval = get_logger_chop_time(player, Tree::PurpleHeart, 1);
 		let loops = loops_in_time(time, interval);
 		if loops > 0 {
 			let amount = determine_logger_logs_earned(player) * loops;
@@ -124,7 +125,7 @@ fn update_lumbering(player: &mut Player) {
 	if player.lumberers_active.pine > 0 && player.logs.pine >= player.lumberers_active.pine {
 		// Use the time for one dry
 		let time = time_from(player.offline_timer.pine_lumber);
-		let interval = get_lumberer_dry_time(player, "pine", 1);
+		let interval = get_lumberer_dry_time(player, Tree::Pine, 1);
 		let loops = vec![player.logs.pine / player.lumberers_active.pine, loops_in_time(time, interval)];
 		let loops_min = *loops.iter().min().unwrap();
 		if loops_min > 0 {
@@ -139,7 +140,7 @@ fn update_lumbering(player: &mut Player) {
 	}
 	if player.lumberers_active.oak > 0 && player.logs.oak >= player.lumberers_active.oak {
 		let time = time_from(player.offline_timer.oak_lumber);
-		let interval = get_lumberer_dry_time(player, "oak", 1);
+		let interval = get_lumberer_dry_time(player, Tree::Oak, 1);
 		let loops = vec![player.logs.oak / player.lumberers_active.oak, loops_in_time(time, interval)];
 		let loops_min = *loops.iter().min().unwrap();
 		if loops_min > 0 {
@@ -154,7 +155,7 @@ fn update_lumbering(player: &mut Player) {
 	}
 	if player.lumberers_active.maple > 0 && player.logs.maple >= player.lumberers_active.maple {
 		let time = time_from(player.offline_timer.maple_lumber);
-		let interval = get_lumberer_dry_time(player, "maple", 1);
+		let interval = get_lumberer_dry_time(player, Tree::Maple, 1);
 		let loops = vec![player.logs.maple / player.lumberers_active.maple, loops_in_time(time, interval)];
 		let loops_min = *loops.iter().min().unwrap();
 		if loops_min > 0 {
@@ -169,7 +170,7 @@ fn update_lumbering(player: &mut Player) {
 	}
 	if player.lumberers_active.walnut > 0 && player.logs.walnut >= player.lumberers_active.walnut {
 		let time = time_from(player.offline_timer.walnut_lumber);
-		let interval = get_lumberer_dry_time(player, "walnut", 1);
+		let interval = get_lumberer_dry_time(player, Tree::Walnut, 1);
 		let loops = vec![player.logs.walnut / player.lumberers_active.walnut, loops_in_time(time, interval)];
 		let loops_min = *loops.iter().min().unwrap();
 		if loops_min > 0 {
@@ -184,7 +185,7 @@ fn update_lumbering(player: &mut Player) {
 	}
 	if player.lumberers_active.cherry > 0 && player.logs.cherry >= player.lumberers_active.cherry {
 		let time = time_from(player.offline_timer.cherry_lumber);
-		let interval = get_lumberer_dry_time(player, "cherry", 1);
+		let interval = get_lumberer_dry_time(player, Tree::Cherry, 1);
 		let loops = vec![player.logs.cherry / player.lumberers_active.cherry, loops_in_time(time, interval)];
 		let loops_min = *loops.iter().min().unwrap();
 		if loops_min > 0 {
@@ -199,7 +200,7 @@ fn update_lumbering(player: &mut Player) {
 	}
 	if player.lumberers_active.purpleheart > 0 && player.logs.purpleheart >= player.lumberers_active.purpleheart {
 		let time = time_from(player.offline_timer.purpleheart_lumber);
-		let interval = get_lumberer_dry_time(player, "purpleheart", 1);
+		let interval = get_lumberer_dry_time(player, Tree::PurpleHeart, 1);
 		let loops = vec![player.logs.purpleheart / player.lumberers_active.purpleheart, loops_in_time(time, interval)];
 		let loops_min = *loops.iter().min().unwrap();
 		if loops_min > 0 {
@@ -222,7 +223,7 @@ fn update_cncing(player: &mut Player) {
 		if player.cncs_active.pine.birdhouse > 0 && player.lumber.pine >= 1 * player.cncs_active.pine.birdhouse {
 			// Use the time for one build
 			let time = time_from(player.offline_timer.pine_birdhouse);
-			let interval = get_cnc_build_time(player, "pine", "birdhouse", 1);
+			let interval = get_cnc_build_time(player, Tree::Pine, Furniture::BirdHouse, 1);
 			let loops = vec![player.lumber.pine / (1 * player.cncs_active.pine.birdhouse), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -237,7 +238,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.pine.shelf > 0 && player.lumber.pine >= 2 * player.cncs_active.pine.shelf {
 			let time = time_from(player.offline_timer.pine_shelf);
-			let interval = get_cnc_build_time(player, "pine", "shelf", 1);
+			let interval = get_cnc_build_time(player, Tree::Pine, Furniture::Shelf, 1);
 			let loops = vec![player.lumber.pine / (1 * player.cncs_active.pine.shelf), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -252,7 +253,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.pine.side_table > 0 && player.lumber.pine >= 3 * player.cncs_active.pine.side_table {
 			let time = time_from(player.offline_timer.pine_side_table);
-			let interval = get_cnc_build_time(player, "pine", "side_table", 1);
+			let interval = get_cnc_build_time(player, Tree::Pine, Furniture::SideTable, 1);
 			let loops = vec![player.lumber.pine / (1 * player.cncs_active.pine.side_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -267,7 +268,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.pine.coffee_table > 0 && player.lumber.pine >= 4 * player.cncs_active.pine.coffee_table {
 			let time = time_from(player.offline_timer.pine_coffee_table);
-			let interval = get_cnc_build_time(player, "pine", "coffee_table", 1);
+			let interval = get_cnc_build_time(player, Tree::Pine, Furniture::CoffeeTable, 1);
 			let loops = vec![player.lumber.pine / (1 * player.cncs_active.pine.coffee_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -282,7 +283,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.pine.dining_set > 0 && player.lumber.pine >= 5 * player.cncs_active.pine.dining_set {
 			let time = time_from(player.offline_timer.pine_dining_set);
-			let interval = get_cnc_build_time(player, "pine", "dining_set", 1);
+			let interval = get_cnc_build_time(player, Tree::Pine, Furniture::DiningSet, 1);
 			let loops = vec![player.lumber.pine / (1 * player.cncs_active.pine.dining_set), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -300,7 +301,7 @@ fn update_cncing(player: &mut Player) {
 		if player.cncs_active.oak.birdhouse > 0 && player.lumber.oak >= 1 * player.cncs_active.oak.birdhouse {
 			// Use the time for one build
 			let time = time_from(player.offline_timer.oak_birdhouse);
-			let interval = get_cnc_build_time(player, "oak", "birdhouse", 1);
+			let interval = get_cnc_build_time(player, Tree::Oak, Furniture::BirdHouse, 1);
 			let loops = vec![player.lumber.oak / (1 * player.cncs_active.oak.birdhouse), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -315,7 +316,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.oak.shelf > 0 && player.lumber.oak >= 2 * player.cncs_active.oak.shelf {
 			let time = time_from(player.offline_timer.oak_shelf);
-			let interval = get_cnc_build_time(player, "oak", "shelf", 1);
+			let interval = get_cnc_build_time(player, Tree::Oak, Furniture::Shelf, 1);
 			let loops = vec![player.lumber.oak / (1 * player.cncs_active.oak.shelf), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -330,7 +331,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.oak.side_table > 0 && player.lumber.oak >= 3 * player.cncs_active.oak.side_table {
 			let time = time_from(player.offline_timer.oak_side_table);
-			let interval = get_cnc_build_time(player, "oak", "side_table", 1);
+			let interval = get_cnc_build_time(player, Tree::Oak, Furniture::SideTable, 1);
 			let loops = vec![player.lumber.oak / (1 * player.cncs_active.oak.side_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -345,7 +346,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.oak.coffee_table > 0 && player.lumber.oak >= 4 * player.cncs_active.oak.coffee_table {
 			let time = time_from(player.offline_timer.oak_coffee_table);
-			let interval = get_cnc_build_time(player, "oak", "coffee_table", 1);
+			let interval = get_cnc_build_time(player, Tree::Oak, Furniture::CoffeeTable, 1);
 			let loops = vec![player.lumber.oak / (1 * player.cncs_active.oak.coffee_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -360,7 +361,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.oak.dining_set > 0 && player.lumber.oak >= 5 * player.cncs_active.oak.dining_set {
 			let time = time_from(player.offline_timer.oak_dining_set);
-			let interval = get_cnc_build_time(player, "oak", "dining_set", 1);
+			let interval = get_cnc_build_time(player, Tree::Oak, Furniture::DiningSet, 1);
 			let loops = vec![player.lumber.oak / (1 * player.cncs_active.oak.dining_set), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -378,7 +379,7 @@ fn update_cncing(player: &mut Player) {
 		if player.cncs_active.maple.birdhouse > 0 && player.lumber.maple >= 1 * player.cncs_active.maple.birdhouse {
 			// Use the time for one build
 			let time = time_from(player.offline_timer.maple_birdhouse);
-			let interval = get_cnc_build_time(player, "maple", "birdhouse", 1);
+			let interval = get_cnc_build_time(player, Tree::Maple, Furniture::BirdHouse, 1);
 			let loops = vec![player.lumber.maple / (1 * player.cncs_active.maple.birdhouse), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -393,7 +394,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.maple.shelf > 0 && player.lumber.maple >= 2 * player.cncs_active.maple.shelf {
 			let time = time_from(player.offline_timer.maple_shelf);
-			let interval = get_cnc_build_time(player, "maple", "shelf", 1);
+			let interval = get_cnc_build_time(player, Tree::Maple, Furniture::Shelf, 1);
 			let loops = vec![player.lumber.maple / (1 * player.cncs_active.maple.shelf), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -408,7 +409,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.maple.side_table > 0 && player.lumber.maple >= 3 * player.cncs_active.maple.side_table {
 			let time = time_from(player.offline_timer.maple_side_table);
-			let interval = get_cnc_build_time(player, "maple", "side_table", 1);
+			let interval = get_cnc_build_time(player, Tree::Maple, Furniture::SideTable, 1);
 			let loops = vec![player.lumber.maple / (1 * player.cncs_active.maple.side_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -423,7 +424,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.maple.coffee_table > 0 && player.lumber.maple >= 4 * player.cncs_active.maple.coffee_table {
 			let time = time_from(player.offline_timer.maple_coffee_table);
-			let interval = get_cnc_build_time(player, "maple", "coffee_table", 1);
+			let interval = get_cnc_build_time(player, Tree::Maple, Furniture::CoffeeTable, 1);
 			let loops = vec![player.lumber.maple / (1 * player.cncs_active.maple.coffee_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -438,7 +439,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.maple.dining_set > 0 && player.lumber.maple >= 5 * player.cncs_active.maple.dining_set {
 			let time = time_from(player.offline_timer.maple_dining_set);
-			let interval = get_cnc_build_time(player, "maple", "dining_set", 1);
+			let interval = get_cnc_build_time(player, Tree::Maple, Furniture::DiningSet, 1);
 			let loops = vec![player.lumber.maple / (1 * player.cncs_active.maple.dining_set), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -456,7 +457,7 @@ fn update_cncing(player: &mut Player) {
 		if player.cncs_active.walnut.birdhouse > 0 && player.lumber.walnut >= 1 * player.cncs_active.walnut.birdhouse {
 			// Use the time for one build
 			let time = time_from(player.offline_timer.walnut_birdhouse);
-			let interval = get_cnc_build_time(player, "walnut", "birdhouse", 1);
+			let interval = get_cnc_build_time(player, Tree::Walnut, Furniture::BirdHouse, 1);
 			let loops = vec![player.lumber.walnut / (1 * player.cncs_active.walnut.birdhouse), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -471,7 +472,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.walnut.shelf > 0 && player.lumber.walnut >= 2 * player.cncs_active.walnut.shelf {
 			let time = time_from(player.offline_timer.walnut_shelf);
-			let interval = get_cnc_build_time(player, "walnut", "shelf", 1);
+			let interval = get_cnc_build_time(player, Tree::Walnut, Furniture::Shelf, 1);
 			let loops = vec![player.lumber.walnut / (1 * player.cncs_active.walnut.shelf), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -486,7 +487,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.walnut.side_table > 0 && player.lumber.walnut >= 3 * player.cncs_active.walnut.side_table {
 			let time = time_from(player.offline_timer.walnut_side_table);
-			let interval = get_cnc_build_time(player, "walnut", "side_table", 1);
+			let interval = get_cnc_build_time(player, Tree::Walnut, Furniture::SideTable, 1);
 			let loops = vec![player.lumber.walnut / (1 * player.cncs_active.walnut.side_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -501,7 +502,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.walnut.coffee_table > 0 && player.lumber.walnut >= 4 * player.cncs_active.walnut.coffee_table {
 			let time = time_from(player.offline_timer.walnut_coffee_table);
-			let interval = get_cnc_build_time(player, "walnut", "coffee_table", 1);
+			let interval = get_cnc_build_time(player, Tree::Walnut, Furniture::CoffeeTable, 1);
 			let loops = vec![player.lumber.walnut / (1 * player.cncs_active.walnut.coffee_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -516,7 +517,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.walnut.dining_set > 0 && player.lumber.walnut >= 5 * player.cncs_active.walnut.dining_set {
 			let time = time_from(player.offline_timer.walnut_dining_set);
-			let interval = get_cnc_build_time(player, "walnut", "dining_set", 1);
+			let interval = get_cnc_build_time(player, Tree::Walnut, Furniture::DiningSet, 1);
 			let loops = vec![player.lumber.walnut / (1 * player.cncs_active.walnut.dining_set), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -534,7 +535,7 @@ fn update_cncing(player: &mut Player) {
 		if player.cncs_active.cherry.birdhouse > 0 && player.lumber.cherry >= 1 * player.cncs_active.cherry.birdhouse {
 			// Use the time for one build
 			let time = time_from(player.offline_timer.cherry_birdhouse);
-			let interval = get_cnc_build_time(player, "cherry", "birdhouse", 1);
+			let interval = get_cnc_build_time(player, Tree::Cherry, Furniture::BirdHouse, 1);
 			let loops = vec![player.lumber.cherry / (1 * player.cncs_active.cherry.birdhouse), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -549,7 +550,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.cherry.shelf > 0 && player.lumber.cherry >= 2 * player.cncs_active.cherry.shelf {
 			let time = time_from(player.offline_timer.cherry_shelf);
-			let interval = get_cnc_build_time(player, "cherry", "shelf", 1);
+			let interval = get_cnc_build_time(player, Tree::Cherry, Furniture::Shelf, 1);
 			let loops = vec![player.lumber.cherry / (1 * player.cncs_active.cherry.shelf), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -564,7 +565,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.cherry.side_table > 0 && player.lumber.cherry >= 3 * player.cncs_active.cherry.side_table {
 			let time = time_from(player.offline_timer.cherry_side_table);
-			let interval = get_cnc_build_time(player, "cherry", "side_table", 1);
+			let interval = get_cnc_build_time(player, Tree::Cherry, Furniture::SideTable, 1);
 			let loops = vec![player.lumber.cherry / (1 * player.cncs_active.cherry.side_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -579,7 +580,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.cherry.coffee_table > 0 && player.lumber.cherry >= 4 * player.cncs_active.cherry.coffee_table {
 			let time = time_from(player.offline_timer.cherry_coffee_table);
-			let interval = get_cnc_build_time(player, "cherry", "coffee_table", 1);
+			let interval = get_cnc_build_time(player, Tree::Cherry, Furniture::CoffeeTable, 1);
 			let loops = vec![player.lumber.cherry / (1 * player.cncs_active.cherry.coffee_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -594,7 +595,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.cherry.dining_set > 0 && player.lumber.cherry >= 5 * player.cncs_active.cherry.dining_set {
 			let time = time_from(player.offline_timer.cherry_dining_set);
-			let interval = get_cnc_build_time(player, "cherry", "dining_set", 1);
+			let interval = get_cnc_build_time(player, Tree::Cherry, Furniture::DiningSet, 1);
 			let loops = vec![player.lumber.cherry / (1 * player.cncs_active.cherry.dining_set), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -612,7 +613,7 @@ fn update_cncing(player: &mut Player) {
 		if player.cncs_active.purpleheart.birdhouse > 0 && player.lumber.purpleheart >= 1 * player.cncs_active.purpleheart.birdhouse {
 			// Use the time for one build
 			let time = time_from(player.offline_timer.purpleheart_birdhouse);
-			let interval = get_cnc_build_time(player, "purpleheart", "birdhouse", 1);
+			let interval = get_cnc_build_time(player, Tree::PurpleHeart, Furniture::BirdHouse, 1);
 			let loops = vec![player.lumber.purpleheart / (1 * player.cncs_active.purpleheart.birdhouse), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -627,7 +628,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.purpleheart.shelf > 0 && player.lumber.purpleheart >= 2 * player.cncs_active.purpleheart.shelf {
 			let time = time_from(player.offline_timer.purpleheart_shelf);
-			let interval = get_cnc_build_time(player, "purpleheart", "shelf", 1);
+			let interval = get_cnc_build_time(player, Tree::PurpleHeart, Furniture::Shelf, 1);
 			let loops = vec![player.lumber.purpleheart / (1 * player.cncs_active.purpleheart.shelf), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -642,7 +643,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.purpleheart.side_table > 0 && player.lumber.purpleheart >= 3 * player.cncs_active.purpleheart.side_table {
 			let time = time_from(player.offline_timer.purpleheart_side_table);
-			let interval = get_cnc_build_time(player, "purpleheart", "side_table", 1);
+			let interval = get_cnc_build_time(player, Tree::PurpleHeart, Furniture::SideTable, 1);
 			let loops = vec![player.lumber.purpleheart / (1 * player.cncs_active.purpleheart.side_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -657,7 +658,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.purpleheart.coffee_table > 0 && player.lumber.purpleheart >= 4 * player.cncs_active.purpleheart.coffee_table {
 			let time = time_from(player.offline_timer.purpleheart_coffee_table);
-			let interval = get_cnc_build_time(player, "purpleheart", "coffee_table", 1);
+			let interval = get_cnc_build_time(player, Tree::PurpleHeart, Furniture::CoffeeTable, 1);
 			let loops = vec![player.lumber.purpleheart / (1 * player.cncs_active.purpleheart.coffee_table), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {
@@ -672,7 +673,7 @@ fn update_cncing(player: &mut Player) {
 		}
 		if player.cncs_active.purpleheart.dining_set > 0 && player.lumber.purpleheart >= 5 * player.cncs_active.purpleheart.dining_set {
 			let time = time_from(player.offline_timer.purpleheart_dining_set);
-			let interval = get_cnc_build_time(player, "purpleheart", "dining_set", 1);
+			let interval = get_cnc_build_time(player, Tree::PurpleHeart, Furniture::DiningSet, 1);
 			let loops = vec![player.lumber.purpleheart / (1 * player.cncs_active.purpleheart.dining_set), loops_in_time(time, interval)];
 			let loops_min = *loops.iter().min().unwrap();
 			if loops_min > 0 {

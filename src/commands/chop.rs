@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use serenity::builder::CreateApplicationCommand;
 use serenity::model::prelude::command::{
 	CommandOptionType
@@ -9,15 +11,16 @@ use serenity::model::prelude::interaction::application_command::{
 
 use crate::player::{get_player, Axe, Player, Action, ActionEnum};
 use crate::utils::Message;
+use crate::enums::Tree;
 
 pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
-	let tree = &options
+	let tree_input = &options
 		.get(0)
 		.expect("Expected a Subcommand");
-	let mut actions = if &tree.options.len() == &0usize {
+	let mut actions = if &tree_input.options.len() == &0usize {
 		1
 	} else {
-		match tree.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
+		match tree_input.options.get(0).expect("expected int").resolved.as_ref().expect("int") {
 			CommandDataOptionValue::Integer(i) => i.to_owned(),
 			_ => 1
 		}
@@ -37,42 +40,37 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 			}
 		},
 	}
-	match tree.name.as_str() {
-		"pine" => {
-			Message::Content(chop_player_update(&mut player, "pine", actions).await)
-		},
-		"oak" => {
+	let tree = Tree::from_str(&tree_input.name).expect("No such tree.");
+	match tree {
+		Tree::Oak => {
 			if player.axe < Axe::Iron {
 				return Message::Content("You need an **Iron** axe to chop oak logs!".to_string());
-			}
-			Message::Content(chop_player_update(&mut player, "oak", actions).await)
+			};
 		},
-		"maple" => {
+		Tree::Maple => {
 			if player.axe < Axe::Steel {
 				return Message::Content("You need a **Steel** axe to chop maple logs!".to_string());
-			}
-			Message::Content(chop_player_update(&mut player, "maple", actions).await)
+			};
 		},
-		"walnut" => {
+		Tree::Walnut => {
 			if player.axe < Axe::Mithril {
 				return Message::Content("You need a **Mithril** axe to chop walnut logs!".to_string());
-			}
-			Message::Content(chop_player_update(&mut player, "walnut", actions).await)
+			};
 		},
-		"cherry" => {
+		Tree::Cherry => {
 			if player.axe < Axe::Adamant {
 				return Message::Content("You need an **Adamant** axe to chop cherry logs!".to_string());
-			}
-			Message::Content(chop_player_update(&mut player, "cherry", actions).await)
+			};
 		},
-		"purpleheart" => {
+		Tree::PurpleHeart => {
 			if player.axe < Axe::Rune {
 				return Message::Content("You need a **Rune** axe to chop purpleheart logs!".to_string());
-			}
-			Message::Content(chop_player_update(&mut player, "purpleheart", actions).await)
+			};
 		},
-		_ => Message::how()
-	}
+		_ => ()
+	};
+
+	Message::Content(chop_player_update(&mut player, tree, actions).await)
 }
 
 pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicationCommand {
@@ -163,7 +161,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
 		})
 }
 
-fn chop_log(player: &Player, tree: &str, actions: i64) -> Option<Action> {
+fn chop_log(player: &Player, tree: Tree, actions: i64) -> Option<Action> {
 	// returns None if insta-chopped.
 	let chop_time = get_player_chop_time(player, tree, actions);
 	if chop_time == 0 {
@@ -191,7 +189,7 @@ pub fn determine_logger_logs_earned(player: &Player) -> i64 {
 	(((base_logs + upgrade) * (1 + sawdust_upgrade)) as f64 * (1.0 + (0.01 * sawdust as f64))) as i64
 }
 
-pub async fn chop_player_update(player: &mut Player, tree: &str, actions: i64) -> String {
+pub async fn chop_player_update(player: &mut Player, tree: Tree, actions: i64) -> String {
 	let action = chop_log(&player, tree, actions);
 	match action {
 		Some(a) => {
@@ -200,13 +198,13 @@ pub async fn chop_player_update(player: &mut Player, tree: &str, actions: i64) -
 					player.current_action = a.clone();
 					player.update().await;
 
-					format!("You started chopping a **{}** tree! You'll be done in **{}s**", tree, a.time_to_complete())
+					format!("You started chopping a **{}** tree! You'll be done in **{}s**", &tree, a.time_to_complete())
 				},
 				_ => {
 					let queued_action = player.queue_action(a);
 					player.update().await;
 
-					format!("You started chopping a **{}** tree! You'll be done in **{}s**", tree, queued_action.time_to_complete())
+					format!("You started chopping a **{}** tree! You'll be done in **{}s**", &tree, queued_action.time_to_complete())
 				},
 			}
 		}
@@ -226,66 +224,64 @@ pub async fn chop_player_update(player: &mut Player, tree: &str, actions: i64) -
 pub fn update_player_chop(player: &mut Player) -> i64 {
 	let times = player.current_action.amount;
 	let amount = times * determine_player_logs_earned(&player);
-	let tree = player.current_action.tree.clone();
+	let tree = player.current_action.tree;
 	player.current_action = Action::none();
-	match tree.as_str() {
-		"pine" => {
+	match tree {
+		Tree::Pine => {
 			player.logs.pine += amount;
 			player.stats.pine_trees_chopped += times;
 			player.stats.pine_logs_earned += amount;
 			player.sawdust_prestige.logs.pine += amount;
 			player.seed_prestige.logs.pine += amount;
 		},
-		"oak" => {
+		Tree::Oak => {
 			player.logs.oak += amount;
 			player.stats.oak_trees_chopped += times;
 			player.stats.oak_logs_earned += amount;
 			player.sawdust_prestige.logs.oak += amount;
 			player.seed_prestige.logs.oak += amount;
 		},
-		"maple" => {
+		Tree::Maple => {
 			player.logs.maple += amount;
 			player.stats.maple_trees_chopped += times;
 			player.stats.maple_logs_earned += amount;
 			player.sawdust_prestige.logs.maple += amount;
 			player.seed_prestige.logs.maple += amount;
 		},
-		"walnut" => {
+		Tree::Walnut => {
 			player.logs.walnut += amount;
 			player.stats.walnut_trees_chopped += times;
 			player.stats.walnut_logs_earned += amount;
 			player.sawdust_prestige.logs.walnut += amount;
 			player.seed_prestige.logs.walnut += amount;
 		},
-		"cherry" => {
+		Tree::Cherry => {
 			player.logs.cherry += amount;
 			player.stats.cherry_trees_chopped += times;
 			player.stats.cherry_logs_earned += amount;
 			player.sawdust_prestige.logs.cherry += amount;
 			player.seed_prestige.logs.cherry += amount;
 		},
-		"purpleheart" => {
+		Tree::PurpleHeart => {
 			player.logs.purpleheart += amount;
 			player.stats.purpleheart_trees_chopped += times;
 			player.stats.purpleheart_logs_earned += amount;
 			player.sawdust_prestige.logs.purpleheart += amount;
 			player.seed_prestige.logs.purpleheart += amount;
-		},
-		_ => ()
+		}
 	}
 
 	amount
 }
 
-pub fn get_player_chop_time(player: &Player, tree: &str, actions: i64) -> i64 {
+pub fn get_player_chop_time(player: &Player, tree: Tree, actions: i64) -> i64 {
 	let base_time = match tree {
-		"pine" => 10.0,
-		"oak" => 15.0,
-		"maple" => 25.0,
-		"walnut" => 35.0,
-		"cherry" => 50.0,
-		"purpleheart" => 80.0,
-		_ => 10.0
+		Tree::Pine => 10.0,
+		Tree::Oak => 15.0,
+		Tree::Maple => 25.0,
+		Tree::Walnut => 35.0,
+		Tree::Cherry => 50.0,
+		Tree::PurpleHeart => 80.0
 	};
 	let upgrade_mult = 1.0 + (player.upgrades.sharpening_books as f64 * 0.1);
 	let sawdust_mult = 1.0 + (player.sawdust_upgrades.tree_fertilizer as f64 * 0.1);
@@ -293,15 +289,14 @@ pub fn get_player_chop_time(player: &Player, tree: &str, actions: i64) -> i64 {
 	((base_time / upgrade_mult) / sawdust_mult).round() as i64 * actions
 }
 
-pub fn get_logger_chop_time(player: &Player, tree: &str, actions: i64) -> i64 {
+pub fn get_logger_chop_time(player: &Player, tree: Tree, actions: i64) -> i64 {
 	let base_time = match tree {
-		"pine" => 100.0,
-		"oak" => 150.0,
-		"maple" => 250.0,
-		"walnut" => 350.0,
-		"cherry" => 500.0,
-		"purpleheart" => 800.0,
-		_ => 100.0
+		Tree::Pine => 100.0,
+		Tree::Oak => 150.0,
+		Tree::Maple => 250.0,
+		Tree::Walnut => 350.0,
+		Tree::Cherry => 500.0,
+		Tree::PurpleHeart => 800.0
 	};
 	let upgrade_mult = 1.0 + (player.upgrades.sharper_axes as f64 * 0.1);
 	let sawdust_mult = 1.0 + (player.sawdust_upgrades.double_swings as f64 * 0.1);

@@ -13,7 +13,7 @@ use serenity::{
 	utils::Colour
 };
 
-use crate::utils::{get_client, ToDoc};
+use crate::{utils::{get_client, ToDoc}, enums::Tree};
 use crate::player::{
 	Axe,
 	Furniture,
@@ -376,7 +376,7 @@ impl Player {
 		action
 	}
 
-	pub fn queued_logs(&self, req: &str) -> i64 {
+	pub fn queued_logs(&self, req: Tree) -> i64 {
 		let mut all_actions = vec![self.current_action.clone()];
 		for qa in &self.queued_actions {
 			all_actions.push(qa.clone());
@@ -390,7 +390,7 @@ impl Player {
 		req
 	}
 
-	pub fn queued_lumber(&self, req: &str) -> i64 {
+	pub fn queued_lumber(&self, req: Tree) -> i64 {
 		let mut all_actions = vec![self.current_action.clone()];
 		for qa in &self.queued_actions {
 			all_actions.push(qa.clone());

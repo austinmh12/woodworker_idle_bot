@@ -14,6 +14,7 @@ use mongodb::{
 };
 
 use crate::utils::ToDoc;
+use crate::enums::{Tree, Furniture};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Action {
@@ -23,12 +24,12 @@ pub struct Action {
 	pub start: DateTime<Utc>,
 	#[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
 	pub end: DateTime<Utc>,
-	pub tree: String,
-	pub furniture: Option<String>,
+	pub tree: Tree,
+	pub furniture: Option<Furniture>,
 }
 
 impl Action {
-	pub fn chopping(duration: i64, tree: &str, amount: i64) -> Self {
+	pub fn chopping(duration: i64, tree: Tree, amount: i64) -> Self {
 		let start = Utc::now();
 		let end = start + Duration::seconds(duration);
 		
@@ -37,12 +38,12 @@ impl Action {
 			amount,
 			start,
 			end,
-			tree: tree.into(),
+			tree,
 			furniture: None,
 		}
 	}
 
-	pub fn drying(duration: i64, tree: &str, amount: i64) -> Self {
+	pub fn drying(duration: i64, tree: Tree, amount: i64) -> Self {
 		let start = Utc::now();
 		let end = start + Duration::seconds(duration);
 		
@@ -51,12 +52,12 @@ impl Action {
 			amount,
 			start,
 			end,
-			tree: tree.into(),
+			tree: tree,
 			furniture: None,
 		}
 	}
 
-	pub fn building(duration: i64, tree: &str, furniture: &str, amount: i64) -> Self {
+	pub fn building(duration: i64, tree: Tree, furniture: Furniture, amount: i64) -> Self {
 		let start = Utc::now();
 		let end = start + Duration::seconds(duration);
 		
@@ -65,18 +66,18 @@ impl Action {
 			amount,
 			start,
 			end,
-			tree: tree.into(),
-			furniture: Some(furniture.into()),
+			tree,
+			furniture: Some(furniture),
 		}
 	}
 
 	pub fn none() -> Self {
 		Self {
 			action: ActionEnum::None,
-			amount: 1,
+			amount: 0,
 			start: Utc::now(),
 			end: Utc::now(),
-			tree: "".into(),
+			tree: Tree::Pine,
 			furniture: None,
 		}
 	}
@@ -105,7 +106,7 @@ impl Display for Action {
 		match &self.action {
 			ActionEnum::None => write!(f, "None!"),
 			ActionEnum::Building => {
-				let alt = "".to_string();
+				let alt = Furniture::BirdHouse;
 				let furniture = &self.furniture.as_ref().unwrap_or(&alt);
 				write!(f, "{} {} {}, **{}s** left", &self.action, &self.tree, furniture, &self.time_to_complete())
 			},

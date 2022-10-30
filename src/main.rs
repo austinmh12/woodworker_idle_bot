@@ -35,6 +35,7 @@ mod commands;
 mod player;
 mod utils;
 mod loops;
+mod enums;
 
 struct Handler {
 	is_loop_running: AtomicBool,
