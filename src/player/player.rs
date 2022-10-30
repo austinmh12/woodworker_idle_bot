@@ -29,7 +29,7 @@ use crate::player::{
 	SeedPrestige,
 	Kiln,
 	Hammer,
-	Tree,
+	TreeBPUnlock,
 	OfflineTimer,
 };
 
@@ -404,7 +404,7 @@ impl Player {
 		req
 	}
 
-	pub fn unlock_next_blueprint(&mut self) -> Option<Tree> {
+	pub fn unlock_next_blueprint(&mut self) -> Option<TreeBPUnlock> {
 		match self.blueprints.next_unlock() {
 			Some(t) => {
 				let ret = t.clone();

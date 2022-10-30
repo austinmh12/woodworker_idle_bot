@@ -9,7 +9,7 @@ mod color;
 mod prestige;
 mod offline;
 
-pub use self::enums::Tree;
+pub use self::enums::TreeBPUnlock;
 pub use self::enums::Axe;
 pub use self::enums::Kiln;
 pub use self::enums::Hammer;

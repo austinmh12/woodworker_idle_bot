@@ -7,7 +7,7 @@ use mongodb::{
 };
 
 use crate::utils::ToDoc;
-use crate::player::{BPUnlock, Tree};
+use crate::player::{BPUnlock, TreeBPUnlock};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Blueprints {
@@ -20,27 +20,27 @@ pub struct Blueprints {
 }
 
 impl Blueprints {
-	pub fn next_unlock(&self) -> Option<Tree> {
+	pub fn next_unlock(&self) -> Option<TreeBPUnlock> {
 		if self.pine.next_unlock() != BPUnlock::None {
-			Some(Tree::Pine(self.pine.next_unlock()))
+			Some(TreeBPUnlock::Pine(self.pine.next_unlock()))
 		} else if self.oak.next_unlock() != BPUnlock::None {
-			Some(Tree::Oak(self.oak.next_unlock()))
+			Some(TreeBPUnlock::Oak(self.oak.next_unlock()))
 		} else if self.maple.next_unlock() != BPUnlock::None {
-			Some(Tree::Maple(self.maple.next_unlock()))
+			Some(TreeBPUnlock::Maple(self.maple.next_unlock()))
 		} else if self.walnut.next_unlock() != BPUnlock::None {
-			Some(Tree::Walnut(self.walnut.next_unlock()))
+			Some(TreeBPUnlock::Walnut(self.walnut.next_unlock()))
 		} else if self.cherry.next_unlock() != BPUnlock::None {
-			Some(Tree::Cherry(self.cherry.next_unlock()))
+			Some(TreeBPUnlock::Cherry(self.cherry.next_unlock()))
 		} else if self.purpleheart.next_unlock() != BPUnlock::None {
-			Some(Tree::PurpleHeart(self.purpleheart.next_unlock()))
+			Some(TreeBPUnlock::PurpleHeart(self.purpleheart.next_unlock()))
 		} else {
 			None
 		}
 	}
 
-	pub fn unlock(&mut self, tree: Tree) {
+	pub fn unlock(&mut self, tree: TreeBPUnlock) {
 		match tree {
-			Tree::Pine(b) => match b {
+			TreeBPUnlock::Pine(b) => match b {
 				BPUnlock::BirdHouse => self.pine.birdhouse = true,
 				BPUnlock::Shelf => self.pine.shelf = true,
 				BPUnlock::SideTable => self.pine.side_table = true,
@@ -48,7 +48,7 @@ impl Blueprints {
 				BPUnlock::DiningSet => self.pine.dining_set = true,
 				_ => ()
 			},
-			Tree::Oak(b) => match b {
+			TreeBPUnlock::Oak(b) => match b {
 				BPUnlock::BirdHouse => self.oak.birdhouse = true,
 				BPUnlock::Shelf => self.oak.shelf = true,
 				BPUnlock::SideTable => self.oak.side_table = true,
@@ -56,7 +56,7 @@ impl Blueprints {
 				BPUnlock::DiningSet => self.oak.dining_set = true,
 				_ => ()
 			},
-			Tree::Maple(b) => match b {
+			TreeBPUnlock::Maple(b) => match b {
 				BPUnlock::BirdHouse => self.maple.birdhouse = true,
 				BPUnlock::Shelf => self.maple.shelf = true,
 				BPUnlock::SideTable => self.maple.side_table = true,
@@ -64,7 +64,7 @@ impl Blueprints {
 				BPUnlock::DiningSet => self.maple.dining_set = true,
 				_ => ()
 			},
-			Tree::Walnut(b) => match b {
+			TreeBPUnlock::Walnut(b) => match b {
 				BPUnlock::BirdHouse => self.walnut.birdhouse = true,
 				BPUnlock::Shelf => self.walnut.shelf = true,
 				BPUnlock::SideTable => self.walnut.side_table = true,
@@ -72,7 +72,7 @@ impl Blueprints {
 				BPUnlock::DiningSet => self.walnut.dining_set = true,
 				_ => ()
 			},
-			Tree::Cherry(b) => match b {
+			TreeBPUnlock::Cherry(b) => match b {
 				BPUnlock::BirdHouse => self.cherry.birdhouse = true,
 				BPUnlock::Shelf => self.cherry.shelf = true,
 				BPUnlock::SideTable => self.cherry.side_table = true,
@@ -80,7 +80,7 @@ impl Blueprints {
 				BPUnlock::DiningSet => self.cherry.dining_set = true,
 				_ => ()
 			},
-			Tree::PurpleHeart(b) => match b {
+			TreeBPUnlock::PurpleHeart(b) => match b {
 				BPUnlock::BirdHouse => self.purpleheart.birdhouse = true,
 				BPUnlock::Shelf => self.purpleheart.shelf = true,
 				BPUnlock::SideTable => self.purpleheart.side_table = true,

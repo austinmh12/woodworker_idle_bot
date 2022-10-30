@@ -7,7 +7,7 @@ use serenity::model::prelude::interaction::application_command::{
 	CommandDataOptionValue
 };
 
-use crate::player::{get_player, Player, Axe, Kiln, Hammer, Tree, BPUnlock};
+use crate::player::{get_player, Player, Axe, Kiln, Hammer, TreeBPUnlock, BPUnlock};
 use crate::utils::{self, Message};
 
 const LOGGER_BASE: f64 = 25.0;
@@ -235,13 +235,13 @@ fn get_hammer_price(hammer: Hammer) -> f64 {
 	}
 }
 
-fn get_next_blueprint(player: &Player) -> Option<Tree> {
+fn get_next_blueprint(player: &Player) -> Option<TreeBPUnlock> {
 	player.blueprints.next_unlock()
 }
 
-fn get_blueprint_price(tree: Tree) -> f64 {
+fn get_blueprint_price(tree: TreeBPUnlock) -> f64 {
 	match tree {
-		Tree::Pine(b) => match b {
+		TreeBPUnlock::Pine(b) => match b {
 			BPUnlock::BirdHouse => 0.0,
 			BPUnlock::Shelf => 45.5,
 			BPUnlock::SideTable => 128.0,
@@ -249,7 +249,7 @@ fn get_blueprint_price(tree: Tree) -> f64 {
 			BPUnlock::DiningSet => 420.0,
 			_ => 0.0
 		},
-		Tree::Oak(b) => match b {
+		TreeBPUnlock::Oak(b) => match b {
 			BPUnlock::BirdHouse => 767.0,
 			BPUnlock::Shelf => 826.0,
 			BPUnlock::SideTable => 1552.5,
@@ -257,7 +257,7 @@ fn get_blueprint_price(tree: Tree) -> f64 {
 			BPUnlock::DiningSet => 4930.0,
 			_ => 0.0
 		},
-		Tree::Maple(b) => match b {
+		TreeBPUnlock::Maple(b) => match b {
 			BPUnlock::BirdHouse => 8300.0,
 			BPUnlock::Shelf => 8715.0,
 			BPUnlock::SideTable => 13200.0,
@@ -265,7 +265,7 @@ fn get_blueprint_price(tree: Tree) -> f64 {
 			BPUnlock::DiningSet => 43812.0,
 			_ => 0.0
 		},
-		Tree::Walnut(b) => match b {
+		TreeBPUnlock::Walnut(b) => match b {
 			BPUnlock::BirdHouse => 72360.0,
 			BPUnlock::Shelf => 75040.0,
 			BPUnlock::SideTable => 77720.0,
@@ -273,7 +273,7 @@ fn get_blueprint_price(tree: Tree) -> f64 {
 			BPUnlock::DiningSet => 207746.5,
 			_ => 0.0
 		},
-		Tree::Cherry(b) => match b {
+		TreeBPUnlock::Cherry(b) => match b {
 			BPUnlock::BirdHouse => 338470.0,
 			BPUnlock::Shelf => 348425.0,
 			BPUnlock::SideTable => 358380.0,
@@ -281,7 +281,7 @@ fn get_blueprint_price(tree: Tree) -> f64 {
 			BPUnlock::DiningSet => 722000.0,
 			_ => 0.0
 		},
-		Tree::PurpleHeart(b) => match b {
+		TreeBPUnlock::PurpleHeart(b) => match b {
 			BPUnlock::BirdHouse => 1168500.0,
 			BPUnlock::Shelf => 1197000.0,
 			BPUnlock::SideTable => 1225500.0,
