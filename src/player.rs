@@ -1,13 +1,6 @@
 mod enums;
-mod furnitures;
-mod stats;
-mod upgrades;
-mod woods;
+mod data;
 mod player;
-mod action;
-mod color;
-mod prestige;
-mod offline;
 
 pub use self::enums::TreeBPUnlock;
 pub use self::enums::Axe;
@@ -15,28 +8,28 @@ pub use self::enums::Kiln;
 pub use self::enums::Hammer;
 pub use self::enums::BPUnlock;
 
-pub use self::furnitures::Blueprints;
-pub use self::furnitures::Furniture;
-pub use self::furnitures::FurnitureItems;
-pub use self::furnitures::FurnitureUnlocks;
+pub use self::data::Blueprints;
+pub use self::data::Furniture;
+pub use self::data::FurnitureItems;
+pub use self::data::FurnitureUnlocks;
 
-pub use self::stats::Stats;
+pub use self::data::Stats;
 
-pub use self::upgrades::Upgrades;
-pub use self::upgrades::SawdustUpgrades;
+pub use self::data::Upgrades;
+pub use self::data::SawdustUpgrades;
 
-pub use self::woods::WoodsInt;
+pub use self::data::WoodsInt;
 
 pub use self::player::Player;
 pub use self::player::get_player;
 pub use self::player::get_players;
 
-pub use self::action::Action;
-pub use self::action::ActionEnum;
+pub use self::data::Action;
+pub use self::data::ActionEnum;
 
-pub use self::color::Color;
+pub use self::data::Color;
 
-pub use self::prestige::SawdustPrestige;
-pub use self::prestige::SeedPrestige;
+pub use self::data::SawdustPrestige;
+pub use self::data::SeedPrestige;
 
-pub use self::offline::OfflineTimer;
+pub use self::data::OfflineTimer;
