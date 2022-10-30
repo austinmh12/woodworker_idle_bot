@@ -84,18 +84,18 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 				let mut ret = CreateEmbed::default();
 				let mut desc = "Welcome to the normal upgrades! See something you like, buy it with **/upgrade normal buy**\n".to_string();
 				desc.push_str(&format!("You have **${:.2}**\n\n", player.cash));
-				desc.push_str(&format!("**1:** Sharpening Books - ${:.2}\n", utils::get_price(1, SHARPENING_BOOKS_BASE, SHARPENING_BOOKS_EXP, player.upgrades.sharpening_books)));
-				desc.push_str(&format!("**2:** Gym Pass - ${:.2}\n", utils::get_price(1, GYM_PASS_BASE, GYM_PASS_EXP, player.upgrades.gym_pass)));
-				desc.push_str(&format!("**3:** Sharper Axes - ${:.2}\n", utils::get_price(1, SHARPER_AXES_BASE, SHARPER_AXES_EXP, player.upgrades.sharper_axes)));
-				desc.push_str(&format!("**4:** Wider Axes - ${:.2}\n", utils::get_price(1, WIDER_AXES_BASE, WIDER_AXES_EXP, player.upgrades.wider_axes)));
-				desc.push_str(&format!("**5:** Thermodynamics - ${:.2}\n", utils::get_price(1, THERMODYNAMICS_BASE, THERMODYNAMICS_EXP, player.upgrades.thermodynamics)));
-				desc.push_str(&format!("**6:** Pull Carts - ${:.2}\n", utils::get_price(1, PULL_CARTS_BASE, PULL_CARTS_EXP, player.upgrades.pull_carts)));
-				desc.push_str(&format!("**7:** Hotter Kilns - ${:.2}\n", utils::get_price(1, HOTTER_KILNS_BASE, HOTTER_KILNS_EXP, player.upgrades.hotter_kilns)));
-				desc.push_str(&format!("**8:** Better Temperatures - ${:.2}\n", utils::get_price(1, BETTER_TEMPERATURES_BASE, BETTER_TEMPERATURES_EXP, player.upgrades.better_temperatures)));
-				desc.push_str(&format!("**9:** Fast Drying Glue - ${:.2}\n", utils::get_price(1, FAST_DRYING_GLUE_BASE, FAST_DRYING_GLUE_EXP, player.upgrades.fast_drying_glue)));
-				desc.push_str(&format!("**10:** Industrial Nails - ${:.2}\n", utils::get_price(1, INDUSTRIAL_NAILS_BASE, INDUSTRIAL_NAILS_EXP, player.upgrades.industrial_nails)));
-				desc.push_str(&format!("**11:** WD40 - ${:.2}\n", utils::get_price(1, WD_40_BASE, WD_40_EXP, player.upgrades.wd_40)));
-				desc.push_str(&format!("**12:** High Quality Bits - ${:.2}\n", utils::get_price(1, HIGH_QUALITY_BITS_BASE, HIGH_QUALITY_BITS_EXP, player.upgrades.high_quality_bits)));
+				desc.push_str(&format!("**1:** Sharpening Books | Decreases chop time - ${:.2}\n", utils::get_price(1, SHARPENING_BOOKS_BASE, SHARPENING_BOOKS_EXP, player.upgrades.sharpening_books)));
+				desc.push_str(&format!("**2:** Gym Pass | Increases logs per chop - ${:.2}\n", utils::get_price(1, GYM_PASS_BASE, GYM_PASS_EXP, player.upgrades.gym_pass)));
+				desc.push_str(&format!("**3:** Sharper Axes | Loggers chop faster - ${:.2}\n", utils::get_price(1, SHARPER_AXES_BASE, SHARPER_AXES_EXP, player.upgrades.sharper_axes)));
+				desc.push_str(&format!("**4:** Wider Axes | Loggers chop more per cycle - ${:.2}\n", utils::get_price(1, WIDER_AXES_BASE, WIDER_AXES_EXP, player.upgrades.wider_axes)));
+				desc.push_str(&format!("**5:** Thermodynamics | Decreases dry time - ${:.2}\n", utils::get_price(1, THERMODYNAMICS_BASE, THERMODYNAMICS_EXP, player.upgrades.thermodynamics)));
+				desc.push_str(&format!("**6:** Pull Carts | Increases lumber per dry - ${:.2}\n", utils::get_price(1, PULL_CARTS_BASE, PULL_CARTS_EXP, player.upgrades.pull_carts)));
+				desc.push_str(&format!("**7:** Hotter Kilns | Lumberers dry faster - ${:.2}\n", utils::get_price(1, HOTTER_KILNS_BASE, HOTTER_KILNS_EXP, player.upgrades.hotter_kilns)));
+				desc.push_str(&format!("**8:** Better Temperatures | Lumberers dry more per cycle - ${:.2}\n", utils::get_price(1, BETTER_TEMPERATURES_BASE, BETTER_TEMPERATURES_EXP, player.upgrades.better_temperatures)));
+				desc.push_str(&format!("**9:** Fast Drying Glue | Decrease time to build - ${:.2}\n", utils::get_price(1, FAST_DRYING_GLUE_BASE, FAST_DRYING_GLUE_EXP, player.upgrades.fast_drying_glue)));
+				desc.push_str(&format!("**10:** Industrial Nails | Increase furniture per build - ${:.2}\n", utils::get_price(1, INDUSTRIAL_NAILS_BASE, INDUSTRIAL_NAILS_EXP, player.upgrades.industrial_nails)));
+				desc.push_str(&format!("**11:** WD40 | CNCs build faster - ${:.2}\n", utils::get_price(1, WD_40_BASE, WD_40_EXP, player.upgrades.wd_40)));
+				desc.push_str(&format!("**12:** High Quality Bits | CNCs build more per cycle - ${:.2}\n", utils::get_price(1, HIGH_QUALITY_BITS_BASE, HIGH_QUALITY_BITS_EXP, player.upgrades.high_quality_bits)));
 				ret
 					.title("Normal Upgrades")
 					.description(&desc)
@@ -212,22 +212,22 @@ pub async fn run(player_id: u64, options: &[CommandDataOption]) -> Message {
 				let mut ret = CreateEmbed::default();
 				let mut desc = "Welcome to the sawdust upgrades! See something you like, buy it with **/upgrade sawdust buy**\n".to_string();
 				desc.push_str(&format!("You have **{}** sawdust\n\n", player.sawdust));
-				desc.push_str(&format!("**1:** Tree Fertilizer - {}SD\n", utils::get_price(1, TREE_FERTILIZER_BASE, TREE_FERTILIZER_EXP, player.sawdust_upgrades.tree_fertilizer)));
-				desc.push_str(&format!("**2:** Less Bark - {}SD\n", utils::get_price(1, LESS_BARK_BASE, LESS_BARK_EXP, player.sawdust_upgrades.less_bark)));
-				desc.push_str(&format!("**3:** Double Swings - {}SD\n", utils::get_price(1, DOUBLE_SWINGS_BASE, DOUBLE_SWINGS_EXP, player.sawdust_upgrades.double_swings)));
-				desc.push_str(&format!("**4:** Dual Wielding - {}SD\n", utils::get_price(1, DUAL_WIELDING_BASE, DUAL_WIELDING_EXP, player.sawdust_upgrades.dual_wielding)));
-				desc.push_str(&format!("**5:** Preheating - {}SD\n", utils::get_price(1, PREHEATING_BASE, PREHEATING_EXP, player.sawdust_upgrades.preheating)));
-				desc.push_str(&format!("**6:** Efficient Packing - {}SD\n", utils::get_price(1, EFFICIENT_PACKING_BASE, EFFICIENT_PACKING_EXP, player.sawdust_upgrades.efficient_packing)));
-				desc.push_str(&format!("**7:** Electric Heaters - {}SD\n", utils::get_price(1, ELECTRIC_HEATERS_BASE, ELECTRIC_HEATERS_EXP, player.sawdust_upgrades.electric_heaters)));
-				desc.push_str(&format!("**8:** Reading Glasses - {}SD\n", utils::get_price(1, READING_GLASSES_BASE, READING_GLASSES_EXP, player.sawdust_upgrades.reading_glasses)));
-				desc.push_str(&format!("**9:** Longer Clamps - {}SD\n", utils::get_price(1, LONGER_CLAMPS_BASE, LONGER_CLAMPS_EXP, player.sawdust_upgrades.longer_clamps)));
-				desc.push_str(&format!("**10:** Self Tapping Screws - {}SD\n", utils::get_price(1, SELF_TAPPING_SCREWS_BASE, SELF_TAPPING_SCREWS_EXP, player.sawdust_upgrades.self_tapping_screws)));
-				desc.push_str(&format!("**11:** Saved GCode - {}SD\n", utils::get_price(1, SAVED_GCODE_BASE, SAVED_GCODE_EXP, player.sawdust_upgrades.saved_gcode)));
-				desc.push_str(&format!("**12:** Stronger Motors - {}SD\n", utils::get_price(1, STRONGER_MOTORS_BASE, STRONGER_MOTORS_EXP, player.sawdust_upgrades.stronger_motors)));
-				desc.push_str(&format!("**13:** Dust Collection - {}SD\n", utils::get_price(1, DUST_COLLECTION_BASE, DUST_COLLECTION_EXP, player.sawdust_upgrades.dust_collection)));
-				desc.push_str(&format!("**14:** Fire Starter - {}SD\n", utils::get_price(1, FIRE_STARTER_BASE, FIRE_STARTER_EXP, player.sawdust_upgrades.fire_starter)));
-				desc.push_str(&format!("**15:** Multitasking - {}SD\n", utils::get_price(1, MULTITASKING_BASE, MULTITASKING_EXP, player.sawdust_upgrades.multitasking)));
-				desc.push_str(&format!("**16:** Endurance Training - {}SD\n", utils::get_price(1, ENDURANCE_TRAINING_BASE, ENDURANCE_TRAINING_EXP, player.sawdust_upgrades.endurance_training)));
+				desc.push_str(&format!("**1:** Tree Fertilizer | Decreases chop time - {}SD\n", utils::get_price(1, TREE_FERTILIZER_BASE, TREE_FERTILIZER_EXP, player.sawdust_upgrades.tree_fertilizer)));
+				desc.push_str(&format!("**2:** Less Bark | Increases logs per chop - {}SD\n", utils::get_price(1, LESS_BARK_BASE, LESS_BARK_EXP, player.sawdust_upgrades.less_bark)));
+				desc.push_str(&format!("**3:** Double Swings | Loggers chop faster - {}SD\n", utils::get_price(1, DOUBLE_SWINGS_BASE, DOUBLE_SWINGS_EXP, player.sawdust_upgrades.double_swings)));
+				desc.push_str(&format!("**4:** Dual Wielding | Loggers chop more per cycle - {}SD\n", utils::get_price(1, DUAL_WIELDING_BASE, DUAL_WIELDING_EXP, player.sawdust_upgrades.dual_wielding)));
+				desc.push_str(&format!("**5:** Preheating | Decreases dry time - {}SD\n", utils::get_price(1, PREHEATING_BASE, PREHEATING_EXP, player.sawdust_upgrades.preheating)));
+				desc.push_str(&format!("**6:** Efficient Packing | Increases lumber per dry - {}SD\n", utils::get_price(1, EFFICIENT_PACKING_BASE, EFFICIENT_PACKING_EXP, player.sawdust_upgrades.efficient_packing)));
+				desc.push_str(&format!("**7:** Electric Heaters | Lumberers dry faster - {}SD\n", utils::get_price(1, ELECTRIC_HEATERS_BASE, ELECTRIC_HEATERS_EXP, player.sawdust_upgrades.electric_heaters)));
+				desc.push_str(&format!("**8:** Reading Glasses | Lumberers dry more per cycle - {}SD\n", utils::get_price(1, READING_GLASSES_BASE, READING_GLASSES_EXP, player.sawdust_upgrades.reading_glasses)));
+				desc.push_str(&format!("**9:** Longer Clamps | Decrease time to build - {}SD\n", utils::get_price(1, LONGER_CLAMPS_BASE, LONGER_CLAMPS_EXP, player.sawdust_upgrades.longer_clamps)));
+				desc.push_str(&format!("**10:** Self Tapping Screws | Increase furniture per build - {}SD\n", utils::get_price(1, SELF_TAPPING_SCREWS_BASE, SELF_TAPPING_SCREWS_EXP, player.sawdust_upgrades.self_tapping_screws)));
+				desc.push_str(&format!("**11:** Saved GCode | CNCs build faster - {}SD\n", utils::get_price(1, SAVED_GCODE_BASE, SAVED_GCODE_EXP, player.sawdust_upgrades.saved_gcode)));
+				desc.push_str(&format!("**12:** Stronger Motors | CNCs build more per cycle - {}SD\n", utils::get_price(1, STRONGER_MOTORS_BASE, STRONGER_MOTORS_EXP, player.sawdust_upgrades.stronger_motors)));
+				desc.push_str(&format!("**13:** Dust Collection | Increase sawdust collection amount - {}SD\n", utils::get_price(1, DUST_COLLECTION_BASE, DUST_COLLECTION_EXP, player.sawdust_upgrades.dust_collection)));
+				desc.push_str(&format!("**14:** Fire Starter | Increases sawdust bonus - {}SD\n", utils::get_price(1, FIRE_STARTER_BASE, FIRE_STARTER_EXP, player.sawdust_upgrades.fire_starter)));
+				desc.push_str(&format!("**15:** Multitasking | Increase the max number of queued actions - {}SD\n", utils::get_price(1, MULTITASKING_BASE, MULTITASKING_EXP, player.sawdust_upgrades.multitasking)));
+				desc.push_str(&format!("**16:** Endurance Training | Increase the max number of tasks per action - {}SD\n", utils::get_price(1, ENDURANCE_TRAINING_BASE, ENDURANCE_TRAINING_EXP, player.sawdust_upgrades.endurance_training)));
 				ret
 					.title("Sawdust Upgrades")
 					.description(&desc)
