@@ -1161,9 +1161,9 @@ pub fn get_player_build_time(player: &Player, tree: &str, furniture: &str, actio
 	let furniture_mult = match furniture {
 		"birdhouse" => 1.0,
 		"shelf" => 1.5,
-		"side table" => 2.0,
-		"coffee table" => 2.5,
-		"dining set" => 3.0,
+		"sidetable" => 2.0,
+		"coffeetable" => 2.5,
+		"diningset" => 3.0,
 		_ => 1.0
 	};
 	let base_time = base_time * furniture_mult;
@@ -1186,9 +1186,9 @@ pub fn get_cnc_build_time(player: &Player, tree: &str, furniture: &str, actions:
 	let furniture_mult = match furniture {
 		"birdhouse" => 1.0,
 		"shelf" => 1.5,
-		"side table" => 2.0,
-		"coffee table" => 2.5,
-		"dining set" => 3.0,
+		"sidetable" => 2.0,
+		"coffeetable" => 2.5,
+		"diningset" => 3.0,
 		_ => 1.0
 	};
 	let base_time = base_time * furniture_mult;
